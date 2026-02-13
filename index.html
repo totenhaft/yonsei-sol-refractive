@@ -1934,6 +1934,10 @@ input:focus, select:focus {
     width: auto;
 }
     </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <!-- 로그인 모달 -->
@@ -2645,8 +2649,23 @@ input:focus, select:focus {
 // Firebase & Authentication Module
 // ============================================
 
-// Demo mode flag (set to false when Firebase is configured)
-const DEMO_MODE = true;
+// Firebase 설정
+const firebaseConfig = {
+  apiKey: "AIzaSyDjXsLII4yWswECOjbSXDhrEvKDhV2WpUY",
+  authDomain: "refractive-surgery-check.firebaseapp.com",
+  projectId: "refractive-surgery-check",
+  storageBucket: "refractive-surgery-check.firebasestorage.app",
+  messagingSenderId: "877429462758",
+  appId: "1:877429462758:web:5115613120c61c7742cd27"
+};
+
+// Firebase 초기화
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// Demo mode OFF (Firebase 사용)
+const DEMO_MODE = false;
 const LOCAL_STORAGE_KEY = 'yonsei_sol_patients';
 
 // Current user state
@@ -2675,7 +2694,7 @@ document.addEventListener('click', (e) => {
 });
 
 // Handle login
-function handleLogin() {
+async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const errorDiv = document.getElementById('login-error');
@@ -2686,41 +2705,44 @@ function handleLogin() {
     }
     
     if (DEMO_MODE) {
-        // Demo mode: accept any credentials
         currentUser = { email: email };
         updateAuthUI();
         toggleModal('login-modal', false);
         showNotification('로그인 성공 (데모 모드)', 'success');
     } else {
-        // TODO: Implement Firebase authentication
-        errorDiv.textContent = 'Firebase 설정이 필요합니다.';
+        try {
+            const userCredential = await auth.signInWithEmailAndPassword(email, password);
+            currentUser = userCredential.user;
+            updateAuthUI();
+            toggleModal('login-modal', false);
+            showNotification('로그인 성공!', 'success');
+        } catch (error) {
+            console.error('Login error:', error);
+            if (error.code === 'auth/user-not-found') {
+                errorDiv.textContent = '등록되지 않은 이메일입니다.';
+            } else if (error.code === 'auth/wrong-password') {
+                errorDiv.textContent = '비밀번호가 틀렸습니다.';
+            } else if (error.code === 'auth/invalid-credential') {
+                errorDiv.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+            } else {
+                errorDiv.textContent = '로그인 실패: ' + error.message;
+            }
+        }
     }
 }
 
 // Handle logout
-function handleLogout() {
+async function handleLogout() {
+    if (!DEMO_MODE) {
+        try {
+            await auth.signOut();
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    }
     currentUser = null;
     updateAuthUI();
     showNotification('로그아웃 되었습니다.', 'info');
-}
-
-// Update auth UI based on login state
-function updateAuthUI() {
-    const authContainer = document.getElementById('auth-container');
-    if (currentUser) {
-        authContainer.innerHTML = `
-            <div class="user-info">
-                <span class="user-email">${currentUser.email}</span>
-                <button class="btn-logout" onclick="handleLogout()">로그아웃</button>
-            </div>
-        `;
-    } else {
-        authContainer.innerHTML = `
-            <button class="header-btn" onclick="toggleModal('login-modal', true)" id="login-btn">
-                🔐 로그인
-            </button>
-        `;
-    }
 }
 
 // Show notification
