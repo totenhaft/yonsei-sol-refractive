@@ -3933,10 +3933,26 @@ function generatePrintSurgeryRow(name, data) {
     const rsbStyle = data.rsb < 280 ? 'color:#dc2626;font-weight:700;' : data.rsb < 300 ? 'color:#d97706;font-weight:600;' : '';
     const ptaStyle = data.pta >= 40 ? 'color:#dc2626;font-weight:700;' : data.pta >= 35 ? 'color:#d97706;font-weight:600;' : '';
     
+    // Ablation depth warning
+    const ablation = data.ablation || data.ablationDepth || 0;
+    const isLasik = name.toUpperCase().includes('LASIK');
+    const safeLimit = isLasik ? 90 : 100;
+    const cautionLimit = isLasik ? 120 : 130;
+    
+    let ablationStyle = '';
+    let ablationIcon = '';
+    if (ablation > cautionLimit) {
+        ablationStyle = 'color:#dc2626;font-weight:700;';
+        ablationIcon = '🚨';
+    } else if (ablation > safeLimit) {
+        ablationStyle = 'color:#d97706;font-weight:600;';
+        ablationIcon = '⚠️';
+    }
+    
     return `
         <tr>
             <td style="border: 1px solid #ddd; padding: 5px; font-weight: 600;">${name}</td>
-            <td style="border: 1px solid #ddd; padding: 5px; text-align: center;">${data.ablation?.toFixed(1) || '-'} μm</td>
+            <td style="border: 1px solid #ddd; padding: 5px; text-align: center; ${ablationStyle}">${ablationIcon} ${ablation.toFixed(1)} μm</td>
             <td style="border: 1px solid #ddd; padding: 5px; text-align: center; ${rsbStyle}">${data.rsb?.toFixed(0) || '-'} μm</td>
             <td style="border: 1px solid #ddd; padding: 5px; text-align: center; ${ptaStyle}">${data.pta?.toFixed(1) || '-'}%</td>
             <td style="border: 1px solid #ddd; padding: 5px; text-align: center; background: ${bgColor}; color: ${textColor}; font-weight: 700;">${text}</td>
@@ -4224,6 +4240,15 @@ const CONFIG = {
     K_MAX_SAFE: 48,
     K_OPTIMAL_MIN: 36,
     K_OPTIMAL_MAX: 46,
+    // Ablation Depth Thresholds (based on published literature)
+    // References: 
+    // - EyeWiki Ectasia Risk: >100μm excessive ablation
+    // - ESCRS 2024 (Dr. Ang): max 120μm for LASIK
+    // - Santhiago et al. 2014: ectasia group mean 94μm
+    ABLATION_LASIK_SAFE: 90,      // Safe threshold for LASIK
+    ABLATION_LASIK_CAUTION: 120,  // Caution threshold - ESCRS guideline
+    ABLATION_LASEK_SAFE: 100,     // Safe threshold for LASEK/PRK
+    ABLATION_LASEK_CAUTION: 130,  // Caution threshold for LASEK/PRK
 };
 
 // AI Topography Analysis Thresholds based on published criteria
@@ -4744,6 +4769,46 @@ const ERSS_CRITERIA = {
 function calculateAblationDepth(correction, opticalZone) {
     const ablationDepth = (Math.pow(opticalZone, 2) * Math.abs(correction)) / 3;
     return Math.round(ablationDepth * 10) / 10;
+}
+
+/**
+ * Evaluate ablation depth risk level
+ * Based on published literature:
+ * - EyeWiki: >100μm excessive ablation increases ectasia risk
+ * - ESCRS 2024 (Dr. Ang): max 120μm for LASIK
+ * - Santhiago et al. 2014: ectasia group mean ablation 94μm
+ */
+function evaluateAblationRisk(ablationDepth, surgeryType) {
+    const isLasik = surgeryType === 'lasik' || surgeryType === 'LASIK';
+    
+    const safeThreshold = isLasik ? CONFIG.ABLATION_LASIK_SAFE : CONFIG.ABLATION_LASEK_SAFE;
+    const cautionThreshold = isLasik ? CONFIG.ABLATION_LASIK_CAUTION : CONFIG.ABLATION_LASEK_CAUTION;
+    
+    if (ablationDepth <= safeThreshold) {
+        return {
+            level: 'safe',
+            class: 'success',
+            icon: '✓',
+            message: '안전 범위',
+            detail: `절삭량 ${ablationDepth.toFixed(1)}μm은 안전 범위(≤${safeThreshold}μm) 내입니다.`
+        };
+    } else if (ablationDepth <= cautionThreshold) {
+        return {
+            level: 'caution',
+            class: 'warning',
+            icon: '⚠️',
+            message: '주의 필요',
+            detail: `절삭량 ${ablationDepth.toFixed(1)}μm은 고도근시 영역입니다. 면밀한 검토가 필요합니다. (권장: ≤${safeThreshold}μm)`
+        };
+    } else {
+        return {
+            level: 'danger',
+            class: 'danger',
+            icon: '🚨',
+            message: '경고: 과도한 절삭',
+            detail: `절삭량 ${ablationDepth.toFixed(1)}μm은 권장 상한(${cautionThreshold}μm)을 초과합니다. 확막확장증 위험이 증가하며, 대안적 수술 방법을 고려하세요. [Ref: ESCRS 2024, Santhiago et al.]`
+        };
+    }
 }
 
 function calculateSE(sph, cyl) {
@@ -5306,23 +5371,29 @@ class RefractiveCalculator {
             lasik: {
                 name: 'LASIK',
                 flapThickness: data.lasikFlap,
+                ablation: ablationDepth,
                 ablationDepth,
                 rsb: calculateRSB(data.cct, data.lasikFlap, ablationDepth),
-                pta: calculatePTA(data.cct, data.lasikFlap, ablationDepth)
+                pta: calculatePTA(data.cct, data.lasikFlap, ablationDepth),
+                ablationRisk: evaluateAblationRisk(ablationDepth, 'lasik')
             },
             lasek: {
                 name: 'LASEK/PRK',
                 flapThickness: data.lasekEpi,
+                ablation: ablationDepth,
                 ablationDepth,
                 rsb: calculateRSB(data.cct, data.lasekEpi, ablationDepth),
-                pta: calculatePTA(data.cct, data.lasekEpi, ablationDepth)
+                pta: calculatePTA(data.cct, data.lasekEpi, ablationDepth),
+                ablationRisk: evaluateAblationRisk(ablationDepth, 'lasek')
             },
             smile: {
                 name: 'SMILE',
                 flapThickness: data.smileCap,
+                ablation: ablationDepth,
                 ablationDepth,
                 rsb: calculateRSB(data.cct, data.smileCap, ablationDepth),
-                pta: calculatePTA(data.cct, data.smileCap, ablationDepth)
+                pta: calculatePTA(data.cct, data.smileCap, ablationDepth),
+                ablationRisk: evaluateAblationRisk(ablationDepth, 'lasik') // SMILE uses similar thresholds
             }
         };
         
@@ -5437,6 +5508,13 @@ class RefractiveCalculator {
                 
                 const row = document.createElement('tr');
                 
+                // Ablation risk class
+                let ablationClass = 'success';
+                if (result.ablationRisk) {
+                    if (result.ablationRisk.level === 'caution') ablationClass = 'warning';
+                    if (result.ablationRisk.level === 'danger') ablationClass = 'danger';
+                }
+                
                 let rsbClass = 'success';
                 if (result.rsb < CONFIG.RSB_WARNING_THRESHOLD) rsbClass = 'warning';
                 if (result.rsb < CONFIG.RSB_DANGER_THRESHOLD) rsbClass = 'danger';
@@ -5445,14 +5523,34 @@ class RefractiveCalculator {
                 if (result.pta >= CONFIG.PTA_SAFE_THRESHOLD) ptaClass = 'warning';
                 if (result.pta >= CONFIG.PTA_WARNING_THRESHOLD) ptaClass = 'danger';
                 
+                const ablationIcon = result.ablationRisk ? result.ablationRisk.icon : '';
+                
                 row.innerHTML = `
                     <td>${result.name}</td>
-                    <td>${result.ablationDepth.toFixed(1)}</td>
+                    <td class="${ablationClass}" title="${result.ablationRisk ? result.ablationRisk.detail : ''}">${ablationIcon} ${result.ablationDepth.toFixed(1)}</td>
                     <td class="${rsbClass}">${result.rsb.toFixed(1)}</td>
                     <td class="${ptaClass}">${result.pta.toFixed(1)}%</td>
                 `;
                 tableBody.appendChild(row);
             });
+            
+            // Add ablation warning message if needed
+            const lasikRisk = results.surgeryResults.lasik?.ablationRisk;
+            const lasekRisk = results.surgeryResults.lasek?.ablationRisk;
+            
+            if ((lasikRisk && lasikRisk.level !== 'safe') || (lasekRisk && lasekRisk.level !== 'safe')) {
+                const warningRow = document.createElement('tr');
+                warningRow.className = 'ablation-warning-row';
+                const riskToShow = lasikRisk?.level === 'danger' ? lasikRisk : 
+                                   lasekRisk?.level === 'danger' ? lasekRisk :
+                                   lasikRisk?.level === 'caution' ? lasikRisk : lasekRisk;
+                warningRow.innerHTML = `
+                    <td colspan="4" class="${riskToShow.class}" style="font-size: 0.75rem; padding: 8px;">
+                        ${riskToShow.icon} <strong>${riskToShow.message}</strong>: ${riskToShow.detail}
+                    </td>
+                `;
+                tableBody.appendChild(warningRow);
+            }
         }
         
         // K values
