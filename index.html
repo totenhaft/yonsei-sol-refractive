@@ -2051,6 +2051,13 @@ input:focus, select:focus {
 
 /* Print Styles */
 @media print {
+    html, body {
+        height: auto !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
     body * {
         visibility: hidden;
     }
@@ -2063,13 +2070,23 @@ input:focus, select:focus {
         position: absolute;
         left: 0;
         top: 0;
-        width: 210mm;
-        padding: 10mm;
+        width: 100%;
+        max-width: 210mm;
+        padding: 8mm;
         background: white;
+        overflow: visible !important;
+        height: auto !important;
     }
     
-    .no-print {
+    .no-print, .login-screen, .app-container, .modal-overlay {
         display: none !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    @page {
+        size: A4;
+        margin: 10mm;
     }
 }
 
@@ -2564,7 +2581,7 @@ input:focus, select:focus {
                     <h3>⏳ 승인 대기 중</h3>
                     <p>회원가입 신청이 완료되었습니다.<br>관리자 승인 후 로그인 가능합니다.</p>
                     <p style="margin-top:10px;font-size:0.75rem;color:#666;">
-                        문의: totenhaft@gmail.com
+                        문의: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="04706b70616a6c656270446369656d682a676b69">[email&#160;protected]</a>
                     </p>
                 </div>
                 <button type="button" class="btn-login" style="margin-top:var(--space-md);" onclick="switchLoginTab('login')">
@@ -2574,7 +2591,7 @@ input:focus, select:focus {
             
             <div class="login-footer">
                 © 2024 연세솔안과. All rights reserved.<br>
-                관리자 문의: totenhaft@gmail.com
+                관리자 문의: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="11657e65747f7970776551767c70787d3f727e7c">[email&#160;protected]</a>
             </div>
         </div>
     </div>
@@ -3262,7 +3279,7 @@ input:focus, select:focus {
         </div>
     </template>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================
 // 연세솔안과 시력교정술 적합성 검사
 // Firebase & Authentication Module
@@ -3656,55 +3673,143 @@ function printPatientReport() {
     const odErss = results.od?.erssResult || {};
     const osErss = results.os?.erssResult || {};
     
+    // Get eligibility status
+    const getEligibility = (surgeryResult) => {
+        if (!surgeryResult) return { text: '-', class: 'neutral' };
+        if (surgeryResult.rsb < 280 || surgeryResult.pta >= 40) {
+            return { text: '부적합', class: 'danger' };
+        } else if (surgeryResult.rsb < 300 || surgeryResult.pta >= 35) {
+            return { text: '주의', class: 'warning' };
+        }
+        return { text: '적합', class: 'success' };
+    };
+    
+    const odLasikElig = getEligibility(odResults.lasik);
+    const odLasekElig = getEligibility(odResults.lasek);
+    const osLasikElig = getEligibility(osResults.lasik);
+    const osLasekElig = getEligibility(osResults.lasek);
+    
+    const getErssRiskText = (score) => score <= 2 ? '저위험' : score === 3 ? '중등도' : '고위험';
+    const getStatusStyle = (status) => {
+        if (status === 'success') return 'background:#dcfce7;color:#166534;';
+        if (status === 'warning') return 'background:#fef3c7;color:#92400e;';
+        if (status === 'danger') return 'background:#fee2e2;color:#991b1b;';
+        return 'background:#f3f4f6;color:#6b7280;';
+    };
+    
     const printHTML = `
-        <div style="font-family: 'Noto Sans KR', sans-serif; font-size: 8pt; color: #000; padding: 5mm;">
+        <div style="font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 9pt; color: #000; padding: 0; max-width: 210mm; margin: 0 auto;">
             <!-- 헤더 -->
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 8px; margin-bottom: 12px;">
                 <div>
-                    <div style="font-size: 14pt; font-weight: 700; color: #0284c7;">시력교정술 적합성 검사</div>
-                    <div style="font-size: 9pt; color: #666;">연세솔안과 YONSEI SOL EYE CLINIC</div>
+                    <div style="font-size: 16pt; font-weight: 700; color: #0284c7;">시력교정술 적합성 검사 결과</div>
+                    <div style="font-size: 10pt; color: #666;">연세솔안과 YONSEI SOL EYE CLINIC</div>
                 </div>
-                <div style="text-align: right; font-size: 7pt; color: #666;">
-                    검사일: ${printDate}<br>
-                    담당: ${currentUser?.email || '-'}
+                <div style="text-align: right; font-size: 8pt; color: #666;">
+                    검사일시: ${printDate}<br>
+                    담당자: ${currentUser?.email || '-'}
                 </div>
             </div>
             
             <!-- 환자 정보 -->
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f0f9ff; padding: 8px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #0284c7;">
-                <div><span style="font-size: 6pt; color: #666;">환자명</span><br><strong style="font-size: 10pt;">${patientName}</strong></div>
-                <div><span style="font-size: 6pt; color: #666;">등록번호</span><br><strong style="font-size: 10pt;">${patientId}</strong></div>
-                <div><span style="font-size: 6pt; color: #666;">나이</span><br><strong style="font-size: 10pt;">${age}세</strong></div>
-                <div><span style="font-size: 6pt; color: #666;">성별</span><br><strong style="font-size: 10pt;">${gender}</strong></div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #0284c7;">
+                <div>
+                    <div style="font-size: 7pt; color: #666; margin-bottom: 2px;">환자명</div>
+                    <div style="font-size: 12pt; font-weight: 700;">${patientName}</div>
+                </div>
+                <div>
+                    <div style="font-size: 7pt; color: #666; margin-bottom: 2px;">등록번호</div>
+                    <div style="font-size: 12pt; font-weight: 700;">${patientId}</div>
+                </div>
+                <div>
+                    <div style="font-size: 7pt; color: #666; margin-bottom: 2px;">나이</div>
+                    <div style="font-size: 12pt; font-weight: 700;">${age}세</div>
+                </div>
+                <div>
+                    <div style="font-size: 7pt; color: #666; margin-bottom: 2px;">성별</div>
+                    <div style="font-size: 12pt; font-weight: 700;">${gender}</div>
+                </div>
             </div>
             
-            <!-- 양안 데이터 (좌우 배치) -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <!-- ========== 종합 평가 ========== -->
+            <div style="background: #1e3a5f; color: white; padding: 8px 12px; border-radius: 6px 6px 0 0; font-weight: 700; font-size: 11pt;">
+                📋 종합 평가 (Summary)
+            </div>
+            <div style="border: 2px solid #1e3a5f; border-top: none; border-radius: 0 0 6px 6px; padding: 12px; margin-bottom: 15px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 9pt;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 15%;"></th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 42.5%; background: #dbeafe; color: #1e40af;">👁 우안 (OD)</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 42.5%; background: #dcfce7; color: #166534;">👁 좌안 (OS)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; background: #f8fafc;">LASIK</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 10pt; ${getStatusStyle(odLasikElig.class)}">${odLasikElig.text}</span>
+                            </td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 10pt; ${getStatusStyle(osLasikElig.class)}">${osLasikElig.text}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; background: #f8fafc;">LASEK/PRK</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 10pt; ${getStatusStyle(odLasekElig.class)}">${odLasekElig.text}</span>
+                            </td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 10pt; ${getStatusStyle(osLasekElig.class)}">${osLasekElig.text}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; background: #f8fafc;">ERSS</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <strong style="font-size: 11pt;">${odErss.total || 0}점</strong>
+                                <span style="margin-left: 6px; font-size: 8pt; color: #666;">(${getErssRiskText(odErss.total || 0)})</span>
+                            </td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <strong style="font-size: 11pt;">${osErss.total || 0}점</strong>
+                                <span style="margin-left: 6px; font-size: 8pt; color: #666;">(${getErssRiskText(osErss.total || 0)})</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- ========== 양안 데이터 (좌우 배치) ========== -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <!-- 우안 (OD) -->
-                <div style="border: 2px solid #3b82f6; border-radius: 6px; padding: 8px;">
-                    <div style="background: #3b82f6; color: white; padding: 4px 8px; margin: -8px -8px 8px -8px; border-radius: 4px 4px 0 0; font-weight: 700; font-size: 10pt;">
-                        👁 우안 (OD)
+                <div style="border: 2px solid #3b82f6; border-radius: 6px; overflow: hidden;">
+                    <div style="background: #3b82f6; color: white; padding: 8px 12px; font-weight: 700; font-size: 11pt;">
+                        👁 우안 (OD) 상세 데이터
                     </div>
-                    ${generateEyeSection(odData, odResults, odErss)}
+                    <div style="padding: 10px;">
+                        ${generateDetailedEyeSection(odData, odResults, odErss)}
+                    </div>
                 </div>
                 
                 <!-- 좌안 (OS) -->
-                <div style="border: 2px solid #22c55e; border-radius: 6px; padding: 8px;">
-                    <div style="background: #22c55e; color: white; padding: 4px 8px; margin: -8px -8px 8px -8px; border-radius: 4px 4px 0 0; font-weight: 700; font-size: 10pt;">
-                        👁 좌안 (OS)
+                <div style="border: 2px solid #22c55e; border-radius: 6px; overflow: hidden;">
+                    <div style="background: #22c55e; color: white; padding: 8px 12px; font-weight: 700; font-size: 11pt;">
+                        👁 좌안 (OS) 상세 데이터
                     </div>
-                    ${generateEyeSection(osData, osResults, osErss)}
+                    <div style="padding: 10px;">
+                        ${generateDetailedEyeSection(osData, osResults, osErss)}
+                    </div>
                 </div>
             </div>
             
             <!-- 주의사항 -->
-            <div style="background: #fef3c7; padding: 6px 10px; border-radius: 4px; margin-top: 10px; font-size: 6pt; color: #92400e;">
-                ⚠️ 본 검사 결과는 참고용이며, 최종 수술 결정은 반드시 전문의 상담 후 결정하시기 바랍니다. | ERSS & PTA 기반 평가
+            <div style="background: #fef3c7; padding: 10px 15px; border-radius: 6px; margin-top: 15px; font-size: 8pt; color: #92400e; border: 1px solid #f59e0b;">
+                ⚠️ <strong>주의사항:</strong> 본 검사 결과는 참고용이며, 최종 수술 결정은 반드시 전문의 상담 후 결정하시기 바랍니다. 
+                각막 두께, 굴절력, 지형도 패턴 등을 종합적으로 고려하여 판단됩니다.
             </div>
             
             <!-- 푸터 -->
-            <div style="text-align: center; margin-top: 8px; padding-top: 6px; border-top: 1px solid #ddd; font-size: 6pt; color: #999;">
-                © 연세솔안과 | Munnerlyn's Formula 기반 | Randleman ERSS & PTA 평가
+            <div style="text-align: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 7pt; color: #999;">
+                © 연세솔안과 YONSEI SOL EYE CLINIC | Munnerlyn's Formula 기반 계산 | Randleman ERSS & PTA 위험도 평가
             </div>
         </div>
     `;
@@ -3713,14 +3818,130 @@ function printPatientReport() {
     printContainer.innerHTML = printHTML;
     printContainer.style.display = 'block';
     
+    // Hide other elements before printing
+    document.body.style.overflow = 'hidden';
+    
     setTimeout(() => {
         window.print();
         setTimeout(() => {
             printContainer.style.display = 'none';
+            printContainer.innerHTML = '';
+            document.body.style.overflow = '';
             // Reset document title
             document.title = '시력교정술 적합성 검사 | Refractive Surgery Eligibility Checker';
         }, 500);
     }, 300);
+}
+
+// Generate detailed eye section for print (SMILE 제외)
+function generateDetailedEyeSection(data, surgeryResults, erssResult) {
+    const se = (data.sph || 0) + ((data.cyl || 0) / 2);
+    const avgK = ((data.k1 || 0) + (data.k2 || 0)) / 2;
+    const erssScore = erssResult.total || 0;
+    
+    const getErssRiskText = (score) => score <= 2 ? '저위험' : score === 3 ? '중등도' : '고위험';
+    const getRiskStyle = (level) => {
+        if (level === 'low') return 'background:#dcfce7;color:#166534;';
+        if (level === 'moderate') return 'background:#fef3c7;color:#92400e;';
+        return 'background:#fee2e2;color:#991b1b;';
+    };
+    const getErssLevel = (score) => score <= 2 ? 'low' : score === 3 ? 'moderate' : 'high';
+    const getPtaLevel = (pta) => pta < 35 ? 'low' : pta < 40 ? 'moderate' : 'high';
+    
+    return `
+        <!-- 입력 데이터 -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+            <!-- 굴절 검사 -->
+            <div style="background: #f8fafc; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                <div style="font-size: 8pt; font-weight: 600; color: #475569; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0;">📊 굴절 검사</div>
+                <table style="width: 100%; font-size: 8pt;">
+                    <tr><td style="color: #666;">SPH</td><td style="text-align: right; font-weight: 600;">${(data.sph || 0).toFixed(2)} D</td></tr>
+                    <tr><td style="color: #666;">CYL</td><td style="text-align: right; font-weight: 600;">${(data.cyl || 0).toFixed(2)} D</td></tr>
+                    <tr><td style="color: #666;">AXIS</td><td style="text-align: right; font-weight: 600;">${data.axis || 0}°</td></tr>
+                    <tr style="background: #e0f2fe;"><td style="color: #0369a1; font-weight: 600;">SE</td><td style="text-align: right; font-weight: 700; color: #0369a1;">${se.toFixed(2)} D</td></tr>
+                </table>
+            </div>
+            
+            <!-- 각막 검사 -->
+            <div style="background: #f8fafc; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                <div style="font-size: 8pt; font-weight: 600; color: #475569; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0;">🔬 각막 검사</div>
+                <table style="width: 100%; font-size: 8pt;">
+                    <tr><td style="color: #666;">CCT</td><td style="text-align: right; font-weight: 600;">${data.cct || 0} μm</td></tr>
+                    <tr><td style="color: #666;">K1</td><td style="text-align: right; font-weight: 600;">${(data.k1 || 0).toFixed(2)} D</td></tr>
+                    <tr><td style="color: #666;">K2</td><td style="text-align: right; font-weight: 600;">${(data.k2 || 0).toFixed(2)} D</td></tr>
+                    <tr style="background: #e0f2fe;"><td style="color: #0369a1; font-weight: 600;">Avg K</td><td style="text-align: right; font-weight: 700; color: #0369a1;">${avgK.toFixed(2)} D</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 수술별 결과 (SMILE 제외) -->
+        <div style="margin-bottom: 10px;">
+            <div style="font-size: 8pt; font-weight: 600; color: #475569; margin-bottom: 6px;">🔪 수술별 계산 결과</div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 8pt;">
+                <thead>
+                    <tr style="background: #f1f5f9;">
+                        <th style="border: 1px solid #ddd; padding: 5px;">수술</th>
+                        <th style="border: 1px solid #ddd; padding: 5px;">절삭량</th>
+                        <th style="border: 1px solid #ddd; padding: 5px;">RSB</th>
+                        <th style="border: 1px solid #ddd; padding: 5px;">PTA</th>
+                        <th style="border: 1px solid #ddd; padding: 5px;">판정</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${generatePrintSurgeryRow('LASIK', surgeryResults.lasik)}
+                    ${generatePrintSurgeryRow('LASEK/PRK', surgeryResults.lasek)}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 위험도 평가 -->
+        <div style="background: #fafafa; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0;">
+            <div style="font-size: 8pt; font-weight: 600; color: #475569; margin-bottom: 6px;">⚠️ 위험도 평가</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                <div style="text-align: center; padding: 6px; border-radius: 4px; ${getRiskStyle(getErssLevel(erssScore))}">
+                    <div style="font-size: 7pt; margin-bottom: 2px;">ERSS Score</div>
+                    <div style="font-size: 12pt; font-weight: 700;">${erssScore}점</div>
+                    <div style="font-size: 7pt;">${getErssRiskText(erssScore)}</div>
+                </div>
+                <div style="text-align: center; padding: 6px; border-radius: 4px; ${getRiskStyle(getPtaLevel(surgeryResults.lasik?.pta || 0))}">
+                    <div style="font-size: 7pt; margin-bottom: 2px;">LASIK PTA</div>
+                    <div style="font-size: 12pt; font-weight: 700;">${(surgeryResults.lasik?.pta || 0).toFixed(1)}%</div>
+                </div>
+                <div style="text-align: center; padding: 6px; border-radius: 4px; ${getRiskStyle(getPtaLevel(surgeryResults.lasek?.pta || 0))}">
+                    <div style="font-size: 7pt; margin-bottom: 2px;">LASEK PTA</div>
+                    <div style="font-size: 12pt; font-weight: 700;">${(surgeryResults.lasek?.pta || 0).toFixed(1)}%</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Generate surgery row for print (improved)
+function generatePrintSurgeryRow(name, data) {
+    if (!data) return '';
+    
+    let bgColor = '#dcfce7';
+    let textColor = '#166534';
+    let text = '적합';
+    
+    if (data.rsb < 280 || data.pta >= 40) {
+        bgColor = '#fee2e2'; textColor = '#991b1b'; text = '부적합';
+    } else if (data.rsb < 300 || data.pta >= 35) {
+        bgColor = '#fef3c7'; textColor = '#92400e'; text = '주의';
+    }
+    
+    const rsbStyle = data.rsb < 280 ? 'color:#dc2626;font-weight:700;' : data.rsb < 300 ? 'color:#d97706;font-weight:600;' : '';
+    const ptaStyle = data.pta >= 40 ? 'color:#dc2626;font-weight:700;' : data.pta >= 35 ? 'color:#d97706;font-weight:600;' : '';
+    
+    return `
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 5px; font-weight: 600;">${name}</td>
+            <td style="border: 1px solid #ddd; padding: 5px; text-align: center;">${data.ablation?.toFixed(1) || '-'} μm</td>
+            <td style="border: 1px solid #ddd; padding: 5px; text-align: center; ${rsbStyle}">${data.rsb?.toFixed(0) || '-'} μm</td>
+            <td style="border: 1px solid #ddd; padding: 5px; text-align: center; ${ptaStyle}">${data.pta?.toFixed(1) || '-'}%</td>
+            <td style="border: 1px solid #ddd; padding: 5px; text-align: center; background: ${bgColor}; color: ${textColor}; font-weight: 700;">${text}</td>
+        </tr>
+    `;
 }
 
 function generateEyeSection(data, surgeryResults, erssResult) {
