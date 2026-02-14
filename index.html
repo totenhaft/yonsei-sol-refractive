@@ -1933,32 +1933,366 @@ input:focus, select:focus {
     height: 40px;
     width: auto;
 }
+
+/* Login Screen (Full Page) */
+.login-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 50%, #0284c7 100%);
+    padding: var(--space-lg);
+}
+
+.login-box {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: var(--space-2xl);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-logo {
+    margin-bottom: var(--space-lg);
+}
+
+.login-logo img {
+    height: 80px;
+    width: auto;
+    margin-bottom: var(--space-md);
+}
+
+.login-logo h1 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.login-logo p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.login-box .form-group {
+    text-align: left;
+    margin-bottom: var(--space-md);
+}
+
+.login-box .form-group label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.login-box .form-group input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+}
+
+.login-box .form-group input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.login-box .btn-login {
+    width: 100%;
+    padding: var(--space-md);
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-top: var(--space-md);
+}
+
+.login-box .btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px rgba(2, 132, 199, 0.5);
+}
+
+.login-error-msg {
+    color: var(--danger);
+    font-size: 0.875rem;
+    margin-top: var(--space-sm);
+    min-height: 1.25rem;
+}
+
+.login-footer {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-light);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+/* Hide app when not logged in */
+.app-container {
+    display: none;
+}
+
+.app-container.logged-in {
+    display: flex;
+}
+
+.login-screen.hidden {
+    display: none;
+}
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    .print-container, .print-container * {
+        visibility: visible;
+    }
+    
+    .print-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 210mm;
+        padding: 10mm;
+        background: white;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+}
+
+.print-container {
+    font-family: var(--font-sans);
+    font-size: 9pt;
+    line-height: 1.4;
+    color: #000;
+    background: white;
+}
+
+.print-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+.print-header h1 {
+    font-size: 14pt;
+    color: #0284c7;
+    margin: 0;
+}
+
+.print-header .clinic-name {
+    font-size: 10pt;
+    color: #666;
+}
+
+.print-patient-info {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.print-patient-info .info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.print-patient-info .info-label {
+    font-size: 7pt;
+    color: #666;
+}
+
+.print-patient-info .info-value {
+    font-size: 9pt;
+    font-weight: 600;
+}
+
+.print-eye-section {
+    margin-bottom: 12px;
+}
+
+.print-eye-title {
+    font-size: 11pt;
+    font-weight: 700;
+    padding: 4px 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.print-eye-title.od {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.print-eye-title.os {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.print-data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.print-data-box {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px;
+}
+
+.print-data-box h4 {
+    font-size: 8pt;
+    color: #666;
+    margin: 0 0 4px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #eee;
+}
+
+.print-data-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+    padding: 2px 0;
+}
+
+.print-data-row .label {
+    color: #666;
+}
+
+.print-data-row .value {
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+.print-data-row .value.safe { color: #059669; }
+.print-data-row .value.warning { color: #d97706; }
+.print-data-row .value.danger { color: #dc2626; }
+
+.print-surgery-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8pt;
+    margin-top: 4px;
+}
+
+.print-surgery-table th,
+.print-surgery-table td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: center;
+}
+
+.print-surgery-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+
+.print-surgery-table .eligible { background: #dcfce7; color: #166534; }
+.print-surgery-table .caution { background: #fef3c7; color: #92400e; }
+.print-surgery-table .not-eligible { background: #fee2e2; color: #991b1b; }
+
+.print-risk-section {
+    margin-top: 8px;
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 4px;
+}
+
+.print-risk-title {
+    font-size: 9pt;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.print-risk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.print-risk-item {
+    text-align: center;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+.print-risk-item.low { background: #dcfce7; }
+.print-risk-item.moderate { background: #fef3c7; }
+.print-risk-item.high { background: #fee2e2; }
+
+.print-risk-item .risk-label {
+    font-size: 7pt;
+    color: #666;
+}
+
+.print-risk-item .risk-value {
+    font-size: 11pt;
+    font-weight: 700;
+}
+
+.print-footer {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+    font-size: 7pt;
+    color: #999;
+    text-align: center;
+}
+
+.print-disclaimer {
+    background: #fff3cd;
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 7pt;
+    color: #856404;
+    margin-top: 8px;
+}
     </style>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <!-- 로그인 모달 -->
-    <div class="modal-overlay" id="login-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>🔐 관리자 로그인</h3>
-                <button class="modal-close" onclick="toggleModal('login-modal', false)">✕</button>
+    <!-- 로그인 화면 (메인) -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="logo.jpg" alt="연세솔안과" onerror="this.style.display='none'">
+                <h1>시력교정술 적합성 검사</h1>
+                <p>연세솔안과 YONSEI SOL EYE CLINIC</p>
             </div>
-            <div class="modal-body">
+            <form onsubmit="handleLogin(); return false;">
                 <div class="form-group">
                     <label for="login-email">이메일</label>
-                    <input type="email" id="login-email" placeholder="example@yonsei-sol.com">
+                    <input type="email" id="login-email" placeholder="example@yonsei-sol.com" required>
                 </div>
                 <div class="form-group">
                     <label for="login-password">비밀번호</label>
-                    <input type="password" id="login-password" placeholder="비밀번호 입력">
+                    <input type="password" id="login-password" placeholder="비밀번호 입력" required>
                 </div>
-                <div class="login-error" id="login-error"></div>
-                <button class="btn-primary" onclick="handleLogin()" style="width:100%">로그인</button>
-                <p class="demo-notice">🔔 데모 모드에서는 아무 이메일/비밀번호로 로그인 가능합니다.<br>Firebase 설정 후 실제 인증이 적용됩니다.</p>
+                <div class="login-error-msg" id="login-error"></div>
+                <button type="submit" class="btn-login">🔐 로그인</button>
+            </form>
+            <div class="login-footer">
+                © 2024 연세솔안과. All rights reserved.<br>
+                문의: admin@yonsei-sol.com
             </div>
         </div>
     </div>
@@ -1988,7 +2322,10 @@ input:focus, select:focus {
         </div>
     </div>
 
-    <div class="app-container">
+    <!-- 인쇄 컨테이너 -->
+    <div id="print-container" class="print-container" style="display:none;"></div>
+
+    <div class="app-container" id="app-container">
         <header class="header">
             <div class="header-content">
                 <div class="logo">
@@ -2649,27 +2986,46 @@ input:focus, select:focus {
 // Firebase & Authentication Module
 // ============================================
 
-// Firebase 설정
-const firebaseConfig = {
-  apiKey: "AIzaSyDjXsLII4yWswECOjbSXDhrEvKDhV2WpUY",
-  authDomain: "refractive-surgery-check.firebaseapp.com",
-  projectId: "refractive-surgery-check",
-  storageBucket: "refractive-surgery-check.firebasestorage.app",
-  messagingSenderId: "877429462758",
-  appId: "1:877429462758:web:5115613120c61c7742cd27"
-};
-
-// Firebase 초기화
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// Demo mode OFF (Firebase 사용)
-const DEMO_MODE = false;
+// Demo mode flag (set to false when Firebase is configured)
+const DEMO_MODE = true;
 const LOCAL_STORAGE_KEY = 'yonsei_sol_patients';
 
 // Current user state
 let currentUser = null;
+
+// Show/hide login screen
+function showLoginScreen() {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('app-container').classList.remove('logged-in');
+}
+
+function hideLoginScreen() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-container').classList.add('logged-in');
+}
+
+// Update auth UI based on login state
+function updateAuthUI() {
+    const authContainer = document.getElementById('auth-container');
+    if (!authContainer) return;
+    
+    if (currentUser) {
+        hideLoginScreen();
+        authContainer.innerHTML = `
+            <div class="user-info">
+                <span class="user-email">${currentUser.email}</span>
+                <button class="btn-logout" onclick="handleLogout()">로그아웃</button>
+            </div>
+        `;
+    } else {
+        showLoginScreen();
+        authContainer.innerHTML = `
+            <button class="header-btn" onclick="showLoginScreen()" id="login-btn">
+                🔐 로그인
+            </button>
+        `;
+    }
+}
 
 // Modal toggle function
 function toggleModal(modalId, show) {
@@ -2694,7 +3050,7 @@ document.addEventListener('click', (e) => {
 });
 
 // Handle login
-async function handleLogin() {
+function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const errorDiv = document.getElementById('login-error');
@@ -2705,40 +3061,41 @@ async function handleLogin() {
     }
     
     if (DEMO_MODE) {
+        // Demo mode: accept any credentials
         currentUser = { email: email };
         updateAuthUI();
-        toggleModal('login-modal', false);
-        showNotification('로그인 성공 (데모 모드)', 'success');
+        showNotification('로그인 성공!', 'success');
     } else {
-        try {
-            const userCredential = await auth.signInWithEmailAndPassword(email, password);
-            currentUser = userCredential.user;
-            updateAuthUI();
-            toggleModal('login-modal', false);
-            showNotification('로그인 성공!', 'success');
-        } catch (error) {
-            console.error('Login error:', error);
-            if (error.code === 'auth/user-not-found') {
-                errorDiv.textContent = '등록되지 않은 이메일입니다.';
-            } else if (error.code === 'auth/wrong-password') {
-                errorDiv.textContent = '비밀번호가 틀렸습니다.';
-            } else if (error.code === 'auth/invalid-credential') {
-                errorDiv.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
-            } else {
-                errorDiv.textContent = '로그인 실패: ' + error.message;
-            }
+        // Firebase authentication
+        if (typeof auth !== 'undefined') {
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    updateAuthUI();
+                    showNotification('로그인 성공!', 'success');
+                })
+                .catch((error) => {
+                    console.error('Login error:', error);
+                    if (error.code === 'auth/user-not-found') {
+                        errorDiv.textContent = '등록되지 않은 이메일입니다.';
+                    } else if (error.code === 'auth/wrong-password') {
+                        errorDiv.textContent = '비밀번호가 틀렸습니다.';
+                    } else if (error.code === 'auth/invalid-credential') {
+                        errorDiv.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+                    } else {
+                        errorDiv.textContent = '로그인 실패: ' + error.message;
+                    }
+                });
+        } else {
+            errorDiv.textContent = 'Firebase 설정이 필요합니다.';
         }
     }
 }
 
 // Handle logout
-async function handleLogout() {
-    if (!DEMO_MODE) {
-        try {
-            await auth.signOut();
-        } catch (error) {
-            console.error('Logout error:', error);
-        }
+function handleLogout() {
+    if (!DEMO_MODE && typeof auth !== 'undefined') {
+        auth.signOut().catch(console.error);
     }
     currentUser = null;
     updateAuthUI();
@@ -2765,6 +3122,222 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.remove();
     }, 3000);
+}
+
+// Print patient report
+function printPatientReport() {
+    if (!window.calculator || !window.calculator.results) {
+        showNotification('먼저 계산을 수행해주세요.', 'error');
+        return;
+    }
+    
+    const results = window.calculator.results;
+    const patientName = document.getElementById('patient-name').value || '(미입력)';
+    const patientId = document.getElementById('patient-id').value || '(미입력)';
+    const age = document.getElementById('age').value || '-';
+    const gender = document.getElementById('gender').value === 'male' ? '남성' : '여성';
+    const printDate = new Date().toLocaleString('ko-KR');
+    
+    // Get form data for both eyes
+    const odData = results.od?.data || {};
+    const osData = results.os?.data || {};
+    const odResults = results.od?.surgeryResults || {};
+    const osResults = results.os?.surgeryResults || {};
+    
+    const printHTML = `
+        <div class="print-header">
+            <div>
+                <h1>시력교정술 적합성 검사 결과</h1>
+                <div class="clinic-name">연세솔안과 YONSEI SOL EYE CLINIC</div>
+            </div>
+            <div style="text-align:right;font-size:8pt;color:#666;">
+                검사일시: ${printDate}<br>
+                담당: ${currentUser?.email || '-'}
+            </div>
+        </div>
+        
+        <div class="print-patient-info">
+            <div class="info-item">
+                <span class="info-label">환자명</span>
+                <span class="info-value">${patientName}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">등록번호</span>
+                <span class="info-value">${patientId}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">나이</span>
+                <span class="info-value">${age}세</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">성별</span>
+                <span class="info-value">${gender}</span>
+            </div>
+        </div>
+        
+        ${generateEyePrintSection('OD', '우안', odData, odResults, results.od)}
+        ${generateEyePrintSection('OS', '좌안', osData, osResults, results.os)}
+        
+        <div class="print-disclaimer">
+            ⚠️ 본 검사 결과는 참고용이며, 최종 수술 결정은 반드시 전문의 상담 후 결정하시기 바랍니다.
+            ERSS(Ectasia Risk Score System) 및 PTA(Percent Tissue Altered) 기반 평가입니다.
+        </div>
+        
+        <div class="print-footer">
+            © 연세솔안과 | Munnerlyn's Formula 기반 | Randleman ERSS & PTA 평가
+        </div>
+    `;
+    
+    const printContainer = document.getElementById('print-container');
+    printContainer.innerHTML = printHTML;
+    printContainer.style.display = 'block';
+    
+    setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+            printContainer.style.display = 'none';
+        }, 500);
+    }, 300);
+}
+
+function generateEyePrintSection(eyeCode, eyeName, data, surgeryResults, fullResults) {
+    const se = data.sph + (data.cyl / 2);
+    const erssResult = fullResults?.erssResult || {};
+    const erssScore = erssResult.total || 0;
+    
+    // Determine risk levels
+    const getErssRiskClass = (score) => {
+        if (score <= 2) return 'low';
+        if (score === 3) return 'moderate';
+        return 'high';
+    };
+    
+    const getErssRiskText = (score) => {
+        if (score <= 2) return '저위험';
+        if (score === 3) return '중등도';
+        return '고위험';
+    };
+    
+    const getPtaClass = (pta) => {
+        if (pta < 35) return 'low';
+        if (pta < 40) return 'moderate';
+        return 'high';
+    };
+    
+    const getRsbClass = (rsb) => {
+        if (rsb >= 300) return 'safe';
+        if (rsb >= 280) return 'warning';
+        return 'danger';
+    };
+    
+    return `
+        <div class="print-eye-section">
+            <div class="print-eye-title ${eyeCode.toLowerCase()}">${eyeName} (${eyeCode})</div>
+            
+            <div class="print-data-grid">
+                <div class="print-data-box">
+                    <h4>굴절 검사</h4>
+                    <div class="print-data-row">
+                        <span class="label">SPH</span>
+                        <span class="value">${(data.sph || 0).toFixed(2)} D</span>
+                    </div>
+                    <div class="print-data-row">
+                        <span class="label">CYL</span>
+                        <span class="value">${(data.cyl || 0).toFixed(2)} D</span>
+                    </div>
+                    <div class="print-data-row">
+                        <span class="label">AXIS</span>
+                        <span class="value">${data.axis || 0}°</span>
+                    </div>
+                    <div class="print-data-row">
+                        <span class="label">SE</span>
+                        <span class="value" style="font-weight:700;color:#0284c7;">${se.toFixed(2)} D</span>
+                    </div>
+                </div>
+                
+                <div class="print-data-box">
+                    <h4>각막 검사</h4>
+                    <div class="print-data-row">
+                        <span class="label">CCT</span>
+                        <span class="value">${data.cct || 0} μm</span>
+                    </div>
+                    <div class="print-data-row">
+                        <span class="label">K1</span>
+                        <span class="value">${(data.k1 || 0).toFixed(2)} D</span>
+                    </div>
+                    <div class="print-data-row">
+                        <span class="label">K2</span>
+                        <span class="value">${(data.k2 || 0).toFixed(2)} D</span>
+                    </div>
+                    <div class="print-data-row">
+                        <span class="label">Avg K</span>
+                        <span class="value">${(((data.k1 || 0) + (data.k2 || 0)) / 2).toFixed(2)} D</span>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="print-surgery-table">
+                <thead>
+                    <tr>
+                        <th>수술</th>
+                        <th>절삭량(μm)</th>
+                        <th>RSB(μm)</th>
+                        <th>PTA(%)</th>
+                        <th>적합성</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${generateSurgeryRow('LASIK', surgeryResults.lasik)}
+                    ${generateSurgeryRow('LASEK', surgeryResults.lasek)}
+                    ${generateSurgeryRow('SMILE', surgeryResults.smile)}
+                </tbody>
+            </table>
+            
+            <div class="print-risk-section">
+                <div class="print-risk-title">위험도 평가</div>
+                <div class="print-risk-grid">
+                    <div class="print-risk-item ${getErssRiskClass(erssScore)}">
+                        <div class="risk-label">ERSS Score</div>
+                        <div class="risk-value">${erssScore}점</div>
+                        <div class="risk-label">${getErssRiskText(erssScore)}</div>
+                    </div>
+                    <div class="print-risk-item ${getPtaClass(surgeryResults.lasik?.pta || 0)}">
+                        <div class="risk-label">LASIK PTA</div>
+                        <div class="risk-value">${(surgeryResults.lasik?.pta || 0).toFixed(1)}%</div>
+                    </div>
+                    <div class="print-risk-item ${getPtaClass(surgeryResults.lasek?.pta || 0)}">
+                        <div class="risk-label">LASEK PTA</div>
+                        <div class="risk-value">${(surgeryResults.lasek?.pta || 0).toFixed(1)}%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function generateSurgeryRow(name, data) {
+    if (!data) return '';
+    
+    let eligibilityClass = 'eligible';
+    let eligibilityText = '적합';
+    
+    if (data.rsb < 280 || data.pta >= 40) {
+        eligibilityClass = 'not-eligible';
+        eligibilityText = '부적합';
+    } else if (data.rsb < 300 || data.pta >= 35) {
+        eligibilityClass = 'caution';
+        eligibilityText = '주의';
+    }
+    
+    return `
+        <tr>
+            <td>${name}</td>
+            <td>${data.ablation?.toFixed(1) || '-'}</td>
+            <td class="${data.rsb >= 300 ? '' : data.rsb >= 280 ? 'caution' : 'not-eligible'}">${data.rsb?.toFixed(0) || '-'}</td>
+            <td class="${data.pta < 35 ? '' : data.pta < 40 ? 'caution' : 'not-eligible'}">${data.pta?.toFixed(1) || '-'}</td>
+            <td class="${eligibilityClass}">${eligibilityText}</td>
+        </tr>
+    `;
 }
 
 // Search patients
@@ -4372,7 +4945,7 @@ class RefractiveCalculator {
     
     setupActionButtons() {
         document.getElementById('btn-print')?.addEventListener('click', () => {
-            window.print();
+            printPatientReport();
         });
         
         document.getElementById('btn-save')?.addEventListener('click', () => {
@@ -4422,8 +4995,22 @@ class RefractiveCalculator {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Show login screen initially
+    showLoginScreen();
+    
+    // Initialize calculator
     window.calculator = new RefractiveCalculator();
     new TopographyAnalyzer();
+    
+    // Check for Firebase auth state (if Firebase is configured)
+    if (!DEMO_MODE && typeof auth !== 'undefined') {
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                updateAuthUI();
+            }
+        });
+    }
 });
     </script>
 </body>
