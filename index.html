@@ -2251,8 +2251,8 @@ input:focus, select:focus {
 }
 
 .print-footer {
-    margin-top: 12px;
-    padding-top: 8px;
+    margin-top: 8px;
+    padding-top: 6px;
     border-top: 1px solid #ddd;
     font-size: 7pt;
     color: #999;
@@ -2261,11 +2261,213 @@ input:focus, select:focus {
 
 .print-disclaimer {
     background: #fff3cd;
-    padding: 6px;
+    padding: 4px 6px;
     border-radius: 4px;
-    font-size: 7pt;
+    font-size: 6pt;
     color: #856404;
-    margin-top: 8px;
+    margin-top: 6px;
+}
+
+/* New Print Layout - Side by Side */
+.print-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.print-eye-column {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.print-eye-column.od {
+    border-color: #3b82f6;
+}
+
+.print-eye-column.os {
+    border-color: #22c55e;
+}
+
+.print-section-title {
+    font-size: 8pt;
+    font-weight: 600;
+    color: #666;
+    margin: 6px 0 4px 0;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #eee;
+}
+
+.print-compact-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7pt;
+    margin-bottom: 6px;
+}
+
+.print-compact-table th,
+.print-compact-table td {
+    border: 1px solid #ddd;
+    padding: 2px 4px;
+    text-align: center;
+}
+
+.print-compact-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+}
+
+.print-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+.print-mini-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 7pt;
+    padding: 2px 4px;
+    background: #f9f9f9;
+    border-radius: 2px;
+}
+
+.print-mini-item .label {
+    color: #666;
+}
+
+.print-mini-item .value {
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+.print-risk-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 7pt;
+    font-weight: 600;
+    margin: 2px;
+}
+
+.print-risk-badge.low { background: #dcfce7; color: #166534; }
+.print-risk-badge.moderate { background: #fef3c7; color: #92400e; }
+.print-risk-badge.high { background: #fee2e2; color: #991b1b; }
+
+/* Google Login Button */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: var(--space-md);
+    background: white;
+    color: #444;
+    border: 1px solid #ddd;
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: var(--space-md);
+}
+
+.btn-google:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+.btn-google svg {
+    width: 20px;
+    height: 20px;
+}
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    margin: var(--space-md) 0;
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-light);
+}
+
+.login-divider span {
+    padding: 0 var(--space-md);
+}
+
+/* Login Tabs */
+.login-tabs {
+    display: flex;
+    margin-bottom: var(--space-lg);
+    border-bottom: 2px solid var(--border-light);
+}
+
+.login-tab {
+    flex: 1;
+    padding: var(--space-sm) var(--space-md);
+    background: none;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.login-tab.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+.login-tab:hover:not(.active) {
+    color: var(--text-secondary);
+}
+
+.login-form-container {
+    display: none;
+}
+
+.login-form-container.active {
+    display: block;
+}
+
+.signup-notice {
+    background: var(--info-light);
+    color: var(--info);
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+.pending-notice {
+    background: var(--warning-light);
+    color: var(--warning);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.pending-notice h3 {
+    margin: 0 0 var(--space-sm) 0;
+    font-size: 1rem;
+}
+
+.pending-notice p {
+    margin: 0;
+    font-size: 0.875rem;
 }
     </style>
 </head>
@@ -2278,21 +2480,101 @@ input:focus, select:focus {
                 <h1>시력교정술 적합성 검사</h1>
                 <p>연세솔안과 YONSEI SOL EYE CLINIC</p>
             </div>
-            <form onsubmit="handleLogin(); return false;">
-                <div class="form-group">
-                    <label for="login-email">이메일</label>
-                    <input type="email" id="login-email" placeholder="example@yonsei-sol.com" required>
+            
+            <!-- 로그인/회원가입 탭 -->
+            <div class="login-tabs">
+                <button type="button" class="login-tab active" onclick="switchLoginTab('login')">로그인</button>
+                <button type="button" class="login-tab" onclick="switchLoginTab('signup')">회원가입</button>
+            </div>
+            
+            <!-- 로그인 폼 -->
+            <div class="login-form-container active" id="login-form-container">
+                <!-- 구글 로그인 -->
+                <button type="button" class="btn-google" onclick="handleGoogleLogin()">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Google 계정으로 로그인
+                </button>
+                
+                <div class="login-divider"><span>또는 이메일로 로그인</span></div>
+                
+                <form onsubmit="handleLogin(); return false;">
+                    <div class="form-group">
+                        <label for="login-email">이메일</label>
+                        <input type="email" id="login-email" placeholder="example@yonsei-sol.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">비밀번호</label>
+                        <input type="password" id="login-password" placeholder="비밀번호 입력" required>
+                    </div>
+                    <div class="login-error-msg" id="login-error"></div>
+                    <button type="submit" class="btn-login">🔐 로그인</button>
+                </form>
+            </div>
+            
+            <!-- 회원가입 폼 -->
+            <div class="login-form-container" id="signup-form-container">
+                <div class="signup-notice">
+                    ℹ️ 회원가입 후 관리자 승인이 필요합니다.<br>
+                    승인 완료 시 이메일로 알림을 받게 됩니다.
                 </div>
-                <div class="form-group">
-                    <label for="login-password">비밀번호</label>
-                    <input type="password" id="login-password" placeholder="비밀번호 입력" required>
+                
+                <!-- 구글로 회원가입 -->
+                <button type="button" class="btn-google" onclick="handleGoogleSignup()">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Google 계정으로 회원가입
+                </button>
+                
+                <div class="login-divider"><span>또는 이메일로 회원가입</span></div>
+                
+                <form onsubmit="handleSignup(); return false;">
+                    <div class="form-group">
+                        <label for="signup-name">이름</label>
+                        <input type="text" id="signup-name" placeholder="홍길동" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">이메일</label>
+                        <input type="email" id="signup-email" placeholder="example@yonsei-sol.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">비밀번호</label>
+                        <input type="password" id="signup-password" placeholder="6자 이상" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password-confirm">비밀번호 확인</label>
+                        <input type="password" id="signup-password-confirm" placeholder="비밀번호 재입력" required>
+                    </div>
+                    <div class="login-error-msg" id="signup-error"></div>
+                    <button type="submit" class="btn-login">📝 회원가입 신청</button>
+                </form>
+            </div>
+            
+            <!-- 승인 대기 화면 -->
+            <div class="login-form-container" id="pending-form-container">
+                <div class="pending-notice">
+                    <h3>⏳ 승인 대기 중</h3>
+                    <p>회원가입 신청이 완료되었습니다.<br>관리자 승인 후 로그인 가능합니다.</p>
+                    <p style="margin-top:10px;font-size:0.75rem;color:#666;">
+                        문의: totenhaft@gmail.com
+                    </p>
                 </div>
-                <div class="login-error-msg" id="login-error"></div>
-                <button type="submit" class="btn-login">🔐 로그인</button>
-            </form>
+                <button type="button" class="btn-login" style="margin-top:var(--space-md);" onclick="switchLoginTab('login')">
+                    로그인 화면으로 돌아가기
+                </button>
+            </div>
+            
             <div class="login-footer">
                 © 2024 연세솔안과. All rights reserved.<br>
-                문의: admin@yonsei-sol.com
+                관리자 문의: totenhaft@gmail.com
             </div>
         </div>
     </div>
@@ -2989,9 +3271,28 @@ input:focus, select:focus {
 // Demo mode flag (set to false when Firebase is configured)
 const DEMO_MODE = true;
 const LOCAL_STORAGE_KEY = 'yonsei_sol_patients';
+const PENDING_USERS_KEY = 'yonsei_sol_pending_users';
+const APPROVED_USERS_KEY = 'yonsei_sol_approved_users';
+const ADMIN_EMAIL = 'totenhaft@gmail.com';
 
 // Current user state
 let currentUser = null;
+
+// Switch login/signup tabs
+function switchLoginTab(tab) {
+    document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.login-form-container').forEach(f => f.classList.remove('active'));
+    
+    if (tab === 'login') {
+        document.querySelector('.login-tab:first-child').classList.add('active');
+        document.getElementById('login-form-container').classList.add('active');
+    } else if (tab === 'signup') {
+        document.querySelector('.login-tab:last-child').classList.add('active');
+        document.getElementById('signup-form-container').classList.add('active');
+    } else if (tab === 'pending') {
+        document.getElementById('pending-form-container').classList.add('active');
+    }
+}
 
 // Show/hide login screen
 function showLoginScreen() {
@@ -3027,6 +3328,34 @@ function updateAuthUI() {
     }
 }
 
+// Check if user is approved
+function isUserApproved(email) {
+    // Admin is always approved
+    if (email === ADMIN_EMAIL) return true;
+    
+    const approvedUsers = JSON.parse(localStorage.getItem(APPROVED_USERS_KEY) || '[]');
+    return approvedUsers.includes(email.toLowerCase());
+}
+
+// Check if user is pending
+function isUserPending(email) {
+    const pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS_KEY) || '[]');
+    return pendingUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
+}
+
+// Add user to pending list
+function addPendingUser(name, email) {
+    const pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS_KEY) || '[]');
+    if (!pendingUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        pendingUsers.push({
+            name: name,
+            email: email.toLowerCase(),
+            requestedAt: new Date().toISOString()
+        });
+        localStorage.setItem(PENDING_USERS_KEY, JSON.stringify(pendingUsers));
+    }
+}
+
 // Modal toggle function
 function toggleModal(modalId, show) {
     const modal = document.getElementById(modalId);
@@ -3049,7 +3378,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Handle login
+// Handle email login
 function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
@@ -3061,7 +3390,15 @@ function handleLogin() {
     }
     
     if (DEMO_MODE) {
-        // Demo mode: accept any credentials
+        // Demo mode: check approval status
+        if (!isUserApproved(email) && email !== ADMIN_EMAIL) {
+            if (isUserPending(email)) {
+                errorDiv.textContent = '승인 대기 중입니다. 관리자에게 문의하세요.';
+            } else {
+                errorDiv.textContent = '등록되지 않은 계정입니다. 회원가입을 해주세요.';
+            }
+            return;
+        }
         currentUser = { email: email };
         updateAuthUI();
         showNotification('로그인 성공!', 'success');
@@ -3070,17 +3407,24 @@ function handleLogin() {
         if (typeof auth !== 'undefined') {
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    currentUser = userCredential.user;
-                    updateAuthUI();
-                    showNotification('로그인 성공!', 'success');
+                    // Check if approved
+                    return checkUserApprovalFirebase(userCredential.user.email)
+                        .then(approved => {
+                            if (approved || userCredential.user.email === ADMIN_EMAIL) {
+                                currentUser = userCredential.user;
+                                updateAuthUI();
+                                showNotification('로그인 성공!', 'success');
+                            } else {
+                                auth.signOut();
+                                errorDiv.textContent = '승인 대기 중입니다. 관리자에게 문의하세요.';
+                            }
+                        });
                 })
                 .catch((error) => {
                     console.error('Login error:', error);
                     if (error.code === 'auth/user-not-found') {
                         errorDiv.textContent = '등록되지 않은 이메일입니다.';
-                    } else if (error.code === 'auth/wrong-password') {
-                        errorDiv.textContent = '비밀번호가 틀렸습니다.';
-                    } else if (error.code === 'auth/invalid-credential') {
+                    } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                         errorDiv.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
                     } else {
                         errorDiv.textContent = '로그인 실패: ' + error.message;
@@ -3089,6 +3433,170 @@ function handleLogin() {
         } else {
             errorDiv.textContent = 'Firebase 설정이 필요합니다.';
         }
+    }
+}
+
+// Handle Google login
+function handleGoogleLogin() {
+    if (DEMO_MODE) {
+        const email = prompt('데모 모드: Google 로그인을 시뮬레이션합니다.\n이메일을 입력하세요:');
+        if (email) {
+            if (!isUserApproved(email) && email !== ADMIN_EMAIL) {
+                if (isUserPending(email)) {
+                    document.getElementById('login-error').textContent = '승인 대기 중입니다.';
+                } else {
+                    document.getElementById('login-error').textContent = '등록되지 않은 계정입니다.';
+                }
+                return;
+            }
+            currentUser = { email: email };
+            updateAuthUI();
+            showNotification('Google 로그인 성공!', 'success');
+        }
+    } else {
+        if (typeof auth !== 'undefined' && typeof firebase !== 'undefined') {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    return checkUserApprovalFirebase(result.user.email)
+                        .then(approved => {
+                            if (approved || result.user.email === ADMIN_EMAIL) {
+                                currentUser = result.user;
+                                updateAuthUI();
+                                showNotification('Google 로그인 성공!', 'success');
+                            } else {
+                                auth.signOut();
+                                document.getElementById('login-error').textContent = '승인 대기 중입니다. 관리자에게 문의하세요.';
+                            }
+                        });
+                })
+                .catch((error) => {
+                    console.error('Google login error:', error);
+                    document.getElementById('login-error').textContent = 'Google 로그인 실패: ' + error.message;
+                });
+        } else {
+            document.getElementById('login-error').textContent = 'Firebase 설정이 필요합니다.';
+        }
+    }
+}
+
+// Handle signup
+function handleSignup() {
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const passwordConfirm = document.getElementById('signup-password-confirm').value;
+    const errorDiv = document.getElementById('signup-error');
+    
+    if (!name || !email || !password) {
+        errorDiv.textContent = '모든 필드를 입력하세요.';
+        return;
+    }
+    
+    if (password !== passwordConfirm) {
+        errorDiv.textContent = '비밀번호가 일치하지 않습니다.';
+        return;
+    }
+    
+    if (password.length < 6) {
+        errorDiv.textContent = '비밀번호는 6자 이상이어야 합니다.';
+        return;
+    }
+    
+    if (DEMO_MODE) {
+        // Demo mode: add to pending list
+        if (isUserPending(email)) {
+            errorDiv.textContent = '이미 가입 신청된 이메일입니다.';
+            return;
+        }
+        addPendingUser(name, email);
+        showNotification('회원가입 신청이 완료되었습니다!', 'success');
+        switchLoginTab('pending');
+    } else {
+        if (typeof auth !== 'undefined') {
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Update display name
+                    return userCredential.user.updateProfile({ displayName: name })
+                        .then(() => {
+                            // Add to pending users in Firestore
+                            return db.collection('pendingUsers').doc(email.toLowerCase()).set({
+                                name: name,
+                                email: email.toLowerCase(),
+                                requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        })
+                        .then(() => {
+                            auth.signOut();
+                            showNotification('회원가입 신청이 완료되었습니다!', 'success');
+                            switchLoginTab('pending');
+                        });
+                })
+                .catch((error) => {
+                    console.error('Signup error:', error);
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorDiv.textContent = '이미 사용 중인 이메일입니다.';
+                    } else {
+                        errorDiv.textContent = '회원가입 실패: ' + error.message;
+                    }
+                });
+        } else {
+            errorDiv.textContent = 'Firebase 설정이 필요합니다.';
+        }
+    }
+}
+
+// Handle Google signup
+function handleGoogleSignup() {
+    if (DEMO_MODE) {
+        const email = prompt('데모 모드: Google 회원가입을 시뮬레이션합니다.\n이메일을 입력하세요:');
+        const name = prompt('이름을 입력하세요:');
+        if (email && name) {
+            if (isUserPending(email)) {
+                document.getElementById('signup-error').textContent = '이미 가입 신청된 이메일입니다.';
+                return;
+            }
+            addPendingUser(name, email);
+            showNotification('회원가입 신청이 완료되었습니다!', 'success');
+            switchLoginTab('pending');
+        }
+    } else {
+        if (typeof auth !== 'undefined' && typeof firebase !== 'undefined') {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    const user = result.user;
+                    // Add to pending users
+                    return db.collection('pendingUsers').doc(user.email.toLowerCase()).set({
+                        name: user.displayName || user.email,
+                        email: user.email.toLowerCase(),
+                        requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        auth.signOut();
+                        showNotification('회원가입 신청이 완료되었습니다!', 'success');
+                        switchLoginTab('pending');
+                    });
+                })
+                .catch((error) => {
+                    console.error('Google signup error:', error);
+                    document.getElementById('signup-error').textContent = 'Google 회원가입 실패: ' + error.message;
+                });
+        } else {
+            document.getElementById('signup-error').textContent = 'Firebase 설정이 필요합니다.';
+        }
+    }
+}
+
+// Check user approval in Firebase
+async function checkUserApprovalFirebase(email) {
+    if (email === ADMIN_EMAIL) return true;
+    
+    try {
+        const doc = await db.collection('approvedUsers').doc(email.toLowerCase()).get();
+        return doc.exists;
+    } catch (error) {
+        console.error('Check approval error:', error);
+        return false;
     }
 }
 
@@ -3124,7 +3632,7 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-// Print patient report
+// Print patient report - NEW IMPROVED VERSION
 function printPatientReport() {
     if (!window.calculator || !window.calculator.results) {
         showNotification('먼저 계산을 수행해주세요.', 'error');
@@ -3132,59 +3640,72 @@ function printPatientReport() {
     }
     
     const results = window.calculator.results;
-    const patientName = document.getElementById('patient-name').value || '(미입력)';
-    const patientId = document.getElementById('patient-id').value || '(미입력)';
+    const patientName = document.getElementById('patient-name').value || '환자';
+    const patientId = document.getElementById('patient-id').value || '00000000';
     const age = document.getElementById('age').value || '-';
     const gender = document.getElementById('gender').value === 'male' ? '남성' : '여성';
     const printDate = new Date().toLocaleString('ko-KR');
     
-    // Get form data for both eyes
+    // Set document title for PDF filename
+    document.title = `${patientName}_${patientId}`;
+    
     const odData = results.od?.data || {};
     const osData = results.os?.data || {};
     const odResults = results.od?.surgeryResults || {};
     const osResults = results.os?.surgeryResults || {};
+    const odErss = results.od?.erssResult || {};
+    const osErss = results.os?.erssResult || {};
     
     const printHTML = `
-        <div class="print-header">
-            <div>
-                <h1>시력교정술 적합성 검사 결과</h1>
-                <div class="clinic-name">연세솔안과 YONSEI SOL EYE CLINIC</div>
+        <div style="font-family: 'Noto Sans KR', sans-serif; font-size: 8pt; color: #000; padding: 5mm;">
+            <!-- 헤더 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0284c7; padding-bottom: 6px; margin-bottom: 8px;">
+                <div>
+                    <div style="font-size: 14pt; font-weight: 700; color: #0284c7;">시력교정술 적합성 검사</div>
+                    <div style="font-size: 9pt; color: #666;">연세솔안과 YONSEI SOL EYE CLINIC</div>
+                </div>
+                <div style="text-align: right; font-size: 7pt; color: #666;">
+                    검사일: ${printDate}<br>
+                    담당: ${currentUser?.email || '-'}
+                </div>
             </div>
-            <div style="text-align:right;font-size:8pt;color:#666;">
-                검사일시: ${printDate}<br>
-                담당: ${currentUser?.email || '-'}
+            
+            <!-- 환자 정보 -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f0f9ff; padding: 8px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #0284c7;">
+                <div><span style="font-size: 6pt; color: #666;">환자명</span><br><strong style="font-size: 10pt;">${patientName}</strong></div>
+                <div><span style="font-size: 6pt; color: #666;">등록번호</span><br><strong style="font-size: 10pt;">${patientId}</strong></div>
+                <div><span style="font-size: 6pt; color: #666;">나이</span><br><strong style="font-size: 10pt;">${age}세</strong></div>
+                <div><span style="font-size: 6pt; color: #666;">성별</span><br><strong style="font-size: 10pt;">${gender}</strong></div>
             </div>
-        </div>
-        
-        <div class="print-patient-info">
-            <div class="info-item">
-                <span class="info-label">환자명</span>
-                <span class="info-value">${patientName}</span>
+            
+            <!-- 양안 데이터 (좌우 배치) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <!-- 우안 (OD) -->
+                <div style="border: 2px solid #3b82f6; border-radius: 6px; padding: 8px;">
+                    <div style="background: #3b82f6; color: white; padding: 4px 8px; margin: -8px -8px 8px -8px; border-radius: 4px 4px 0 0; font-weight: 700; font-size: 10pt;">
+                        👁 우안 (OD)
+                    </div>
+                    ${generateEyeSection(odData, odResults, odErss)}
+                </div>
+                
+                <!-- 좌안 (OS) -->
+                <div style="border: 2px solid #22c55e; border-radius: 6px; padding: 8px;">
+                    <div style="background: #22c55e; color: white; padding: 4px 8px; margin: -8px -8px 8px -8px; border-radius: 4px 4px 0 0; font-weight: 700; font-size: 10pt;">
+                        👁 좌안 (OS)
+                    </div>
+                    ${generateEyeSection(osData, osResults, osErss)}
+                </div>
             </div>
-            <div class="info-item">
-                <span class="info-label">등록번호</span>
-                <span class="info-value">${patientId}</span>
+            
+            <!-- 주의사항 -->
+            <div style="background: #fef3c7; padding: 6px 10px; border-radius: 4px; margin-top: 10px; font-size: 6pt; color: #92400e;">
+                ⚠️ 본 검사 결과는 참고용이며, 최종 수술 결정은 반드시 전문의 상담 후 결정하시기 바랍니다. | ERSS & PTA 기반 평가
             </div>
-            <div class="info-item">
-                <span class="info-label">나이</span>
-                <span class="info-value">${age}세</span>
+            
+            <!-- 푸터 -->
+            <div style="text-align: center; margin-top: 8px; padding-top: 6px; border-top: 1px solid #ddd; font-size: 6pt; color: #999;">
+                © 연세솔안과 | Munnerlyn's Formula 기반 | Randleman ERSS & PTA 평가
             </div>
-            <div class="info-item">
-                <span class="info-label">성별</span>
-                <span class="info-value">${gender}</span>
-            </div>
-        </div>
-        
-        ${generateEyePrintSection('OD', '우안', odData, odResults, results.od)}
-        ${generateEyePrintSection('OS', '좌안', osData, osResults, results.os)}
-        
-        <div class="print-disclaimer">
-            ⚠️ 본 검사 결과는 참고용이며, 최종 수술 결정은 반드시 전문의 상담 후 결정하시기 바랍니다.
-            ERSS(Ectasia Risk Score System) 및 PTA(Percent Tissue Altered) 기반 평가입니다.
-        </div>
-        
-        <div class="print-footer">
-            © 연세솔안과 | Munnerlyn's Formula 기반 | Randleman ERSS & PTA 평가
         </div>
     `;
     
@@ -3196,146 +3717,108 @@ function printPatientReport() {
         window.print();
         setTimeout(() => {
             printContainer.style.display = 'none';
+            // Reset document title
+            document.title = '시력교정술 적합성 검사 | Refractive Surgery Eligibility Checker';
         }, 500);
     }, 300);
 }
 
-function generateEyePrintSection(eyeCode, eyeName, data, surgeryResults, fullResults) {
-    const se = data.sph + (data.cyl / 2);
-    const erssResult = fullResults?.erssResult || {};
+function generateEyeSection(data, surgeryResults, erssResult) {
+    const se = (data.sph || 0) + ((data.cyl || 0) / 2);
+    const avgK = ((data.k1 || 0) + (data.k2 || 0)) / 2;
     const erssScore = erssResult.total || 0;
     
-    // Determine risk levels
-    const getErssRiskClass = (score) => {
-        if (score <= 2) return 'low';
-        if (score === 3) return 'moderate';
-        return 'high';
-    };
-    
-    const getErssRiskText = (score) => {
-        if (score <= 2) return '저위험';
-        if (score === 3) return '중등도';
-        return '고위험';
-    };
-    
-    const getPtaClass = (pta) => {
-        if (pta < 35) return 'low';
-        if (pta < 40) return 'moderate';
-        return 'high';
-    };
-    
-    const getRsbClass = (rsb) => {
-        if (rsb >= 300) return 'safe';
-        if (rsb >= 280) return 'warning';
-        return 'danger';
+    const getErssRiskClass = (score) => score <= 2 ? 'low' : score === 3 ? 'moderate' : 'high';
+    const getErssRiskText = (score) => score <= 2 ? '저위험' : score === 3 ? '중등도' : '고위험';
+    const getRiskBadgeStyle = (level) => {
+        if (level === 'low') return 'background:#dcfce7;color:#166534;';
+        if (level === 'moderate') return 'background:#fef3c7;color:#92400e;';
+        return 'background:#fee2e2;color:#991b1b;';
     };
     
     return `
-        <div class="print-eye-section">
-            <div class="print-eye-title ${eyeCode.toLowerCase()}">${eyeName} (${eyeCode})</div>
-            
-            <div class="print-data-grid">
-                <div class="print-data-box">
-                    <h4>굴절 검사</h4>
-                    <div class="print-data-row">
-                        <span class="label">SPH</span>
-                        <span class="value">${(data.sph || 0).toFixed(2)} D</span>
-                    </div>
-                    <div class="print-data-row">
-                        <span class="label">CYL</span>
-                        <span class="value">${(data.cyl || 0).toFixed(2)} D</span>
-                    </div>
-                    <div class="print-data-row">
-                        <span class="label">AXIS</span>
-                        <span class="value">${data.axis || 0}°</span>
-                    </div>
-                    <div class="print-data-row">
-                        <span class="label">SE</span>
-                        <span class="value" style="font-weight:700;color:#0284c7;">${se.toFixed(2)} D</span>
-                    </div>
-                </div>
-                
-                <div class="print-data-box">
-                    <h4>각막 검사</h4>
-                    <div class="print-data-row">
-                        <span class="label">CCT</span>
-                        <span class="value">${data.cct || 0} μm</span>
-                    </div>
-                    <div class="print-data-row">
-                        <span class="label">K1</span>
-                        <span class="value">${(data.k1 || 0).toFixed(2)} D</span>
-                    </div>
-                    <div class="print-data-row">
-                        <span class="label">K2</span>
-                        <span class="value">${(data.k2 || 0).toFixed(2)} D</span>
-                    </div>
-                    <div class="print-data-row">
-                        <span class="label">Avg K</span>
-                        <span class="value">${(((data.k1 || 0) + (data.k2 || 0)) / 2).toFixed(2)} D</span>
-                    </div>
+        <!-- 굴절/각막 검사 -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+            <div style="background: #f8fafc; padding: 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                <div style="font-size: 7pt; font-weight: 600; color: #475569; margin-bottom: 4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px;">굴절 검사</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; font-size: 7pt;">
+                    <div>SPH: <strong>${(data.sph || 0).toFixed(2)}D</strong></div>
+                    <div>CYL: <strong>${(data.cyl || 0).toFixed(2)}D</strong></div>
+                    <div>AXIS: <strong>${data.axis || 0}°</strong></div>
+                    <div style="color:#0284c7;">SE: <strong>${se.toFixed(2)}D</strong></div>
                 </div>
             </div>
-            
-            <table class="print-surgery-table">
-                <thead>
-                    <tr>
-                        <th>수술</th>
-                        <th>절삭량(μm)</th>
-                        <th>RSB(μm)</th>
-                        <th>PTA(%)</th>
-                        <th>적합성</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${generateSurgeryRow('LASIK', surgeryResults.lasik)}
-                    ${generateSurgeryRow('LASEK', surgeryResults.lasek)}
-                    ${generateSurgeryRow('SMILE', surgeryResults.smile)}
-                </tbody>
-            </table>
-            
-            <div class="print-risk-section">
-                <div class="print-risk-title">위험도 평가</div>
-                <div class="print-risk-grid">
-                    <div class="print-risk-item ${getErssRiskClass(erssScore)}">
-                        <div class="risk-label">ERSS Score</div>
-                        <div class="risk-value">${erssScore}점</div>
-                        <div class="risk-label">${getErssRiskText(erssScore)}</div>
-                    </div>
-                    <div class="print-risk-item ${getPtaClass(surgeryResults.lasik?.pta || 0)}">
-                        <div class="risk-label">LASIK PTA</div>
-                        <div class="risk-value">${(surgeryResults.lasik?.pta || 0).toFixed(1)}%</div>
-                    </div>
-                    <div class="print-risk-item ${getPtaClass(surgeryResults.lasek?.pta || 0)}">
-                        <div class="risk-label">LASEK PTA</div>
-                        <div class="risk-value">${(surgeryResults.lasek?.pta || 0).toFixed(1)}%</div>
-                    </div>
+            <div style="background: #f8fafc; padding: 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                <div style="font-size: 7pt; font-weight: 600; color: #475569; margin-bottom: 4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px;">각막 검사</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; font-size: 7pt;">
+                    <div>CCT: <strong>${data.cct || 0}μm</strong></div>
+                    <div>Avg K: <strong>${avgK.toFixed(2)}D</strong></div>
+                    <div>K1: <strong>${(data.k1 || 0).toFixed(2)}D</strong></div>
+                    <div>K2: <strong>${(data.k2 || 0).toFixed(2)}D</strong></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 수술별 결과 테이블 -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 7pt; margin-bottom: 8px;">
+            <thead>
+                <tr style="background: #f1f5f9;">
+                    <th style="border: 1px solid #ddd; padding: 3px;">수술</th>
+                    <th style="border: 1px solid #ddd; padding: 3px;">절삭량</th>
+                    <th style="border: 1px solid #ddd; padding: 3px;">RSB</th>
+                    <th style="border: 1px solid #ddd; padding: 3px;">PTA</th>
+                    <th style="border: 1px solid #ddd; padding: 3px;">적합성</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${generateSurgeryRowNew('LASIK', surgeryResults.lasik)}
+                ${generateSurgeryRowNew('LASEK', surgeryResults.lasek)}
+                ${generateSurgeryRowNew('SMILE', surgeryResults.smile)}
+            </tbody>
+        </table>
+        
+        <!-- 위험도 평가 -->
+        <div style="background: #fafafa; padding: 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
+            <div style="font-size: 7pt; font-weight: 600; color: #475569; margin-bottom: 4px;">위험도 평가</div>
+            <div style="display: flex; gap: 6px; justify-content: center;">
+                <div style="text-align: center; padding: 4px 8px; border-radius: 4px; ${getRiskBadgeStyle(getErssRiskClass(erssScore))}">
+                    <div style="font-size: 6pt;">ERSS</div>
+                    <div style="font-size: 10pt; font-weight: 700;">${erssScore}점</div>
+                    <div style="font-size: 6pt;">${getErssRiskText(erssScore)}</div>
+                </div>
+                <div style="text-align: center; padding: 4px 8px; border-radius: 4px; ${getRiskBadgeStyle(surgeryResults.lasik?.pta < 35 ? 'low' : surgeryResults.lasik?.pta < 40 ? 'moderate' : 'high')}">
+                    <div style="font-size: 6pt;">LASIK PTA</div>
+                    <div style="font-size: 10pt; font-weight: 700;">${(surgeryResults.lasik?.pta || 0).toFixed(1)}%</div>
+                </div>
+                <div style="text-align: center; padding: 4px 8px; border-radius: 4px; ${getRiskBadgeStyle(surgeryResults.lasek?.pta < 35 ? 'low' : surgeryResults.lasek?.pta < 40 ? 'moderate' : 'high')}">
+                    <div style="font-size: 6pt;">LASEK PTA</div>
+                    <div style="font-size: 10pt; font-weight: 700;">${(surgeryResults.lasek?.pta || 0).toFixed(1)}%</div>
                 </div>
             </div>
         </div>
     `;
 }
 
-function generateSurgeryRow(name, data) {
+function generateSurgeryRowNew(name, data) {
     if (!data) return '';
     
-    let eligibilityClass = 'eligible';
-    let eligibilityText = '적합';
+    let bgColor = '#dcfce7'; // green - eligible
+    let textColor = '#166534';
+    let text = '적합';
     
     if (data.rsb < 280 || data.pta >= 40) {
-        eligibilityClass = 'not-eligible';
-        eligibilityText = '부적합';
+        bgColor = '#fee2e2'; textColor = '#991b1b'; text = '부적합';
     } else if (data.rsb < 300 || data.pta >= 35) {
-        eligibilityClass = 'caution';
-        eligibilityText = '주의';
+        bgColor = '#fef3c7'; textColor = '#92400e'; text = '주의';
     }
     
     return `
         <tr>
-            <td>${name}</td>
-            <td>${data.ablation?.toFixed(1) || '-'}</td>
-            <td class="${data.rsb >= 300 ? '' : data.rsb >= 280 ? 'caution' : 'not-eligible'}">${data.rsb?.toFixed(0) || '-'}</td>
-            <td class="${data.pta < 35 ? '' : data.pta < 40 ? 'caution' : 'not-eligible'}">${data.pta?.toFixed(1) || '-'}</td>
-            <td class="${eligibilityClass}">${eligibilityText}</td>
+            <td style="border: 1px solid #ddd; padding: 3px; font-weight: 600;">${name}</td>
+            <td style="border: 1px solid #ddd; padding: 3px; text-align: center;">${data.ablation?.toFixed(1) || '-'}μm</td>
+            <td style="border: 1px solid #ddd; padding: 3px; text-align: center; ${data.rsb < 280 ? 'color:#dc2626;font-weight:600;' : ''}">${data.rsb?.toFixed(0) || '-'}μm</td>
+            <td style="border: 1px solid #ddd; padding: 3px; text-align: center; ${data.pta >= 40 ? 'color:#dc2626;font-weight:600;' : ''}">${data.pta?.toFixed(1) || '-'}%</td>
+            <td style="border: 1px solid #ddd; padding: 3px; text-align: center; background: ${bgColor}; color: ${textColor}; font-weight: 600;">${text}</td>
         </tr>
     `;
 }
@@ -3358,7 +3841,7 @@ function searchPatients() {
     
     if (filtered.length === 0) {
         resultsDiv.innerHTML = '<div class="search-placeholder">검색 결과가 없습니다</div>';
-        return;
+        return;;
     }
     
     resultsDiv.innerHTML = filtered.map(p => `
@@ -5006,8 +5489,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!DEMO_MODE && typeof auth !== 'undefined') {
         auth.onAuthStateChanged((user) => {
             if (user) {
-                currentUser = user;
-                updateAuthUI();
+                checkUserApprovalFirebase(user.email).then(approved => {
+                    if (approved || user.email === ADMIN_EMAIL) {
+                        currentUser = user;
+                        updateAuthUI();
+                    }
+                });
             }
         });
     }
