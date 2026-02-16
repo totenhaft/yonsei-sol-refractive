@@ -5165,17 +5165,31 @@ function evaluateICLEligibility(params) {
     });
     if (!wtwPass) hasWarnings = true;
     
-    // 6. Endothelial Cell Density criterion (age & ACD dependent)
-    const minECD = getMinimumECD(age, acd);
-    const ecdPass = ecd >= minECD;
+    // 6. Endothelial Cell Density criterion
+    // 기준: ≥2500 적합, 2000-2500 주의, <2000 부적합
+    const ECD_OPTIMAL = 2500;
+    const ECD_MIN = 2000;
+    const ecdPass = ecd >= ECD_MIN;
+    const ecdWarning = ecd >= ECD_MIN && ecd < ECD_OPTIMAL;
+    const ecdOptimal = ecd >= ECD_OPTIMAL;
+    
+    let ecdMessage = '적합';
+    if (!ecdPass) {
+        ecdMessage = '내피세포 부족 (부적합)';
+    } else if (ecdWarning) {
+        ecdMessage = '주의 (2000-2500)';
+    }
+    
     criteria.push({
         name: '각막내피세포 (ECD)',
         value: `${ecd} /mm²`,
         pass: ecdPass,
-        requirement: `≥ ${minECD} /mm²`,
-        message: ecdPass ? '적합' : '내피세포 부족'
+        warning: ecdWarning,
+        requirement: `≥ ${ECD_OPTIMAL} /mm² (최소: ${ECD_MIN})`,
+        message: ecdMessage
     });
     if (!ecdPass) overallEligible = false;
+    if (ecdWarning) hasWarnings = true;
     
     // 7. Topography criterion
     const topoPass = topography === 'normal' || topography === 'asymmetric-bowtie';
