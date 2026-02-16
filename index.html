@@ -5075,66 +5075,24 @@ function evaluateAblationRisk(ablationDepth, surgeryType) {
 
 /**
  * EVO ICL Eligibility Assessment
- * Based on FDA & STAAR Surgical Guidelines
- * References: FDA P030016S035C, EyeWiki, PMC9132105
+ * 간소화된 기준: ACD, ECD, WTW 3가지만 확인
  */
 function evaluateICLEligibility(params) {
     // 기본값 설정 및 NaN 처리
-    const age = params.age || 30;
-    const se = isNaN(params.se) ? -5.0 : params.se;
-    const cyl = isNaN(params.cyl) ? 0 : params.cyl;
     const acd = isNaN(params.acd) ? 3.2 : params.acd;
     const wtw = isNaN(params.wtw) ? 11.8 : params.wtw;
     const ecd = isNaN(params.ecd) ? 2800 : params.ecd;
-    const topography = params.topography || 'normal';
     
     const criteria = [];
     let overallEligible = true;
     let hasWarnings = false;
     
-    // 1. Age criterion (21-45 years)
-    const agePass = age >= CONFIG.ICL.AGE_MIN && age <= CONFIG.ICL.AGE_MAX;
-    criteria.push({
-        name: '나이',
-        value: `${age}세`,
-        pass: agePass,
-        requirement: `${CONFIG.ICL.AGE_MIN}-${CONFIG.ICL.AGE_MAX}세`,
-        message: agePass ? '적합' : (age < CONFIG.ICL.AGE_MIN ? '21세 미만' : '45세 초과')
-    });
-    if (!agePass) overallEligible = false;
-    
-    // 2. Spherical Equivalent criterion (-3.0 to -20.0 D)
-    const sePass = se <= CONFIG.ICL.SE_MAX && se >= CONFIG.ICL.SE_MIN;
-    const seWarning = se > -3.0 && se <= 0; // Low myopia - consider other options
-    criteria.push({
-        name: '구면대응치 (SE)',
-        value: `${se.toFixed(2)} D`,
-        pass: sePass,
-        warning: seWarning,
-        requirement: `${CONFIG.ICL.SE_MIN} ~ ${CONFIG.ICL.SE_MAX} D`,
-        message: sePass ? '적합' : (se > CONFIG.ICL.SE_MAX ? '근시 부족 (-3D 미만)' : '초고도근시')
-    });
-    if (!sePass) overallEligible = false;
-    if (seWarning) hasWarnings = true;
-    
-    // 3. Cylinder criterion (≤4.0 D for Toric)
-    const cylAbs = Math.abs(cyl);
-    const cylPass = cylAbs <= CONFIG.ICL.CYL_MAX;
-    criteria.push({
-        name: '난시 (CYL)',
-        value: `${cylAbs.toFixed(2)} D`,
-        pass: cylPass,
-        requirement: `≤ ${CONFIG.ICL.CYL_MAX} D`,
-        message: cylPass ? (cylAbs >= 1.0 ? 'Toric ICL 권장' : '적합') : '난시 과다'
-    });
-    if (!cylPass) overallEligible = false;
-    
-    // 4. Anterior Chamber Depth criterion
-    // FDA: ≥3.0mm required, CE Mark (International): ≥2.8mm
-    // 2.8-3.0mm: 수술 가능하나 주의 필요
-    const acdPass = acd >= CONFIG.ICL.ACD_MIN_INTL; // 2.8mm 이상이면 수술 가능
-    const acdWarning = acd >= CONFIG.ICL.ACD_MIN_INTL && acd < CONFIG.ICL.ACD_MIN; // 2.8-3.0mm 주의
-    const acdOptimal = acd >= CONFIG.ICL.ACD_MIN; // 3.0mm 이상 적합
+    // 1. Anterior Chamber Depth (전방깊이)
+    // 2.8mm 이상 3.0mm 미만: 주의, 3.0mm 이상: 가능
+    const ACD_MIN = 2.8;
+    const ACD_OPTIMAL = 3.0;
+    const acdPass = acd >= ACD_MIN;
+    const acdWarning = acd >= ACD_MIN && acd < ACD_OPTIMAL;
     
     let acdMessage = '적합';
     if (!acdPass) {
@@ -5148,30 +5106,18 @@ function evaluateICLEligibility(params) {
         value: `${acd.toFixed(2)} mm`,
         pass: acdPass,
         warning: acdWarning,
-        requirement: `≥ ${CONFIG.ICL.ACD_MIN_INTL} mm (권장: ≥${CONFIG.ICL.ACD_MIN} mm)`,
+        requirement: `≥ ${ACD_OPTIMAL} mm (최소: ${ACD_MIN} mm)`,
         message: acdMessage
     });
     if (!acdPass) overallEligible = false;
     if (acdWarning) hasWarnings = true;
     
-    // 5. White-to-White criterion
-    const wtwPass = wtw >= CONFIG.ICL.WTW_MIN && wtw <= CONFIG.ICL.WTW_MAX;
-    criteria.push({
-        name: '백색-백색 (WTW)',
-        value: `${wtw.toFixed(1)} mm`,
-        pass: wtwPass,
-        requirement: `${CONFIG.ICL.WTW_MIN}-${CONFIG.ICL.WTW_MAX} mm`,
-        message: wtwPass ? '적합' : (wtw < CONFIG.ICL.WTW_MIN ? 'WTW 좁음' : 'WTW 넓음')
-    });
-    if (!wtwPass) hasWarnings = true;
-    
-    // 6. Endothelial Cell Density criterion
-    // 기준: ≥2500 적합, 2000-2500 주의, <2000 부적합
-    const ECD_OPTIMAL = 2500;
+    // 2. Endothelial Cell Density (각막내피세포)
+    // 2000개 이상 2500개 미만: 주의, 2500개 이상: 가능
     const ECD_MIN = 2000;
+    const ECD_OPTIMAL = 2500;
     const ecdPass = ecd >= ECD_MIN;
     const ecdWarning = ecd >= ECD_MIN && ecd < ECD_OPTIMAL;
-    const ecdOptimal = ecd >= ECD_OPTIMAL;
     
     let ecdMessage = '적합';
     if (!ecdPass) {
@@ -5191,18 +5137,26 @@ function evaluateICLEligibility(params) {
     if (!ecdPass) overallEligible = false;
     if (ecdWarning) hasWarnings = true;
     
-    // 7. Topography criterion
-    const topoPass = topography === 'normal' || topography === 'asymmetric-bowtie';
-    const topoWarning = topography === 'asymmetric-bowtie';
+    // 3. White-to-White (각막지름)
+    // 10.5-13.0mm
+    const WTW_MIN = 10.5;
+    const WTW_MAX = 13.0;
+    const wtwPass = wtw >= WTW_MIN && wtw <= WTW_MAX;
+    
+    let wtwMessage = '적합';
+    if (!wtwPass) {
+        wtwMessage = wtw < WTW_MIN ? 'WTW 좁음 (부적합)' : 'WTW 넓음 (부적합)';
+    }
+    
     criteria.push({
-        name: 'Topography',
-        value: getTopographyLabel(topography),
-        pass: topoPass,
-        warning: topoWarning,
-        requirement: 'Normal 권장',
-        message: topoPass ? (topoWarning ? '주의 관찰' : '적합') : '각막 이상'
+        name: '각막지름 (WTW)',
+        value: `${wtw.toFixed(1)} mm`,
+        pass: wtwPass,
+        warning: false,
+        requirement: `${WTW_MIN}-${WTW_MAX} mm`,
+        message: wtwMessage
     });
-    if (!topoPass) hasWarnings = true;
+    if (!wtwPass) overallEligible = false;
     
     // Calculate recommended ICL size
     const recommendedSize = calculateICLSize(wtw, acd);
@@ -5216,7 +5170,7 @@ function evaluateICLEligibility(params) {
     } else if (overallEligible && hasWarnings) {
         status = 'caution';
         statusClass = 'caution';
-        statusMessage = 'EVO ICL 가능 (주의사항 확인)';
+        statusMessage = 'EVO ICL 가능 (주의)';
     } else {
         status = 'not-eligible';
         statusClass = 'not-eligible';
