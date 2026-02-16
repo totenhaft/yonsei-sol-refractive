@@ -596,6 +596,157 @@ body {
 .data-table .danger { color: var(--danger); font-weight: 600; }
 .data-table .success { color: var(--success); font-weight: 600; }
 
+/* ICL Card Styles */
+.icl-card .card-header {
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
+
+.icl-assessment {
+    padding: var(--space-md);
+}
+
+.icl-criteria-grid {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+.icl-criterion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--border-light);
+}
+
+.icl-criterion.pass {
+    border-left-color: var(--success);
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.icl-criterion.fail {
+    border-left-color: var(--danger);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.icl-criterion.warning {
+    border-left-color: var(--warning);
+    background: rgba(245, 158, 11, 0.05);
+}
+
+.icl-criterion-name {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.icl-criterion-value {
+    font-family: var(--font-mono);
+    font-weight: 600;
+}
+
+.icl-criterion-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.icl-criterion-status .icon {
+    font-size: 1rem;
+}
+
+.icl-overall-result {
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.icl-overall-result.eligible {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.2));
+    border: 2px solid var(--success);
+}
+
+.icl-overall-result.not-eligible {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
+    border: 2px solid var(--danger);
+}
+
+.icl-overall-result.caution {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2));
+    border: 2px solid var(--warning);
+}
+
+.icl-result-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+}
+
+.icl-result-message {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.icl-lens-size {
+    margin-top: var(--space-md);
+    padding: var(--space-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+
+.icl-lens-size .size-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.icl-lens-size .size-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #8b5cf6;
+}
+
+.icl-lens-size .size-note {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+.icl-criterion-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.icl-criterion-req {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.summary-item#summary-icl-od,
+.summary-item#summary-icl-os {
+    border-color: #8b5cf6;
+}
+
+.summary-item#summary-icl-od.eligible,
+.summary-item#summary-icl-os.eligible {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
+    border-color: #8b5cf6;
+}
+
+.summary-item#summary-icl-od.caution,
+.summary-item#summary-icl-os.caution {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2));
+    border-color: var(--warning);
+}
+
+.summary-item#summary-icl-od.not-eligible,
+.summary-item#summary-icl-os.not-eligible {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
+    border-color: var(--danger);
+}
+
 .k-values-display {
     display: flex;
     align-items: center;
@@ -2743,6 +2894,29 @@ input:focus, select:focus {
                                                 <span class="unit">μm</span>
                                             </div>
                                         </div>
+                                        <div class="form-group compact">
+                                            <label for="od-acd" title="전방깊이 (내피~수정체)">ACD</label>
+                                            <div class="input-with-unit">
+                                                <input type="number" id="od-acd" name="od-acd" step="0.01" min="2.0" max="5.0" value="3.20" tabindex="13">
+                                                <span class="unit">mm</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row-compact">
+                                        <div class="form-group compact">
+                                            <label for="od-wtw" title="백색-백색 거리">WTW</label>
+                                            <div class="input-with-unit">
+                                                <input type="number" id="od-wtw" name="od-wtw" step="0.1" min="10.0" max="14.0" value="11.8" tabindex="13">
+                                                <span class="unit">mm</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label for="od-ecd" title="각막내피세포밀도">ECD</label>
+                                            <div class="input-with-unit">
+                                                <input type="number" id="od-ecd" name="od-ecd" min="1500" max="4500" value="2800" tabindex="13">
+                                                <span class="unit">/mm²</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-row-compact">
                                         <div class="form-group compact">
@@ -2872,6 +3046,29 @@ input:focus, select:focus {
                                             <div class="input-with-unit">
                                                 <input type="number" id="os-cct" name="os-cct" min="400" max="700" value="535" required tabindex="33">
                                                 <span class="unit">μm</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label for="os-acd" title="전방깊이 (내피~수정체)">ACD</label>
+                                            <div class="input-with-unit">
+                                                <input type="number" id="os-acd" name="os-acd" step="0.01" min="2.0" max="5.0" value="3.15" tabindex="33">
+                                                <span class="unit">mm</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row-compact">
+                                        <div class="form-group compact">
+                                            <label for="os-wtw" title="백색-백색 거리">WTW</label>
+                                            <div class="input-with-unit">
+                                                <input type="number" id="os-wtw" name="os-wtw" step="0.1" min="10.0" max="14.0" value="11.7" tabindex="33">
+                                                <span class="unit">mm</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label for="os-ecd" title="각막내피세포밀도">ECD</label>
+                                            <div class="input-with-unit">
+                                                <input type="number" id="os-ecd" name="os-ecd" min="1500" max="4500" value="2750" tabindex="33">
+                                                <span class="unit">/mm²</span>
                                             </div>
                                         </div>
                                     </div>
@@ -3100,6 +3297,20 @@ input:focus, select:focus {
                             <div class="surgery-name">SMILE</div>
                             <div class="surgery-status"></div>
                         </div>
+                        <div class="summary-item" id="summary-icl-od">
+                            <div class="surgery-name">EVO ICL</div>
+                            <div class="surgery-status"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ICL 적합성 평가 (OD) -->
+                <div class="result-card icl-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                        <h3>🔮 EVO ICL 적합성 평가 (OD)</h3>
+                    </div>
+                    <div class="icl-assessment" id="icl-assessment-od">
+                        <div class="icl-criteria-grid"></div>
                     </div>
                 </div>
 
@@ -3191,6 +3402,20 @@ input:focus, select:focus {
                             <div class="surgery-name">SMILE</div>
                             <div class="surgery-status"></div>
                         </div>
+                        <div class="summary-item" id="summary-icl-os">
+                            <div class="surgery-name">EVO ICL</div>
+                            <div class="surgery-status"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ICL 적합성 평가 (OS) -->
+                <div class="result-card icl-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                        <h3>🔮 EVO ICL 적합성 평가 (OS)</h3>
+                    </div>
+                    <div class="icl-assessment" id="icl-assessment-os">
+                        <div class="icl-criteria-grid"></div>
                     </div>
                 </div>
 
@@ -3697,6 +3922,16 @@ function printPatientReport() {
         return 'background:#f3f4f6;color:#6b7280;';
     };
     
+    // ICL results
+    const odIcl = results.od?.iclResult || {};
+    const osIcl = results.os?.iclResult || {};
+    
+    const getIclStatusStyle = (status) => {
+        if (status === 'eligible') return 'background:#ede9fe;color:#6d28d9;';
+        if (status === 'caution') return 'background:#fef3c7;color:#92400e;';
+        return 'background:#fee2e2;color:#991b1b;';
+    };
+    
     const printHTML = `
         <div style="font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 9pt; color: #000; padding: 0; max-width: 210mm; margin: 0 auto;">
             <!-- 헤더 -->
@@ -3761,6 +3996,17 @@ function printPatientReport() {
                             </td>
                             <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
                                 <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 10pt; ${getStatusStyle(osLasekElig.class)}">${osLasekElig.text}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; background: #f8fafc;">🔮 EVO ICL</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 10pt; ${getIclStatusStyle(odIcl.status)}">${odIcl.statusMessage || '-'}</span>
+                                ${odIcl.overallEligible && odIcl.recommendedSize ? `<div style="font-size: 7pt; color: #8b5cf6; margin-top: 4px;">권장 크기: ${odIcl.recommendedSize.recommended}mm</div>` : ''}
+                            </td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                <span style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 10pt; ${getIclStatusStyle(osIcl.status)}">${osIcl.statusMessage || '-'}</span>
+                                ${osIcl.overallEligible && osIcl.recommendedSize ? `<div style="font-size: 7pt; color: #8b5cf6; margin-top: 4px;">권장 크기: ${osIcl.recommendedSize.recommended}mm</div>` : ''}
                             </td>
                         </tr>
                         <tr>
@@ -4241,14 +4487,34 @@ const CONFIG = {
     K_OPTIMAL_MIN: 36,
     K_OPTIMAL_MAX: 46,
     // Ablation Depth Thresholds (based on published literature)
-    // References: 
-    // - EyeWiki Ectasia Risk: >100μm excessive ablation
-    // - ESCRS 2024 (Dr. Ang): max 120μm for LASIK
-    // - Santhiago et al. 2014: ectasia group mean 94μm
-    ABLATION_LASIK_SAFE: 90,      // Safe threshold for LASIK
-    ABLATION_LASIK_CAUTION: 120,  // Caution threshold - ESCRS guideline
-    ABLATION_LASEK_SAFE: 100,     // Safe threshold for LASEK/PRK
-    ABLATION_LASEK_CAUTION: 130,  // Caution threshold for LASEK/PRK
+    ABLATION_LASIK_SAFE: 90,
+    ABLATION_LASIK_CAUTION: 120,
+    ABLATION_LASEK_SAFE: 100,
+    ABLATION_LASEK_CAUTION: 130,
+    // EVO ICL Criteria (FDA & STAAR Surgical Guidelines)
+    // References: FDA P030016S035C, EyeWiki, ESCRS 2024
+    ICL: {
+        AGE_MIN: 21,
+        AGE_MAX: 45,
+        SE_MIN: -20.0,      // Maximum myopia (most negative)
+        SE_MAX: -3.0,       // Minimum myopia for ICL
+        CYL_MAX: 4.0,       // Maximum astigmatism (Toric ICL)
+        ACD_MIN: 3.00,      // Minimum ACD (mm) - FDA requirement
+        ACD_MIN_INTL: 2.80, // International minimum (CE Mark)
+        WTW_MIN: 10.5,      // Minimum white-to-white
+        WTW_MAX: 13.0,      // Maximum white-to-white
+        // ECD minimums by age and ACD (cells/mm²) - STAAR Surgical
+        ECD_BY_AGE: {
+            '21-25': { acd_3_0: 3875, acd_3_2: 3800, acd_3_5: 3250 },
+            '26-30': { acd_3_0: 3425, acd_3_2: 3375, acd_3_5: 2900 },
+            '31-35': { acd_3_0: 3025, acd_3_2: 2975, acd_3_5: 2625 },
+            '36-40': { acd_3_0: 2675, acd_3_2: 2625, acd_3_5: 2350 },
+            '41-45': { acd_3_0: 2350, acd_3_2: 2325, acd_3_5: 2100 },
+            '>45':   { acd_3_0: 2075, acd_3_2: 2050, acd_3_5: 1900 }
+        },
+        // ICL size selection (based on WTW + ACD)
+        SIZES: [12.1, 12.6, 13.2, 13.7]
+    }
 };
 
 // AI Topography Analysis Thresholds based on published criteria
@@ -4773,10 +5039,6 @@ function calculateAblationDepth(correction, opticalZone) {
 
 /**
  * Evaluate ablation depth risk level
- * Based on published literature:
- * - EyeWiki: >100μm excessive ablation increases ectasia risk
- * - ESCRS 2024 (Dr. Ang): max 120μm for LASIK
- * - Santhiago et al. 2014: ectasia group mean ablation 94μm
  */
 function evaluateAblationRisk(ablationDepth, surgeryType) {
     const isLasik = surgeryType === 'lasik' || surgeryType === 'LASIK';
@@ -4809,6 +5071,257 @@ function evaluateAblationRisk(ablationDepth, surgeryType) {
             detail: `절삭량 ${ablationDepth.toFixed(1)}μm은 권장 상한(${cautionThreshold}μm)을 초과합니다. 확막확장증 위험이 증가하며, 대안적 수술 방법을 고려하세요. [Ref: ESCRS 2024, Santhiago et al.]`
         };
     }
+}
+
+/**
+ * EVO ICL Eligibility Assessment
+ * Based on FDA & STAAR Surgical Guidelines
+ * References: FDA P030016S035C, EyeWiki, PMC9132105
+ */
+function evaluateICLEligibility(params) {
+    const { age, se, cyl, acd, wtw, ecd, topography } = params;
+    const criteria = [];
+    let overallEligible = true;
+    let hasWarnings = false;
+    
+    // 1. Age criterion (21-45 years)
+    const agePass = age >= CONFIG.ICL.AGE_MIN && age <= CONFIG.ICL.AGE_MAX;
+    criteria.push({
+        name: '나이',
+        value: `${age}세`,
+        pass: agePass,
+        requirement: `${CONFIG.ICL.AGE_MIN}-${CONFIG.ICL.AGE_MAX}세`,
+        message: agePass ? '적합' : (age < CONFIG.ICL.AGE_MIN ? '21세 미만' : '45세 초과')
+    });
+    if (!agePass) overallEligible = false;
+    
+    // 2. Spherical Equivalent criterion (-3.0 to -20.0 D)
+    const sePass = se <= CONFIG.ICL.SE_MAX && se >= CONFIG.ICL.SE_MIN;
+    const seWarning = se > -3.0 && se <= 0; // Low myopia - consider other options
+    criteria.push({
+        name: '구면대응치 (SE)',
+        value: `${se.toFixed(2)} D`,
+        pass: sePass,
+        warning: seWarning,
+        requirement: `${CONFIG.ICL.SE_MIN} ~ ${CONFIG.ICL.SE_MAX} D`,
+        message: sePass ? '적합' : (se > CONFIG.ICL.SE_MAX ? '근시 부족 (-3D 미만)' : '초고도근시')
+    });
+    if (!sePass) overallEligible = false;
+    if (seWarning) hasWarnings = true;
+    
+    // 3. Cylinder criterion (≤4.0 D for Toric)
+    const cylAbs = Math.abs(cyl);
+    const cylPass = cylAbs <= CONFIG.ICL.CYL_MAX;
+    criteria.push({
+        name: '난시 (CYL)',
+        value: `${cylAbs.toFixed(2)} D`,
+        pass: cylPass,
+        requirement: `≤ ${CONFIG.ICL.CYL_MAX} D`,
+        message: cylPass ? (cylAbs >= 1.0 ? 'Toric ICL 권장' : '적합') : '난시 과다'
+    });
+    if (!cylPass) overallEligible = false;
+    
+    // 4. Anterior Chamber Depth criterion (≥3.0 mm)
+    const acdPass = acd >= CONFIG.ICL.ACD_MIN;
+    const acdWarning = acd >= CONFIG.ICL.ACD_MIN_INTL && acd < CONFIG.ICL.ACD_MIN;
+    criteria.push({
+        name: '전방깊이 (ACD)',
+        value: `${acd.toFixed(2)} mm`,
+        pass: acdPass,
+        warning: acdWarning,
+        requirement: `≥ ${CONFIG.ICL.ACD_MIN} mm`,
+        message: acdPass ? '적합' : (acdWarning ? '경계선 (FDA 기준 미달)' : '전방 얕음')
+    });
+    if (!acdPass && !acdWarning) overallEligible = false;
+    if (acdWarning) hasWarnings = true;
+    
+    // 5. White-to-White criterion
+    const wtwPass = wtw >= CONFIG.ICL.WTW_MIN && wtw <= CONFIG.ICL.WTW_MAX;
+    criteria.push({
+        name: '백색-백색 (WTW)',
+        value: `${wtw.toFixed(1)} mm`,
+        pass: wtwPass,
+        requirement: `${CONFIG.ICL.WTW_MIN}-${CONFIG.ICL.WTW_MAX} mm`,
+        message: wtwPass ? '적합' : (wtw < CONFIG.ICL.WTW_MIN ? 'WTW 좁음' : 'WTW 넓음')
+    });
+    if (!wtwPass) hasWarnings = true;
+    
+    // 6. Endothelial Cell Density criterion (age & ACD dependent)
+    const minECD = getMinimumECD(age, acd);
+    const ecdPass = ecd >= minECD;
+    criteria.push({
+        name: '각막내피세포 (ECD)',
+        value: `${ecd} /mm²`,
+        pass: ecdPass,
+        requirement: `≥ ${minECD} /mm²`,
+        message: ecdPass ? '적합' : '내피세포 부족'
+    });
+    if (!ecdPass) overallEligible = false;
+    
+    // 7. Topography criterion
+    const topoPass = topography === 'normal' || topography === 'asymmetric-bowtie';
+    const topoWarning = topography === 'asymmetric-bowtie';
+    criteria.push({
+        name: 'Topography',
+        value: getTopographyLabel(topography),
+        pass: topoPass,
+        warning: topoWarning,
+        requirement: 'Normal 권장',
+        message: topoPass ? (topoWarning ? '주의 관찰' : '적합') : '각막 이상'
+    });
+    if (!topoPass) hasWarnings = true;
+    
+    // Calculate recommended ICL size
+    const recommendedSize = calculateICLSize(wtw, acd);
+    
+    // Determine overall status
+    let status, statusClass, statusMessage;
+    if (overallEligible && !hasWarnings) {
+        status = 'eligible';
+        statusClass = 'eligible';
+        statusMessage = 'EVO ICL 적합';
+    } else if (overallEligible && hasWarnings) {
+        status = 'caution';
+        statusClass = 'caution';
+        statusMessage = 'EVO ICL 가능 (주의사항 확인)';
+    } else {
+        status = 'not-eligible';
+        statusClass = 'not-eligible';
+        statusMessage = 'EVO ICL 부적합';
+    }
+    
+    return {
+        criteria,
+        overallEligible,
+        hasWarnings,
+        status,
+        statusClass,
+        statusMessage,
+        recommendedSize,
+        minECD
+    };
+}
+
+/**
+ * Get minimum ECD requirement based on age and ACD
+ * Source: STAAR Surgical FDA labeling
+ */
+function getMinimumECD(age, acd) {
+    let ageGroup;
+    if (age <= 25) ageGroup = '21-25';
+    else if (age <= 30) ageGroup = '26-30';
+    else if (age <= 35) ageGroup = '31-35';
+    else if (age <= 40) ageGroup = '36-40';
+    else if (age <= 45) ageGroup = '41-45';
+    else ageGroup = '>45';
+    
+    const ecdReqs = CONFIG.ICL.ECD_BY_AGE[ageGroup];
+    
+    if (acd >= 3.5) return ecdReqs.acd_3_5;
+    if (acd >= 3.2) return ecdReqs.acd_3_2;
+    return ecdReqs.acd_3_0;
+}
+
+/**
+ * Calculate recommended ICL size based on WTW and ACD
+ * Based on STAAR OCOS algorithm
+ */
+function calculateICLSize(wtw, acd) {
+    // Basic algorithm: WTW + adjustment based on ACD
+    let adjustment = 1.1; // Default for ACD ≤ 3.5mm
+    if (acd > 3.5) {
+        adjustment = Math.min(1.6, 1.1 + (acd - 3.5) * 0.5);
+    }
+    
+    const calculatedSize = wtw + adjustment;
+    
+    // Round to nearest available size
+    const sizes = CONFIG.ICL.SIZES;
+    let recommendedSize = sizes[0];
+    let minDiff = Math.abs(calculatedSize - sizes[0]);
+    
+    for (const size of sizes) {
+        const diff = Math.abs(calculatedSize - size);
+        if (diff < minDiff) {
+            minDiff = diff;
+            recommendedSize = size;
+        }
+    }
+    
+    return {
+        calculated: calculatedSize.toFixed(1),
+        recommended: recommendedSize,
+        sizes: sizes
+    };
+}
+
+/**
+ * Get topography label in Korean
+ */
+function getTopographyLabel(topo) {
+    const labels = {
+        'normal': 'Normal',
+        'asymmetric-bowtie': 'Asymmetric Bowtie',
+        'inferior-steepening': 'Inferior Steepening',
+        'abnormal': 'Abnormal (KC suspect)'
+    };
+    return labels[topo] || topo;
+}
+
+/**
+ * Render ICL assessment results
+ */
+function renderICLAssessment(containerId, result) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    let html = '<div class="icl-criteria-grid">';
+    
+    // Render each criterion
+    result.criteria.forEach(criterion => {
+        const statusClass = criterion.pass ? (criterion.warning ? 'warning' : 'pass') : 'fail';
+        const icon = criterion.pass ? (criterion.warning ? '⚠️' : '✓') : '✗';
+        
+        html += `
+            <div class="icl-criterion ${statusClass}">
+                <div class="icl-criterion-info">
+                    <span class="icl-criterion-name">${criterion.name}</span>
+                    <span class="icl-criterion-req">${criterion.requirement}</span>
+                </div>
+                <div class="icl-criterion-status">
+                    <span class="icl-criterion-value">${criterion.value}</span>
+                    <span class="icon">${icon}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    
+    // Overall result
+    html += `
+        <div class="icl-overall-result ${result.statusClass}">
+            <div class="icl-result-title">${result.status === 'eligible' ? '✓' : result.status === 'caution' ? '⚠️' : '✗'} ${result.statusMessage}</div>
+            <div class="icl-result-message">
+                ${result.overallEligible ? 
+                    `모든 필수 기준을 충족합니다.${result.hasWarnings ? ' (일부 주의사항 확인 필요)' : ''}` : 
+                    '하나 이상의 필수 기준을 충족하지 않습니다.'}
+            </div>
+        </div>
+    `;
+    
+    // Recommended ICL size (if eligible)
+    if (result.overallEligible) {
+        html += `
+            <div class="icl-lens-size">
+                <div class="size-label">권장 ICL 크기</div>
+                <div class="size-value">${result.recommendedSize.recommended} mm</div>
+                <div class="size-note">계산값: ${result.recommendedSize.calculated} mm (사용 가능: ${result.recommendedSize.sizes.join(', ')} mm)</div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
 }
 
 function calculateSE(sph, cyl) {
@@ -5333,6 +5846,9 @@ class RefractiveCalculator {
                 cyl: parseFloat(formData.get('od-cyl')),
                 axis: parseInt(formData.get('od-axis')),
                 cct: parseInt(formData.get('od-cct')),
+                acd: parseFloat(formData.get('od-acd')) || 3.2,
+                wtw: parseFloat(formData.get('od-wtw')) || 11.8,
+                ecd: parseInt(formData.get('od-ecd')) || 2800,
                 k1: parseFloat(formData.get('od-k1')),
                 k2: parseFloat(formData.get('od-k2')),
                 steepAxis: parseInt(formData.get('od-steep-axis')),
@@ -5349,6 +5865,9 @@ class RefractiveCalculator {
                 cyl: parseFloat(formData.get('os-cyl')),
                 axis: parseInt(formData.get('os-axis')),
                 cct: parseInt(formData.get('os-cct')),
+                acd: parseFloat(formData.get('os-acd')) || 3.15,
+                wtw: parseFloat(formData.get('os-wtw')) || 11.7,
+                ecd: parseInt(formData.get('os-ecd')) || 2750,
                 k1: parseFloat(formData.get('os-k1')),
                 k2: parseFloat(formData.get('os-k2')),
                 steepAxis: parseInt(formData.get('os-steep-axis')),
@@ -5393,9 +5912,20 @@ class RefractiveCalculator {
                 ablationDepth,
                 rsb: calculateRSB(data.cct, data.smileCap, ablationDepth),
                 pta: calculatePTA(data.cct, data.smileCap, ablationDepth),
-                ablationRisk: evaluateAblationRisk(ablationDepth, 'lasik') // SMILE uses similar thresholds
+                ablationRisk: evaluateAblationRisk(ablationDepth, 'lasik')
             }
         };
+        
+        // ICL Eligibility Assessment
+        const iclResult = evaluateICLEligibility({
+            age: data.age,
+            se: se,
+            cyl: data.cyl,
+            acd: data.acd,
+            wtw: data.wtw,
+            ecd: data.ecd,
+            topography: data.topography
+        });
         
         const preopK = Math.min(data.k1, data.k2);
         const postopK = calculatePostopK(data.k1, data.k2, data.sph, data.cyl);
@@ -5449,6 +5979,7 @@ class RefractiveCalculator {
             nomogramRecommendations,
             combinedRiskInterpretation,
             combinedRiskGuide,
+            iclResult,
             se,
             data
         };
@@ -5490,15 +6021,25 @@ class RefractiveCalculator {
     }
     
     renderEyeResults(template, eye, results) {
-        // Summary cards
-        ['lasik', 'lasek', 'smile'].forEach(key => {
+        // Summary cards - including ICL
+        ['lasik', 'lasek', 'smile', 'icl'].forEach(key => {
             const summaryItem = template.querySelector(`#summary-${key}-${eye}`);
             if (summaryItem) {
-                const result = results.surgeryResults[key];
-                summaryItem.classList.add(result.eligibility.status);
-                summaryItem.querySelector('.surgery-status').textContent = result.eligibility.message;
+                if (key === 'icl') {
+                    // ICL summary
+                    const iclResult = results.iclResult;
+                    summaryItem.classList.add(iclResult.status);
+                    summaryItem.querySelector('.surgery-status').textContent = iclResult.statusMessage;
+                } else {
+                    const result = results.surgeryResults[key];
+                    summaryItem.classList.add(result.eligibility.status);
+                    summaryItem.querySelector('.surgery-status').textContent = result.eligibility.message;
+                }
             }
         });
+        
+        // Render ICL Assessment
+        renderICLAssessment(`icl-assessment-${eye}`, results.iclResult);
         
         // Ablation table
         const tableBody = template.querySelector(`#ablation-table-body-${eye}`);
