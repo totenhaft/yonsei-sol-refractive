@@ -5079,7 +5079,15 @@ function evaluateAblationRisk(ablationDepth, surgeryType) {
  * References: FDA P030016S035C, EyeWiki, PMC9132105
  */
 function evaluateICLEligibility(params) {
-    const { age, se, cyl, acd, wtw, ecd, topography } = params;
+    // 기본값 설정 및 NaN 처리
+    const age = params.age || 30;
+    const se = isNaN(params.se) ? -5.0 : params.se;
+    const cyl = isNaN(params.cyl) ? 0 : params.cyl;
+    const acd = isNaN(params.acd) ? 3.2 : params.acd;
+    const wtw = isNaN(params.wtw) ? 11.8 : params.wtw;
+    const ecd = isNaN(params.ecd) ? 2800 : params.ecd;
+    const topography = params.topography || 'normal';
+    
     const criteria = [];
     let overallEligible = true;
     let hasWarnings = false;
@@ -5121,18 +5129,29 @@ function evaluateICLEligibility(params) {
     });
     if (!cylPass) overallEligible = false;
     
-    // 4. Anterior Chamber Depth criterion (≥3.0 mm)
-    const acdPass = acd >= CONFIG.ICL.ACD_MIN;
-    const acdWarning = acd >= CONFIG.ICL.ACD_MIN_INTL && acd < CONFIG.ICL.ACD_MIN;
+    // 4. Anterior Chamber Depth criterion
+    // FDA: ≥3.0mm required, CE Mark (International): ≥2.8mm
+    // 2.8-3.0mm: 수술 가능하나 주의 필요
+    const acdPass = acd >= CONFIG.ICL.ACD_MIN_INTL; // 2.8mm 이상이면 수술 가능
+    const acdWarning = acd >= CONFIG.ICL.ACD_MIN_INTL && acd < CONFIG.ICL.ACD_MIN; // 2.8-3.0mm 주의
+    const acdOptimal = acd >= CONFIG.ICL.ACD_MIN; // 3.0mm 이상 적합
+    
+    let acdMessage = '적합';
+    if (!acdPass) {
+        acdMessage = '전방 얕음 (부적합)';
+    } else if (acdWarning) {
+        acdMessage = '주의 (2.8-3.0mm)';
+    }
+    
     criteria.push({
         name: '전방깊이 (ACD)',
         value: `${acd.toFixed(2)} mm`,
         pass: acdPass,
         warning: acdWarning,
-        requirement: `≥ ${CONFIG.ICL.ACD_MIN} mm`,
-        message: acdPass ? '적합' : (acdWarning ? '경계선 (FDA 기준 미달)' : '전방 얕음')
+        requirement: `≥ ${CONFIG.ICL.ACD_MIN_INTL} mm (권장: ≥${CONFIG.ICL.ACD_MIN} mm)`,
+        message: acdMessage
     });
-    if (!acdPass && !acdWarning) overallEligible = false;
+    if (!acdPass) overallEligible = false;
     if (acdWarning) hasWarnings = true;
     
     // 5. White-to-White criterion
@@ -5273,7 +5292,16 @@ function getTopographyLabel(topo) {
  */
 function renderICLAssessment(containerId, result) {
     const container = document.getElementById(containerId);
-    if (!container) return;
+    if (!container) {
+        console.error('ICL container not found:', containerId);
+        return;
+    }
+    
+    if (!result || !result.criteria) {
+        console.error('ICL result is invalid:', result);
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">ICL 평가 데이터를 불러올 수 없습니다.</div>';
+        return;
+    }
     
     let html = '<div class="icl-criteria-grid">';
     
@@ -5311,7 +5339,7 @@ function renderICLAssessment(containerId, result) {
     `;
     
     // Recommended ICL size (if eligible)
-    if (result.overallEligible) {
+    if (result.overallEligible && result.recommendedSize) {
         html += `
             <div class="icl-lens-size">
                 <div class="size-label">권장 ICL 크기</div>
@@ -6009,13 +6037,24 @@ class RefractiveCalculator {
             });
         });
         
-        // 양안 각각 렌더링
+        // 양안 각각 렌더링 (ICL 제외)
         ['od', 'os'].forEach(eye => {
             this.renderEyeResults(template, eye, this.results[eye]);
         });
         
         this.resultsContainer.innerHTML = '';
         this.resultsContainer.appendChild(template);
+        
+        // ICL Assessment는 DOM에 추가된 후에 렌더링 (requestAnimationFrame으로 다음 프레임에 실행)
+        const results = this.results;
+        requestAnimationFrame(() => {
+            ['od', 'os'].forEach(eye => {
+                const iclResult = results[eye]?.iclResult;
+                if (iclResult) {
+                    renderICLAssessment(`icl-assessment-${eye}`, iclResult);
+                }
+            });
+        });
         
         this.setupActionButtons();
     }
@@ -6037,9 +6076,6 @@ class RefractiveCalculator {
                 }
             }
         });
-        
-        // Render ICL Assessment
-        renderICLAssessment(`icl-assessment-${eye}`, results.iclResult);
         
         // Ablation table
         const tableBody = template.querySelector(`#ablation-table-body-${eye}`);
