@@ -2036,6 +2036,110 @@ input:focus, select:focus {
 }
 .recent-patient-item:hover { background: var(--border-light); }
 
+/* Admin Panel Styles */
+.admin-section h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+}
+
+.user-list {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.user-item:last-child { border-bottom: none; }
+
+.user-item:hover { background: var(--bg-tertiary); }
+
+.user-item-info {
+    flex: 1;
+}
+
+.user-item-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.user-item-email {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.user-item-date {
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
+}
+
+.user-item-actions {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.btn-approve {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.btn-approve:hover { background: #047857; }
+
+.btn-reject {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.btn-reject:hover { background: #b91c1c; }
+
+.btn-revoke {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    background: var(--warning);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.btn-revoke:hover { background: #b45309; }
+
+.btn-admin {
+    padding: 4px 10px;
+    font-size: 0.6875rem;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-left: var(--space-sm);
+}
+
+.btn-admin:hover { background: #b91c1c; }
+
 /* User info in header */
 .user-info {
     display: flex;
@@ -2743,6 +2847,31 @@ input:focus, select:focus {
             <div class="login-footer">
                 © 2024 연세솔안과. All rights reserved.<br>
                 관리자 문의: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="11657e65747f7970776551767c70787d3f727e7c">[email&#160;protected]</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 패널 모달 -->
+    <div class="modal-overlay" id="admin-modal">
+        <div class="modal modal-lg">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                <h3>🔐 관리자 패널</h3>
+                <button class="modal-close" onclick="toggleModal('admin-modal', false)">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-section">
+                    <h4>⏳ 승인 대기 중인 사용자</h4>
+                    <div id="pending-users-list" class="user-list">
+                        <div class="search-placeholder">승인 대기 중인 사용자가 없습니다</div>
+                    </div>
+                </div>
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+                <div class="admin-section">
+                    <h4>✅ 승인된 사용자</h4>
+                    <div id="approved-users-list" class="user-list">
+                        <div class="search-placeholder">승인된 사용자가 없습니다</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -3554,9 +3683,11 @@ function updateAuthUI() {
     
     if (currentUser) {
         hideLoginScreen();
+        const isAdmin = currentUser.email === ADMIN_EMAIL;
         authContainer.innerHTML = `
             <div class="user-info">
                 <span class="user-email">${currentUser.email}</span>
+                ${isAdmin ? '<button class="btn-admin" onclick="openAdminPanel()">🔐 관리자</button>' : ''}
                 <button class="btn-logout" onclick="handleLogout()">로그아웃</button>
             </div>
         `;
@@ -3850,6 +3981,126 @@ function handleLogout() {
     currentUser = null;
     updateAuthUI();
     showNotification('로그아웃 되었습니다.', 'info');
+}
+
+// ============================================
+// 관리자 패널 기능
+// ============================================
+
+// Open admin panel
+function openAdminPanel() {
+    if (currentUser?.email !== ADMIN_EMAIL) {
+        showNotification('관리자 권한이 필요합니다.', 'error');
+        return;
+    }
+    
+    renderPendingUsers();
+    renderApprovedUsers();
+    toggleModal('admin-modal', true);
+}
+
+// Render pending users list
+function renderPendingUsers() {
+    const container = document.getElementById('pending-users-list');
+    const pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS_KEY) || '[]');
+    
+    if (pendingUsers.length === 0) {
+        container.innerHTML = '<div class="search-placeholder">승인 대기 중인 사용자가 없습니다</div>';
+        return;
+    }
+    
+    container.innerHTML = pendingUsers.map((user, index) => `
+        <div class="user-item">
+            <div class="user-item-info">
+                <div class="user-item-name">${user.name || '이름 없음'}</div>
+                <div class="user-item-email">${user.email}</div>
+                <div class="user-item-date">신청일: ${new Date(user.requestedAt).toLocaleDateString('ko-KR')}</div>
+            </div>
+            <div class="user-item-actions">
+                <button class="btn-approve" onclick="approveUser('${user.email}')">✓ 승인</button>
+                <button class="btn-reject" onclick="rejectUser('${user.email}')">✕ 거절</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Render approved users list
+function renderApprovedUsers() {
+    const container = document.getElementById('approved-users-list');
+    const approvedUsers = JSON.parse(localStorage.getItem(APPROVED_USERS_KEY) || '[]');
+    
+    if (approvedUsers.length === 0) {
+        container.innerHTML = '<div class="search-placeholder">승인된 사용자가 없습니다</div>';
+        return;
+    }
+    
+    container.innerHTML = approvedUsers.map(email => `
+        <div class="user-item">
+            <div class="user-item-info">
+                <div class="user-item-email">${email}</div>
+            </div>
+            <div class="user-item-actions">
+                <button class="btn-revoke" onclick="revokeUser('${email}')">승인 취소</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Approve user
+function approveUser(email) {
+    // Add to approved list
+    const approvedUsers = JSON.parse(localStorage.getItem(APPROVED_USERS_KEY) || '[]');
+    if (!approvedUsers.includes(email.toLowerCase())) {
+        approvedUsers.push(email.toLowerCase());
+        localStorage.setItem(APPROVED_USERS_KEY, JSON.stringify(approvedUsers));
+    }
+    
+    // Remove from pending list
+    let pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS_KEY) || '[]');
+    pendingUsers = pendingUsers.filter(u => u.email.toLowerCase() !== email.toLowerCase());
+    localStorage.setItem(PENDING_USERS_KEY, JSON.stringify(pendingUsers));
+    
+    // Firebase에도 저장 (데모 모드가 아닐 때)
+    if (!DEMO_MODE && typeof db !== 'undefined') {
+        db.collection('approvedUsers').doc(email.toLowerCase()).set({
+            email: email.toLowerCase(),
+            approvedAt: new Date().toISOString(),
+            approvedBy: currentUser?.email
+        }).catch(console.error);
+    }
+    
+    showNotification(`${email} 사용자가 승인되었습니다.`, 'success');
+    renderPendingUsers();
+    renderApprovedUsers();
+}
+
+// Reject user (remove from pending)
+function rejectUser(email) {
+    if (!confirm(`${email} 사용자의 가입 신청을 거절하시겠습니까?`)) return;
+    
+    let pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS_KEY) || '[]');
+    pendingUsers = pendingUsers.filter(u => u.email.toLowerCase() !== email.toLowerCase());
+    localStorage.setItem(PENDING_USERS_KEY, JSON.stringify(pendingUsers));
+    
+    showNotification(`${email} 사용자의 가입 신청이 거절되었습니다.`, 'info');
+    renderPendingUsers();
+}
+
+// Revoke user approval
+function revokeUser(email) {
+    if (!confirm(`${email} 사용자의 승인을 취소하시겠습니까?`)) return;
+    
+    let approvedUsers = JSON.parse(localStorage.getItem(APPROVED_USERS_KEY) || '[]');
+    approvedUsers = approvedUsers.filter(e => e !== email.toLowerCase());
+    localStorage.setItem(APPROVED_USERS_KEY, JSON.stringify(approvedUsers));
+    
+    // Firebase에서도 삭제 (데모 모드가 아닐 때)
+    if (!DEMO_MODE && typeof db !== 'undefined') {
+        db.collection('approvedUsers').doc(email.toLowerCase()).delete().catch(console.error);
+    }
+    
+    showNotification(`${email} 사용자의 승인이 취소되었습니다.`, 'info');
+    renderApprovedUsers();
 }
 
 // Show notification
@@ -5184,8 +5435,7 @@ function evaluateICLEligibility(params) {
         status,
         statusClass,
         statusMessage,
-        recommendedSize,
-        minECD
+        recommendedSize
     };
 }
 
@@ -5802,7 +6052,7 @@ class RefractiveCalculator {
     
     copyODtoOS() {
         const fields = [
-            'sph', 'cyl', 'axis', 'cct', 'k1', 'k2', 'steep-axis', 'topography',
+            'sph', 'cyl', 'axis', 'cct', 'acd', 'wtw', 'ecd', 'k1', 'k2', 'steep-axis', 'topography',
             'optical-zone', 'lasik-flap', 'lasek-epi', 'smile-cap'
         ];
         fields.forEach(field => {
