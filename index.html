@@ -3646,14 +3646,47 @@ input:focus, select:focus {
         </div>
     </template>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
 // ============================================
 // 연세솔안과 시력교정술 적합성 검사
 // Firebase & Authentication Module
 // ============================================
 
-// Demo mode flag (set to false when Firebase is configured)
-const DEMO_MODE = false;
+// ⚠️ Firebase 설정 - 아래 값들을 본인의 Firebase 프로젝트 정보로 교체하세요
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// ⚠️ DEMO_MODE 설정
+// - true: 데모 모드 (localStorage 사용, Firebase 불필요)
+// - false: 실제 운영 모드 (Firebase 필수)
+const DEMO_MODE = true;  // Firebase 설정 후 false로 변경하세요
+
+// Firebase 초기화 (DEMO_MODE가 false일 때만)
+let auth, db;
+if (!DEMO_MODE && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+    try {
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.firestore();
+        console.log('Firebase initialized successfully');
+    } catch (error) {
+        console.error('Firebase initialization error:', error);
+    }
+} else if (!DEMO_MODE) {
+    console.warn('Firebase config not set. Please update firebaseConfig.');
+}
+
 const LOCAL_STORAGE_KEY = 'yonsei_sol_patients';
 const PENDING_USERS_KEY = 'yonsei_sol_pending_users';
 const APPROVED_USERS_KEY = 'yonsei_sol_approved_users';
@@ -4053,9 +4086,26 @@ function adminAddUser() {
 }
 
 // Render pending users list
-function renderPendingUsers() {
+async function renderPendingUsers() {
     const container = document.getElementById('pending-users-list');
-    const pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS_KEY) || '[]');
+    
+    let pendingUsers = [];
+    
+    if (!DEMO_MODE && db) {
+        // Firebase에서 가져오기
+        try {
+            const snapshot = await db.collection('pendingUsers').orderBy('requestedAt', 'desc').get();
+            pendingUsers = snapshot.docs.map(doc => ({
+                ...doc.data(),
+                requestedAt: doc.data().requestedAt?.toDate?.() || new Date()
+            }));
+        } catch (error) {
+            console.error('Error fetching pending users:', error);
+        }
+    } else {
+        // localStorage에서 가져오기
+        pendingUsers = JSON.parse(localStorage.getItem(PENDING_USERS_KEY) || '[]');
+    }
     
     if (pendingUsers.length === 0) {
         container.innerHTML = '<div class="search-placeholder">승인 대기 중인 사용자가 없습니다</div>';
@@ -4078,9 +4128,23 @@ function renderPendingUsers() {
 }
 
 // Render approved users list
-function renderApprovedUsers() {
+async function renderApprovedUsers() {
     const container = document.getElementById('approved-users-list');
-    const approvedUsers = JSON.parse(localStorage.getItem(APPROVED_USERS_KEY) || '[]');
+    
+    let approvedUsers = [];
+    
+    if (!DEMO_MODE && db) {
+        // Firebase에서 가져오기
+        try {
+            const snapshot = await db.collection('approvedUsers').get();
+            approvedUsers = snapshot.docs.map(doc => doc.data().email || doc.id);
+        } catch (error) {
+            console.error('Error fetching approved users:', error);
+        }
+    } else {
+        // localStorage에서 가져오기
+        approvedUsers = JSON.parse(localStorage.getItem(APPROVED_USERS_KEY) || '[]');
+    }
     
     if (approvedUsers.length === 0) {
         container.innerHTML = '<div class="search-placeholder">승인된 사용자가 없습니다</div>';
