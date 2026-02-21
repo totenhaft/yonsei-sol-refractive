@@ -3670,7 +3670,7 @@ const firebaseConfig = {
 // ⚠️ DEMO_MODE 설정
 // - true: 데모 모드 (localStorage 사용, Firebase 불필요)
 // - false: 실제 운영 모드 (Firebase 필수)
-const DEMO_MODE = false;  // Firebase 설정 후 false로 변경하세요
+const DEMO_MODE = true;  // Firebase 설정 후 false로 변경하세요
 
 // Firebase 초기화 (DEMO_MODE가 false일 때만)
 let auth, db;
@@ -4675,7 +4675,7 @@ function generateSurgeryRowNew(name, data) {
 }
 
 // Search patients
-function searchPatients() {
+async function searchPatients() {
     const query = document.getElementById('search-input').value.trim();
     const resultsDiv = document.getElementById('search-results');
     
@@ -4684,15 +4684,39 @@ function searchPatients() {
         return;
     }
     
-    const patients = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-    const filtered = patients.filter(p => 
+    resultsDiv.innerHTML = '<div class="search-placeholder">검색 중...</div>';
+    
+    let patients = [];
+    
+    // Firebase에서 검색
+    if (!DEMO_MODE && db) {
+        try {
+            const snapshot = await db.collection('patients').get();
+            patients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            console.error('Firebase search error:', error);
+        }
+    }
+    
+    // localStorage에서도 가져오기 (백업)
+    const localPatients = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    
+    // 중복 제거하여 병합
+    const allPatients = [...patients];
+    localPatients.forEach(lp => {
+        if (!allPatients.find(p => p.patientId === lp.patientId)) {
+            allPatients.push(lp);
+        }
+    });
+    
+    const filtered = allPatients.filter(p => 
         (p.patientName && p.patientName.includes(query)) ||
         (p.patientId && p.patientId.includes(query))
     );
     
     if (filtered.length === 0) {
         resultsDiv.innerHTML = '<div class="search-placeholder">검색 결과가 없습니다</div>';
-        return;;
+        return;
     }
     
     resultsDiv.innerHTML = filtered.map(p => `
@@ -4708,9 +4732,31 @@ function searchPatients() {
 }
 
 // Load recent patients
-function loadRecentPatients() {
+async function loadRecentPatients() {
     const listDiv = document.getElementById('recent-patients-list');
-    const patients = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    
+    let patients = [];
+    
+    // Firebase에서 가져오기
+    if (!DEMO_MODE && db) {
+        try {
+            const snapshot = await db.collection('patients')
+                .orderBy('updatedAt', 'desc')
+                .limit(10)
+                .get();
+            patients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            console.error('Firebase load error:', error);
+        }
+    }
+    
+    // localStorage에서도 가져오기 (백업)
+    const localPatients = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    localPatients.forEach(lp => {
+        if (!patients.find(p => p.patientId === lp.patientId)) {
+            patients.push(lp);
+        }
+    });
     
     if (patients.length === 0) {
         listDiv.innerHTML = '<div class="search-placeholder">저장된 환자가 없습니다</div>';
@@ -4730,9 +4776,26 @@ function loadRecentPatients() {
 }
 
 // Load patient data into form
-function loadPatient(patientId) {
-    const patients = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-    const patient = patients.find(p => p.patientId === patientId);
+async function loadPatient(patientId) {
+    let patient = null;
+    
+    // Firebase에서 먼저 검색
+    if (!DEMO_MODE && db) {
+        try {
+            const doc = await db.collection('patients').doc(patientId).get();
+            if (doc.exists) {
+                patient = { id: doc.id, ...doc.data() };
+            }
+        } catch (error) {
+            console.error('Firebase load patient error:', error);
+        }
+    }
+    
+    // localStorage에서 검색 (백업)
+    if (!patient) {
+        const patients = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+        patient = patients.find(p => p.patientId === patientId);
+    }
     
     if (!patient) {
         showNotification('환자를 찾을 수 없습니다.', 'error');
@@ -4799,6 +4862,9 @@ function savePatientData(formData, results) {
             cyl: formData.od?.cyl,
             axis: formData.od?.axis,
             cct: formData.od?.cct,
+            acd: formData.od?.acd,
+            wtw: formData.od?.wtw,
+            ecd: formData.od?.ecd,
             k1: formData.od?.k1,
             k2: formData.od?.k2,
             steepAxis: formData.od?.steepAxis,
@@ -4813,6 +4879,9 @@ function savePatientData(formData, results) {
             cyl: formData.os?.cyl,
             axis: formData.os?.axis,
             cct: formData.os?.cct,
+            acd: formData.os?.acd,
+            wtw: formData.os?.wtw,
+            ecd: formData.os?.ecd,
             k1: formData.os?.k1,
             k2: formData.os?.k2,
             steepAxis: formData.os?.steepAxis,
@@ -4828,9 +4897,8 @@ function savePatientData(formData, results) {
         createdBy: currentUser?.email || 'anonymous'
     };
     
+    // localStorage에 저장 (백업용)
     const patients = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-    
-    // Check if patient exists
     const existingIndex = patients.findIndex(p => p.patientId === patientData.patientId);
     
     if (existingIndex >= 0) {
@@ -4839,8 +4907,21 @@ function savePatientData(formData, results) {
     } else {
         patients.push(patientData);
     }
-    
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(patients));
+    
+    // Firebase Firestore에 저장
+    if (!DEMO_MODE && db) {
+        const docId = patientData.patientId || `patient_${Date.now()}`;
+        db.collection('patients').doc(docId).set(patientData)
+            .then(() => {
+                console.log('Patient data saved to Firebase:', docId);
+            })
+            .catch((error) => {
+                console.error('Error saving to Firebase:', error);
+                showNotification('Firebase 저장 실패: ' + error.message, 'error');
+            });
+    }
+    
     return patientData;
 }
 
