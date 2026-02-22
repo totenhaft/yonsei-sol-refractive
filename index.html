@@ -4142,15 +4142,35 @@ let CLAUDE_API_KEY = '';
 
 // API 키 로드 함수 (관리자/프리미엄 사용자만)
 async function loadClaudeApiKey() {
-    if (!db) return;
+    if (!db) {
+        console.log('⚠️ Cannot load API key: db not initialized');
+        return false;
+    }
+    
     try {
+        console.log('🔄 Loading Claude API key from Firestore...');
         const doc = await db.collection('settings').doc('apiKeys').get();
+        
         if (doc.exists) {
-            CLAUDE_API_KEY = doc.data().claudeApiKey || '';
-            console.log('✅ Claude API key loaded');
+            const data = doc.data();
+            CLAUDE_API_KEY = data.claudeApiKey || '';
+            
+            if (CLAUDE_API_KEY) {
+                console.log('✅ Claude API key loaded successfully (length:', CLAUDE_API_KEY.length, ')');
+                return true;
+            } else {
+                console.log('⚠️ API key document exists but claudeApiKey field is empty');
+                return false;
+            }
+        } else {
+            console.log('⚠️ API key document does not exist in Firestore');
+            console.log('ℹ️ Please create: Firestore > settings > apiKeys > claudeApiKey');
+            return false;
         }
     } catch (error) {
-        console.log('ℹ️ API key not available for this user');
+        console.error('❌ Error loading API key:', error.message);
+        console.log('ℹ️ Make sure Firestore rules allow reading settings/apiKeys for admin');
+        return false;
     }
 }
 
@@ -4283,13 +4303,30 @@ async function analyzeTopography(eye) {
     
     try {
         // 프리미엄 사용자 확인
-        const usePremium = await isPremiumUser(currentUser?.email);
+        const isAdmin = currentUser?.email === ADMIN_EMAIL;
+        const usePremium = isAdmin || await isPremiumUser(currentUser?.email);
+        
+        console.log('🔍 Analysis check:', {
+            email: currentUser?.email,
+            isAdmin: isAdmin,
+            usePremium: usePremium,
+            hasApiKey: !!CLAUDE_API_KEY,
+            apiKeyLength: CLAUDE_API_KEY?.length
+        });
+        
+        // API 키가 없으면 Firestore에서 다시 로드 시도
+        if (!CLAUDE_API_KEY && usePremium) {
+            console.log('🔄 Attempting to reload API key...');
+            await loadClaudeApiKey();
+        }
         
         let result;
         if (usePremium && CLAUDE_API_KEY) {
+            console.log('✅ Using Claude API for analysis');
             // Claude Vision API 사용 (여러 장 지원)
             result = await analyzeWithClaudeAPI(files, eye);
         } else {
+            console.log('⚠️ Using basic OCR (no premium or no API key)');
             // 무료 버전: 기본 OCR (시뮬레이션)
             result = await analyzeWithBasicOCR(files, eye);
         }
