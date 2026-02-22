@@ -2333,9 +2333,53 @@ input:focus, select:focus {
     margin-left: var(--space-xs);
 }
 
+/* OCR 진행바 */
+.ocr-progress {
+    margin-top: var(--space-sm);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #059669);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    text-align: center;
+}
+
+/* 이미지 미리보기 */
+.dropzone-preview {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropzone-preview img {
+    max-width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+}
+
 .btn-analyze {
     padding: var(--space-sm) var(--space-md);
-    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     border: none;
     border-radius: var(--radius-md);
@@ -2365,7 +2409,92 @@ input:focus, select:focus {
     pointer-events: none;
 }
 
-/* AI 분석 결과 */
+/* OCR 추출 결과 */
+.ocr-results {
+    margin-top: var(--space-md);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.ocr-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.ocr-results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border-light);
+}
+
+.ocr-result-card {
+    background: var(--bg-secondary);
+    padding: var(--space-md);
+}
+
+.ocr-result-title {
+    font-weight: 600;
+    font-size: 0.8125rem;
+    margin-bottom: var(--space-sm);
+    color: var(--text-primary);
+}
+
+.ocr-extracted-values {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.ocr-value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    font-size: 0.8125rem;
+}
+
+.ocr-value-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.ocr-value-data {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--success);
+}
+
+.ocr-value-data.not-found {
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+.btn-apply-value {
+    padding: 2px 8px;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.6875rem;
+    cursor: pointer;
+    margin-left: var(--space-xs);
+}
+
+.btn-apply-value:hover {
+    background: #047857;
+}
+
+/* AI 분석 결과 (Legacy) */
 .ai-analysis-results {
     margin-top: var(--space-md);
     border: 1px solid var(--border-light);
@@ -3364,12 +3493,12 @@ input:focus, select:focus {
                         </div>
                     </div>
 
-                    <!-- 📷 각막지형도 AI 분석 섹션 -->
+                    <!-- 📷 각막지형도 OCR 자동 추출 섹션 -->
                     <div class="shared-section topography-upload-section">
-                        <div class="shared-section-title" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white;">
+                        <div class="shared-section-title" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
                             <span>📷</span>
-                            각막지형도 AI 분석 (Galilei / Oculus)
-                            <span class="ai-badge" id="ai-mode-badge">AI 분석</span>
+                            각막지형도 OCR 자동 추출 (Galilei / Oculus)
+                            <span class="ai-badge" id="ai-mode-badge">Tesseract OCR</span>
                         </div>
                         <div class="topography-upload-container">
                             <div class="upload-zones">
@@ -3377,51 +3506,67 @@ input:focus, select:focus {
                                 <div class="upload-zone" id="upload-zone-od">
                                     <div class="upload-zone-header">👁️ 우안 (OD) <span class="file-count" id="file-count-od"></span></div>
                                     <div class="upload-dropzone" id="dropzone-od" onclick="document.getElementById('topo-file-od').click()">
-                                        <input type="file" id="topo-file-od" accept="image/*,.pdf" style="display:none" multiple onchange="handleMultiTopoUpload('od', this)">
+                                        <input type="file" id="topo-file-od" accept="image/*" style="display:none" onchange="handleTopoUploadOCR('od', this)">
                                         <div class="dropzone-content" id="dropzone-content-od">
                                             <div class="dropzone-icon">📤</div>
                                             <div class="dropzone-text">클릭하거나 드래그하여<br>각막지형도 업로드</div>
-                                            <div class="dropzone-hint">PNG, JPG, PDF (여러 장 가능)</div>
+                                            <div class="dropzone-hint">PNG, JPG (Galilei 리포트 이미지)</div>
+                                        </div>
+                                        <div class="dropzone-preview" id="dropzone-preview-od" style="display:none;">
+                                            <img id="preview-img-od" src="" alt="OD Topography">
+                                            <button type="button" class="preview-remove" onclick="event.stopPropagation(); clearTopoUpload('od')">✕</button>
                                         </div>
                                     </div>
-                                    <div class="multi-preview-container" id="multi-preview-od"></div>
-                                    <button type="button" class="btn-analyze" id="btn-analyze-od" onclick="analyzeTopography('od')" disabled>
-                                        🔍 AI 분석하기
+                                    <div class="ocr-progress" id="ocr-progress-od" style="display:none;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="progress-fill-od"></div>
+                                        </div>
+                                        <span class="progress-text" id="progress-text-od">OCR 분석 중...</span>
+                                    </div>
+                                    <button type="button" class="btn-analyze" id="btn-extract-od" onclick="extractDataWithOCR('od')" disabled>
+                                        🔍 데이터 자동 추출
                                     </button>
                                 </div>
                                 <!-- OS 업로드 -->
                                 <div class="upload-zone" id="upload-zone-os">
                                     <div class="upload-zone-header">👁️ 좌안 (OS) <span class="file-count" id="file-count-os"></span></div>
                                     <div class="upload-dropzone" id="dropzone-os" onclick="document.getElementById('topo-file-os').click()">
-                                        <input type="file" id="topo-file-os" accept="image/*,.pdf" style="display:none" multiple onchange="handleMultiTopoUpload('os', this)">
+                                        <input type="file" id="topo-file-os" accept="image/*" style="display:none" onchange="handleTopoUploadOCR('os', this)">
                                         <div class="dropzone-content" id="dropzone-content-os">
                                             <div class="dropzone-icon">📤</div>
                                             <div class="dropzone-text">클릭하거나 드래그하여<br>각막지형도 업로드</div>
-                                            <div class="dropzone-hint">PNG, JPG, PDF (여러 장 가능)</div>
+                                            <div class="dropzone-hint">PNG, JPG (Galilei 리포트 이미지)</div>
+                                        </div>
+                                        <div class="dropzone-preview" id="dropzone-preview-os" style="display:none;">
+                                            <img id="preview-img-os" src="" alt="OS Topography">
+                                            <button type="button" class="preview-remove" onclick="event.stopPropagation(); clearTopoUpload('os')">✕</button>
                                         </div>
                                     </div>
-                                    <div class="multi-preview-container" id="multi-preview-os"></div>
-                                    <button type="button" class="btn-analyze" id="btn-analyze-os" onclick="analyzeTopography('os')" disabled>
-                                        🔍 AI 분석하기
+                                    <div class="ocr-progress" id="ocr-progress-os" style="display:none;">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="progress-fill-os"></div>
+                                        </div>
+                                        <span class="progress-text" id="progress-text-os">OCR 분석 중...</span>
+                                    </div>
+                                    <button type="button" class="btn-analyze" id="btn-extract-os" onclick="extractDataWithOCR('os')" disabled>
+                                        🔍 데이터 자동 추출
                                     </button>
                                 </div>
                             </div>
-                            <!-- AI 분석 결과 -->
-                            <div class="ai-analysis-results" id="ai-analysis-results" style="display:none;">
-                                <div class="ai-results-header">
-                                    <span>🤖 AI 분석 결과</span>
-                                    <button type="button" class="btn-apply-all" onclick="applyAllExtractedData()">📥 모든 값 자동입력</button>
+                            <!-- OCR 추출 결과 -->
+                            <div class="ocr-results" id="ocr-results" style="display:none;">
+                                <div class="ocr-results-header">
+                                    <span>📊 추출된 데이터</span>
+                                    <button type="button" class="btn-apply-all" onclick="applyAllOCRData()">📥 모든 값 자동입력</button>
                                 </div>
-                                <div class="ai-results-grid">
-                                    <div class="ai-result-card" id="ai-result-od" style="display:none;">
-                                        <div class="ai-result-title">👁️ 우안 (OD)</div>
-                                        <div class="ai-extracted-values" id="extracted-values-od"></div>
-                                        <div class="ai-assessment" id="ai-assessment-od"></div>
+                                <div class="ocr-results-grid">
+                                    <div class="ocr-result-card" id="ocr-result-od" style="display:none;">
+                                        <div class="ocr-result-title">👁️ 우안 (OD)</div>
+                                        <div class="ocr-extracted-values" id="ocr-values-od"></div>
                                     </div>
-                                    <div class="ai-result-card" id="ai-result-os" style="display:none;">
-                                        <div class="ai-result-title">👁️ 좌안 (OS)</div>
-                                        <div class="ai-extracted-values" id="extracted-values-os"></div>
-                                        <div class="ai-assessment" id="ai-assessment-os"></div>
+                                    <div class="ocr-result-card" id="ocr-result-os" style="display:none;">
+                                        <div class="ocr-result-title">👁️ 좌안 (OS)</div>
+                                        <div class="ocr-extracted-values" id="ocr-values-os"></div>
                                     </div>
                                 </div>
                             </div>
@@ -4092,6 +4237,9 @@ input:focus, select:focus {
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Tesseract.js OCR 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
     <script>
 // ============================================
@@ -4177,432 +4325,390 @@ async function loadClaudeApiKey() {
 // Current user state
 let currentUser = null;
 
-// 각막지형도 분석 데이터 저장 (여러 장 지원)
-let topoAnalysisData = {
-    od: [],  // 배열로 변경
-    os: []   // 배열로 변경
+// ============================================
+// 각막지형도 OCR 자동 추출 기능
+// ============================================
+
+// OCR 추출 데이터 저장
+let ocrExtractedData = {
+    od: null,
+    os: null
 };
 
-// ============================================
-// 각막지형도 AI 분석 기능
-// ============================================
-
-// 사용자가 프리미엄(AI 분석 가능) 사용자인지 확인
-async function isPremiumUser(email) {
-    if (email === ADMIN_EMAIL) return true;
+// 이미지 업로드 처리 (OCR용)
+function handleTopoUploadOCR(eye, input) {
+    const file = input.files[0];
+    if (!file) return;
     
-    // Firebase에서 확인
-    if (!DEMO_MODE && db) {
-        try {
-            const doc = await db.collection('premiumUsers').doc(email?.toLowerCase()).get();
-            if (doc.exists) return true;
-        } catch (error) {
-            console.log('Premium check error:', error);
-        }
-    }
-    
-    // localStorage에서도 확인
-    const premiumUsers = JSON.parse(localStorage.getItem(PREMIUM_USERS_KEY) || '[]');
-    return premiumUsers.includes(email?.toLowerCase());
-}
-
-// 여러 파일 업로드 처리
-function handleMultiTopoUpload(eye, input) {
-    const files = Array.from(input.files);
-    if (!files.length) return;
-    
-    // 기존 데이터에 추가
-    files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const fileData = {
-                type: file.type === 'application/pdf' ? 'pdf' : 'image',
-                data: e.target.result,
-                filename: file.name
-            };
-            
-            topoAnalysisData[eye].push(fileData);
-            renderMultiPreview(eye);
-            updateFileCount(eye);
-            
-            // 분석 버튼 활성화
-            document.getElementById(`btn-analyze-${eye}`).disabled = false;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-// 여러 장 미리보기 렌더링
-function renderMultiPreview(eye) {
-    const container = document.getElementById(`multi-preview-${eye}`);
-    const files = topoAnalysisData[eye];
-    
-    if (!files.length) {
-        container.innerHTML = '';
-        return;
-    }
-    
-    container.innerHTML = files.map((file, index) => {
-        const imgSrc = file.type === 'pdf' 
-            ? 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYzI2MjYiIHN0cm9rZS13aWR0aD0iMiI+PHBhdGggZD0iTTE0IDJINmEyIDIgMCAwIDAtMiAydjE2YTIgMiAwIDAgMCAyIDJoMTJhMiAyIDAgMCAwIDItMlY4eiIvPjxwb2x5bGluZSBwb2ludHM9IjE0IDIgMTQgOCAyMCA4Ii8+PHBhdGggZD0iTTEwIDEydjZNMTQgMTJ2NiIvPjwvc3ZnPg=='
-            : file.data;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById(`dropzone-preview-${eye}`);
+        const content = document.getElementById(`dropzone-content-${eye}`);
+        const img = document.getElementById(`preview-img-${eye}`);
+        const extractBtn = document.getElementById(`btn-extract-${eye}`);
         
-        return `
-            <div class="multi-preview-item">
-                <img src="${imgSrc}" alt="Image ${index + 1}">
-                <span class="preview-index">${index + 1}</span>
-                <button type="button" class="preview-remove" onclick="event.stopPropagation(); removeTopoFile('${eye}', ${index})">✕</button>
-            </div>
-        `;
-    }).join('');
+        img.src = e.target.result;
+        preview.style.display = 'flex';
+        content.style.display = 'none';
+        extractBtn.disabled = false;
+        
+        // 이미지 데이터 저장
+        ocrExtractedData[eye] = {
+            imageData: e.target.result,
+            filename: file.name,
+            extracted: null
+        };
+    };
+    reader.readAsDataURL(file);
 }
 
-// 파일 카운트 업데이트
-function updateFileCount(eye) {
-    const countSpan = document.getElementById(`file-count-${eye}`);
-    const count = topoAnalysisData[eye].length;
-    countSpan.textContent = count > 0 ? `(${count}장)` : '';
-}
-
-// 특정 파일 제거
-function removeTopoFile(eye, index) {
-    topoAnalysisData[eye].splice(index, 1);
-    renderMultiPreview(eye);
-    updateFileCount(eye);
+// 업로드 초기화
+function clearTopoUpload(eye) {
+    const preview = document.getElementById(`dropzone-preview-${eye}`);
+    const content = document.getElementById(`dropzone-content-${eye}`);
+    const extractBtn = document.getElementById(`btn-extract-${eye}`);
+    const fileInput = document.getElementById(`topo-file-${eye}`);
+    const progressDiv = document.getElementById(`ocr-progress-${eye}`);
+    const resultCard = document.getElementById(`ocr-result-${eye}`);
     
-    // 파일이 없으면 버튼 비활성화
-    if (topoAnalysisData[eye].length === 0) {
-        document.getElementById(`btn-analyze-${eye}`).disabled = true;
-        document.getElementById(`ai-result-${eye}`).style.display = 'none';
-        checkAIResultsVisibility();
-    }
+    preview.style.display = 'none';
+    content.style.display = 'flex';
+    extractBtn.disabled = true;
+    fileInput.value = '';
+    progressDiv.style.display = 'none';
+    resultCard.style.display = 'none';
+    
+    ocrExtractedData[eye] = null;
+    checkOCRResultsVisibility();
 }
 
-// 모든 이미지 제거 (기존 함수 대체)
-function removeTopoImage(eye) {
-    topoAnalysisData[eye] = [];
-    renderMultiPreview(eye);
-    updateFileCount(eye);
-    document.getElementById(`btn-analyze-${eye}`).disabled = true;
-    document.getElementById(`ai-result-${eye}`).style.display = 'none';
-    document.getElementById(`topo-file-${eye}`).value = '';
-    checkAIResultsVisibility();
-}
-
-// AI 분석 실행 (여러 장 지원)
-async function analyzeTopography(eye) {
-    const files = topoAnalysisData[eye];
-    if (!files || files.length === 0) {
+// OCR로 데이터 추출
+async function extractDataWithOCR(eye) {
+    const data = ocrExtractedData[eye];
+    if (!data || !data.imageData) {
         showNotification('이미지를 먼저 업로드하세요.', 'error');
         return;
     }
     
-    const analyzeBtn = document.getElementById(`btn-analyze-${eye}`);
-    analyzeBtn.classList.add('analyzing');
-    analyzeBtn.innerHTML = `⏳ 분석 중... (${files.length}장)`;
+    const extractBtn = document.getElementById(`btn-extract-${eye}`);
+    const progressDiv = document.getElementById(`ocr-progress-${eye}`);
+    const progressFill = document.getElementById(`progress-fill-${eye}`);
+    const progressText = document.getElementById(`progress-text-${eye}`);
+    
+    extractBtn.disabled = true;
+    extractBtn.innerHTML = '⏳ 추출 중...';
+    progressDiv.style.display = 'block';
+    progressFill.style.width = '0%';
     
     try {
-        // 프리미엄 사용자 확인
-        const isAdmin = currentUser?.email === ADMIN_EMAIL;
-        const usePremium = isAdmin || await isPremiumUser(currentUser?.email);
+        // Tesseract OCR 실행
+        const result = await Tesseract.recognize(
+            data.imageData,
+            'eng', // 영어 + 숫자 인식
+            {
+                logger: m => {
+                    if (m.status === 'recognizing text') {
+                        const percent = Math.round(m.progress * 100);
+                        progressFill.style.width = `${percent}%`;
+                        progressText.textContent = `OCR 분석 중... ${percent}%`;
+                    }
+                }
+            }
+        );
         
-        console.log('🔍 Analysis check:', {
-            email: currentUser?.email,
-            isAdmin: isAdmin,
-            usePremium: usePremium,
-            hasApiKey: !!CLAUDE_API_KEY,
-            apiKeyLength: CLAUDE_API_KEY?.length
-        });
+        console.log('OCR Raw Text:', result.data.text);
         
-        // API 키가 없으면 Firestore에서 다시 로드 시도
-        if (!CLAUDE_API_KEY && usePremium) {
-            console.log('🔄 Attempting to reload API key...');
-            await loadClaudeApiKey();
-        }
-        
-        let result;
-        if (usePremium && CLAUDE_API_KEY) {
-            console.log('✅ Using Claude API for analysis');
-            // Claude Vision API 사용 (여러 장 지원)
-            result = await analyzeWithClaudeAPI(files, eye);
-        } else {
-            console.log('⚠️ Using basic OCR (no premium or no API key)');
-            // 무료 버전: 기본 OCR (시뮬레이션)
-            result = await analyzeWithBasicOCR(files, eye);
-        }
+        // 텍스트에서 데이터 추출
+        const extracted = parseGalileiData(result.data.text);
+        ocrExtractedData[eye].extracted = extracted;
         
         // 결과 표시
-        displayAnalysisResult(eye, result);
-        showNotification(`${eye.toUpperCase()} 분석이 완료되었습니다. (${files.length}장)`, 'success');
+        displayOCRResult(eye, extracted);
+        progressDiv.style.display = 'none';
+        showNotification(`${eye.toUpperCase()} 데이터 추출이 완료되었습니다.`, 'success');
         
     } catch (error) {
-        console.error('Analysis error:', error);
-        showNotification('분석 중 오류가 발생했습니다: ' + error.message, 'error');
+        console.error('OCR Error:', error);
+        showNotification('OCR 분석 중 오류가 발생했습니다: ' + error.message, 'error');
+        progressDiv.style.display = 'none';
     } finally {
-        analyzeBtn.classList.remove('analyzing');
-        analyzeBtn.innerHTML = '🔍 AI 분석하기';
+        extractBtn.disabled = false;
+        extractBtn.innerHTML = '🔍 데이터 자동 추출';
     }
 }
 
-// Claude Vision API로 분석 (여러 장 지원)
-async function analyzeWithClaudeAPI(files, eye) {
-    // 여러 장의 이미지를 content 배열로 구성
-    const imageContents = files.map(file => {
-        const imageData = file.data.split(',')[1]; // base64 데이터만 추출
-        const mediaType = file.type === 'pdf' ? 'application/pdf' : 
-                         file.data.includes('image/png') ? 'image/png' : 
-                         file.data.includes('image/jpeg') ? 'image/jpeg' : 'image/png';
-        
-        return {
-            type: 'image',
-            source: {
-                type: 'base64',
-                media_type: mediaType,
-                data: imageData
-            }
-        };
-    });
+// Galilei 데이터 파싱 함수
+function parseGalileiData(text) {
+    const result = {
+        k1: null,       // SimK Flat
+        k2: null,       // SimK Steep
+        kAxis: null,    // Steep Axis
+        cct: null,      // Central Corneal Thickness
+        thinnest: null, // Thinnest point
+        acd: null,      // AQD (Anterior Chamber Depth)
+        wtw: null       // White-to-White
+    };
     
-    const prompt = `이 ${files.length}장의 이미지는 Galilei 또는 Oculus 각막 지형도 검사 결과입니다.
-모든 이미지를 종합적으로 분석하여 다음 데이터를 추출하고 JSON 형식으로 반환해주세요:
-
-1. 추출할 수치:
-- SimK 또는 K1 (Flat K): D 단위
-- SimK 또는 K2 (Steep K): D 단위  
-- CCT (Central Corneal Thickness) 또는 Central Pachymetry: μm 단위
-- Thinnest Pachymetry: μm 단위
-- ACD 또는 AQD (Anterior Chamber Depth): mm 단위
-- WTW (White-to-White): mm 단위
-- ECD (Endothelial Cell Density): cells/mm² (있는 경우)
-
-2. 각막 이상 지표 (있는 경우):
-- KPI (Keratoconus Prediction Index): %
-- Kprob: %
-- PPK (Percent Probability of Keratoconus): %
-- I-S value: D
-- 기타 이상 소견
-
-3. 종합 판정:
-- normal: 정상 각막
-- suspect: 원추각막 의심 또는 이상 소견 있음
-- abnormal: 명확한 이상 소견
-
-JSON 형식:
-{
-  "extracted": {
-    "k1": 숫자 또는 null,
-    "k2": 숫자 또는 null,
-    "cct": 숫자 또는 null,
-    "thinnest": 숫자 또는 null,
-    "acd": 숫자 또는 null,
-    "wtw": 숫자 또는 null,
-    "ecd": 숫자 또는 null
-  },
-  "indices": {
-    "kpi": 숫자 또는 null,
-    "kprob": 숫자 또는 null,
-    "ppk": 숫자 또는 null,
-    "isValue": 숫자 또는 null
-  },
-  "assessment": "normal" | "suspect" | "abnormal",
-  "assessmentReason": "판정 사유 설명",
-  "confidence": 0-100 신뢰도
-}`;
-
-    // 여러 이미지 + 텍스트 프롬프트를 content 배열로 구성
-    const contentArray = [
-        ...imageContents,
-        {
-            type: 'text',
-            text: prompt
-        }
+    // 텍스트 정규화 (줄바꿈, 공백 정리)
+    const normalizedText = text.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    console.log('Normalized text:', normalizedText);
+    
+    // SimK 값 추출 (다양한 패턴)
+    // 패턴: "SimK" 또는 "Sim K" 근처의 숫자들
+    // Flat SimK: 42.14 @ 175  /  Steep SimK: 43.59 @ 85
+    
+    // Flat K (K1) 추출
+    const flatPatterns = [
+        /Flat\s*(?:SimK|Sim\s*K)?\s*[:\s]*(\d{2}[.,]\d{1,2})/i,
+        /SimK\s*f\s*[:\s]*(\d{2}[.,]\d{1,2})/i,
+        /K1\s*[:\s]*(\d{2}[.,]\d{1,2})/i,
+        /(\d{2}[.,]\d{2})\s*[@at]\s*\d{1,3}.*Flat/i,
+        /Flat[^\d]*(\d{2}[.,]\d{2})/i
     ];
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': CLAUDE_API_KEY,
-            'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 2000,
-            messages: [{
-                role: 'user',
-                content: contentArray
-            }]
-        })
-    });
     
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Claude API error:', errorText);
-        throw new Error('Claude API 요청 실패: ' + response.status);
-    }
-    
-    const result = await response.json();
-    const content = result.content[0].text;
-    
-    // JSON 파싱
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-    }
-    
-    throw new Error('분석 결과를 파싱할 수 없습니다.');
-}
-
-// 기본 OCR (무료 버전 - 시뮬레이션)
-async function analyzeWithBasicOCR(files, eye) {
-    // 실제 구현에서는 Tesseract.js 등을 사용
-    // 여기서는 시뮬레이션으로 샘플 데이터 반환
-    
-    await new Promise(resolve => setTimeout(resolve, 1500)); // 분석 시뮬레이션
-    
-    return {
-        extracted: {
-            k1: null,
-            k2: null,
-            cct: null,
-            thinnest: null,
-            acd: null,
-            wtw: null,
-            ecd: null
-        },
-        indices: {
-            kpi: null,
-            kprob: null,
-            ppk: null,
-            isValue: null
-        },
-        assessment: 'unknown',
-        assessmentReason: '무료 버전에서는 AI 분석을 사용할 수 없습니다. 관리자에게 프리미엄 권한을 요청하세요.',
-        confidence: 0,
-        isPremiumRequired: true
-    };
-}
-
-// 분석 결과 표시
-function displayAnalysisResult(eye, result) {
-    const resultCard = document.getElementById(`ai-result-${eye}`);
-    const extractedDiv = document.getElementById(`extracted-values-${eye}`);
-    const assessmentDiv = document.getElementById(`ai-assessment-${eye}`);
-    const resultsContainer = document.getElementById('ai-analysis-results');
-    
-    // 추출된 값 표시
-    const values = result.extracted || {};
-    const valueLabels = {
-        k1: { label: 'K1 (Flat)', unit: 'D', field: `${eye}-k1` },
-        k2: { label: 'K2 (Steep)', unit: 'D', field: `${eye}-k2` },
-        cct: { label: 'CCT', unit: 'μm', field: `${eye}-cct` },
-        thinnest: { label: '최박부', unit: 'μm', field: null },
-        acd: { label: 'ACD', unit: 'mm', field: `${eye}-acd` },
-        wtw: { label: 'WTW', unit: 'mm', field: `${eye}-wtw` },
-        ecd: { label: 'ECD', unit: '/mm²', field: `${eye}-ecd` }
-    };
-    
-    let extractedHTML = '';
-    for (const [key, config] of Object.entries(valueLabels)) {
-        const value = values[key];
-        if (value !== null && value !== undefined) {
-            extractedHTML += `
-                <div class="extracted-value-row">
-                    <span class="extracted-value-label">${config.label}</span>
-                    <span>
-                        <span class="extracted-value-data">${value} ${config.unit}</span>
-                        ${config.field ? `<button type="button" class="btn-apply-value" onclick="applyExtractedValue('${config.field}', ${value})">적용</button>` : ''}
-                    </span>
-                </div>
-            `;
+    for (const pattern of flatPatterns) {
+        const match = normalizedText.match(pattern);
+        if (match) {
+            result.k1 = parseFloat(match[1].replace(',', '.'));
+            console.log('Found K1:', result.k1);
+            break;
         }
     }
     
-    if (result.isPremiumRequired) {
-        extractedHTML = `
-            <div class="extracted-value-row" style="background: var(--warning-light); color: var(--warning);">
-                <span>⚠️ 프리미엄 기능이 필요합니다</span>
+    // Steep K (K2) 추출
+    const steepPatterns = [
+        /Steep\s*(?:SimK|Sim\s*K)?\s*[:\s]*(\d{2}[.,]\d{1,2})/i,
+        /SimK\s*s\s*[:\s]*(\d{2}[.,]\d{1,2})/i,
+        /K2\s*[:\s]*(\d{2}[.,]\d{1,2})/i,
+        /(\d{2}[.,]\d{2})\s*[@at]\s*(\d{1,3}).*Steep/i,
+        /Steep[^\d]*(\d{2}[.,]\d{2})\s*[@at]?\s*(\d{1,3})?/i
+    ];
+    
+    for (const pattern of steepPatterns) {
+        const match = normalizedText.match(pattern);
+        if (match) {
+            result.k2 = parseFloat(match[1].replace(',', '.'));
+            if (match[2]) {
+                result.kAxis = parseInt(match[2]);
+            }
+            console.log('Found K2:', result.k2, 'Axis:', result.kAxis);
+            break;
+        }
+    }
+    
+    // Axis 별도 추출 (위에서 못 찾은 경우)
+    if (!result.kAxis) {
+        const axisPatterns = [
+            /Steep.*?[@at]\s*(\d{1,3})/i,
+            /Axis\s*[:\s]*(\d{1,3})/i,
+            /@\s*(\d{1,3})\s*°?/
+        ];
+        for (const pattern of axisPatterns) {
+            const match = normalizedText.match(pattern);
+            if (match && parseInt(match[1]) <= 180) {
+                result.kAxis = parseInt(match[1]);
+                console.log('Found Axis:', result.kAxis);
+                break;
+            }
+        }
+    }
+    
+    // CCT (Central Corneal Thickness) 추출
+    const cctPatterns = [
+        /(?:CCT|Central|Pachymetry)\s*[:\s]*(\d{3,4})\s*(?:μm|um|micron)?/i,
+        /Central\s*[:\s]*(\d{3,4})/i,
+        /Pachy[^\d]*(\d{3,4})/i,
+        /(\d{3,4})\s*μm.*Central/i
+    ];
+    
+    for (const pattern of cctPatterns) {
+        const match = normalizedText.match(pattern);
+        if (match) {
+            const value = parseInt(match[1]);
+            // CCT는 보통 400-700 μm 범위
+            if (value >= 350 && value <= 700) {
+                result.cct = value;
+                console.log('Found CCT:', result.cct);
+                break;
+            }
+        }
+    }
+    
+    // Thinnest 추출
+    const thinnestPatterns = [
+        /Thinnest\s*[:\s]*(\d{3,4})/i,
+        /(?:o\s*)?Thinnest\s*[:\s]*(\d{3,4})/i,
+        /Min(?:imum)?\s*[:\s]*(\d{3,4})/i
+    ];
+    
+    for (const pattern of thinnestPatterns) {
+        const match = normalizedText.match(pattern);
+        if (match) {
+            const value = parseInt(match[1]);
+            if (value >= 350 && value <= 700) {
+                result.thinnest = value;
+                console.log('Found Thinnest:', result.thinnest);
+                break;
+            }
+        }
+    }
+    
+    // ACD/AQD 추출
+    const acdPatterns = [
+        /AQD\s*[:\s]*(\d[.,]\d{1,2})/i,
+        /ACD\s*[:\s]*(\d[.,]\d{1,2})/i,
+        /Anterior\s*Chamber.*?(\d[.,]\d{1,2})\s*mm/i,
+        /Chamber\s*Depth\s*[:\s]*(\d[.,]\d{1,2})/i
+    ];
+    
+    for (const pattern of acdPatterns) {
+        const match = normalizedText.match(pattern);
+        if (match) {
+            const value = parseFloat(match[1].replace(',', '.'));
+            // ACD는 보통 2.0-4.5 mm 범위
+            if (value >= 1.5 && value <= 5.0) {
+                result.acd = value;
+                console.log('Found ACD:', result.acd);
+                break;
+            }
+        }
+    }
+    
+    // WTW 추출
+    const wtwPatterns = [
+        /WTW\s*[:\s]*(\d{1,2}[.,]\d{1,2})/i,
+        /White.to.White\s*[:\s]*(\d{1,2}[.,]\d{1,2})/i,
+        /W-T\s*[:\s]*(\d{1,2}[.,]\d{1,2})/i,
+        /(?:N-T|Nasal.Temporal)\s*[:\s]*(\d{1,2}[.,]\d{1,2})/i
+    ];
+    
+    for (const pattern of wtwPatterns) {
+        const match = normalizedText.match(pattern);
+        if (match) {
+            const value = parseFloat(match[1].replace(',', '.'));
+            // WTW는 보통 10.5-13.0 mm 범위
+            if (value >= 9.0 && value <= 14.0) {
+                result.wtw = value;
+                console.log('Found WTW:', result.wtw);
+                break;
+            }
+        }
+    }
+    
+    // 추가: 일반적인 숫자 패턴으로 K값 찾기 (위에서 못 찾은 경우)
+    if (!result.k1 || !result.k2) {
+        // 40-50 범위의 숫자 두 개 찾기 (K값일 가능성)
+        const kValuePattern = /(\d{2}[.,]\d{2})\s*D?\s*[@at]?\s*(\d{1,3})?/g;
+        const kMatches = [...normalizedText.matchAll(kValuePattern)];
+        
+        const kCandidates = kMatches
+            .map(m => ({ value: parseFloat(m[1].replace(',', '.')), axis: m[2] ? parseInt(m[2]) : null }))
+            .filter(k => k.value >= 38 && k.value <= 52);
+        
+        if (kCandidates.length >= 2) {
+            // 작은 값이 K1(Flat), 큰 값이 K2(Steep)
+            kCandidates.sort((a, b) => a.value - b.value);
+            if (!result.k1) result.k1 = kCandidates[0].value;
+            if (!result.k2) {
+                result.k2 = kCandidates[kCandidates.length - 1].value;
+                if (kCandidates[kCandidates.length - 1].axis) {
+                    result.kAxis = kCandidates[kCandidates.length - 1].axis;
+                }
+            }
+        }
+    }
+    
+    return result;
+}
+
+// OCR 결과 표시
+function displayOCRResult(eye, extracted) {
+    const resultCard = document.getElementById(`ocr-result-${eye}`);
+    const valuesDiv = document.getElementById(`ocr-values-${eye}`);
+    const resultsContainer = document.getElementById('ocr-results');
+    
+    const fieldConfig = [
+        { key: 'k1', label: 'K1 (Flat)', unit: 'D', inputId: `${eye}-k1` },
+        { key: 'k2', label: 'K2 (Steep)', unit: 'D', inputId: `${eye}-k2` },
+        { key: 'kAxis', label: 'Steep Axis', unit: '°', inputId: `${eye}-axis` },
+        { key: 'cct', label: 'CCT (중심각막두께)', unit: 'μm', inputId: `${eye}-cct` },
+        { key: 'thinnest', label: '최박부', unit: 'μm', inputId: null },
+        { key: 'acd', label: 'ACD (전방깊이)', unit: 'mm', inputId: `${eye}-acd` },
+        { key: 'wtw', label: 'WTW', unit: 'mm', inputId: `${eye}-wtw` }
+    ];
+    
+    let html = '';
+    for (const field of fieldConfig) {
+        const value = extracted[field.key];
+        const hasValue = value !== null && value !== undefined;
+        
+        html += `
+            <div class="ocr-value-row">
+                <span class="ocr-value-label">${field.label}</span>
+                <span>
+                    <span class="ocr-value-data ${hasValue ? '' : 'not-found'}">
+                        ${hasValue ? `${value} ${field.unit}` : '찾지 못함'}
+                    </span>
+                    ${hasValue && field.inputId ? 
+                        `<button type="button" class="btn-apply-value" onclick="applyOCRValue('${field.inputId}', ${value})">적용</button>` 
+                        : ''}
+                </span>
             </div>
         `;
-    } else if (!extractedHTML) {
-        extractedHTML = '<div class="extracted-value-row">추출된 값이 없습니다</div>';
     }
     
-    extractedDiv.innerHTML = extractedHTML;
-    
-    // 평가 결과 표시
-    const assessmentClass = result.assessment === 'normal' ? 'normal' : 
-                           result.assessment === 'suspect' ? 'suspect' : 
-                           result.assessment === 'abnormal' ? 'abnormal' : '';
-    
-    const assessmentIcon = result.assessment === 'normal' ? '✅' : 
-                          result.assessment === 'suspect' ? '⚠️' : 
-                          result.assessment === 'abnormal' ? '❌' : '❓';
-    
-    const assessmentText = result.assessment === 'normal' ? '정상 각막' : 
-                          result.assessment === 'suspect' ? '원추각막 의심' : 
-                          result.assessment === 'abnormal' ? '이상 소견' : '판정 불가';
-    
-    // 지표 표시
-    let indicesHTML = '';
-    if (result.indices) {
-        const indices = result.indices;
-        if (indices.kpi !== null) indicesHTML += `KPI: ${indices.kpi}% `;
-        if (indices.kprob !== null) indicesHTML += `Kprob: ${indices.kprob}% `;
-        if (indices.ppk !== null) indicesHTML += `PPK: ${indices.ppk}% `;
-        if (indices.isValue !== null) indicesHTML += `I-S: ${indices.isValue}D`;
-    }
-    
-    assessmentDiv.className = `ai-assessment ${assessmentClass}`;
-    assessmentDiv.innerHTML = `
-        <div class="assessment-title">${assessmentIcon} ${assessmentText}</div>
-        <div class="assessment-details">
-            ${result.assessmentReason || ''}
-            ${indicesHTML ? `<br><strong>지표:</strong> ${indicesHTML}` : ''}
-            ${result.confidence ? `<br><strong>신뢰도:</strong> ${result.confidence}%` : ''}
-        </div>
-    `;
-    
-    // 결과 저장
-    topoAnalysisData[eye].result = result;
-    
-    // 표시
+    valuesDiv.innerHTML = html;
     resultCard.style.display = 'block';
     resultsContainer.style.display = 'block';
 }
 
-// 추출된 값을 입력 필드에 적용
-function applyExtractedValue(fieldId, value) {
-    const field = document.getElementById(fieldId);
-    if (field) {
-        field.value = value;
-        field.dispatchEvent(new Event('input', { bubbles: true }));
-        showNotification(`${fieldId} 값이 적용되었습니다.`, 'success');
+// OCR 값 적용
+function applyOCRValue(inputId, value) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.value = value;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.style.backgroundColor = '#d1fae5';
+        setTimeout(() => {
+            input.style.backgroundColor = '';
+        }, 1000);
+        showNotification(`${inputId.toUpperCase()} 값이 적용되었습니다.`, 'success');
     }
 }
 
-// 모든 추출된 값 적용
-function applyAllExtractedData() {
+// 모든 OCR 데이터 적용
+function applyAllOCRData() {
+    let appliedCount = 0;
+    
     ['od', 'os'].forEach(eye => {
-        const data = topoAnalysisData[eye];
-        if (data?.result?.extracted) {
-            const values = data.result.extracted;
-            if (values.k1) applyExtractedValue(`${eye}-k1`, values.k1);
-            if (values.k2) applyExtractedValue(`${eye}-k2`, values.k2);
-            if (values.cct) applyExtractedValue(`${eye}-cct`, values.cct);
-            if (values.acd) applyExtractedValue(`${eye}-acd`, values.acd);
-            if (values.wtw) applyExtractedValue(`${eye}-wtw`, values.wtw);
-            if (values.ecd) applyExtractedValue(`${eye}-ecd`, values.ecd);
+        const data = ocrExtractedData[eye];
+        if (data?.extracted) {
+            const ext = data.extracted;
+            
+            if (ext.k1) { applyOCRValue(`${eye}-k1`, ext.k1); appliedCount++; }
+            if (ext.k2) { applyOCRValue(`${eye}-k2`, ext.k2); appliedCount++; }
+            if (ext.kAxis) { applyOCRValue(`${eye}-axis`, ext.kAxis); appliedCount++; }
+            if (ext.cct) { applyOCRValue(`${eye}-cct`, ext.cct); appliedCount++; }
+            if (ext.acd) { applyOCRValue(`${eye}-acd`, ext.acd); appliedCount++; }
+            if (ext.wtw) { applyOCRValue(`${eye}-wtw`, ext.wtw); appliedCount++; }
         }
     });
-    showNotification('모든 값이 적용되었습니다.', 'success');
+    
+    if (appliedCount > 0) {
+        showNotification(`${appliedCount}개의 값이 적용되었습니다.`, 'success');
+    } else {
+        showNotification('적용할 데이터가 없습니다.', 'info');
+    }
 }
 
-// AI 결과 영역 가시성 확인
-function checkAIResultsVisibility() {
-    const odVisible = document.getElementById('ai-result-od').style.display !== 'none';
-    const osVisible = document.getElementById('ai-result-os').style.display !== 'none';
-    document.getElementById('ai-analysis-results').style.display = (odVisible || osVisible) ? 'block' : 'none';
+// OCR 결과 가시성 체크
+function checkOCRResultsVisibility() {
+    const odVisible = document.getElementById('ocr-result-od')?.style.display !== 'none';
+    const osVisible = document.getElementById('ocr-result-os')?.style.display !== 'none';
+    const resultsContainer = document.getElementById('ocr-results');
+    if (resultsContainer) {
+        resultsContainer.style.display = (odVisible || osVisible) ? 'block' : 'none';
+    }
 }
 
 // 드래그 앤 드롭 설정
@@ -4635,12 +4741,9 @@ function setupDragAndDrop() {
             if (files.length > 0) {
                 const input = document.getElementById(`topo-file-${eye}`);
                 const dataTransfer = new DataTransfer();
-                // 여러 파일 모두 추가
-                Array.from(files).forEach(file => {
-                    dataTransfer.items.add(file);
-                });
+                dataTransfer.items.add(files[0]); // 첫 번째 파일만
                 input.files = dataTransfer.files;
-                handleMultiTopoUpload(eye, input);
+                handleTopoUploadOCR(eye, input);
             }
         });
     });
