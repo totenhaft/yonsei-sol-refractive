@@ -4437,73 +4437,82 @@ async function extractDataWithOCR(eye) {
     }
 }
 
-// Galilei 데이터 파싱 함수 - Galilei 리포트 형식에 최적화
+// Galilei 데이터 파싱 함수 - 실제 Galilei G4 리포트 형식에 최적화
 function parseGalileiData(text) {
     const result = {
-        k1: null,       // Flat SimK 우측 값
-        k2: null,       // Steep SimK 우측 값
-        kAxis: null,    // Steep SimK 더 우측의 Axis 값
-        cct: null,      // Thinnest 우측 값 (CCT로 사용)
-        thinnest: null, // Thinnest 값 (동일)
-        acd: null,      // AQD 우측 값
-        wtw: null       // WTW 또는 N-T 우측 값
+        k1: null,       // Flat SimK 값
+        k2: null,       // Steep SimK 값
+        kAxis: null,    // Steep SimK의 각도
+        cct: null,      // Thinnest 값 (CCT로 사용)
+        thinnest: null, // Thinnest 값
+        acd: null,      // AQD 값
+        wtw: null       // WTW, N-T 값
     };
     
-    // 텍스트를 줄 단위로 분리 (OCR 결과는 보통 줄바꿈 포함)
-    const lines = text.split(/\n/);
-    const normalizedText = text.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    // 원본 텍스트 로깅
+    console.log('=== OCR Raw Text ===');
+    console.log(text);
     
-    console.log('=== OCR Text Analysis ===');
-    console.log('Raw text:', text);
-    console.log('Lines:', lines.length);
+    // 줄 단위로 분리하여 처리 (OCR은 보통 줄 단위로 인식)
+    const lines = text.split(/[\n\r]+/);
+    console.log('=== Lines ===', lines.length);
+    lines.forEach((line, i) => console.log(`Line ${i}: "${line}"`));
+    
+    // 텍스트 정규화
+    let normalizedText = text
+        .replace(/[\n\r]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    
+    console.log('=== Normalized ===');
+    console.log(normalizedText);
     
     // ============================================
     // 1. Flat SimK → K1 추출
-    // 패턴: "Flat SimK" 다음에 오는 숫자 (예: "Flat SimK 42.14")
+    // 패턴: "Flat SimK 39.69 D" (공백 있음)
+    // OCR 오류 대응: "F1at", "Fiat", "Simk", "5imK" 등
     // ============================================
-    const flatSimKPatterns = [
-        /Flat\s*SimK?\s*[:\s]*(\d{2}[.,]\d{1,2})\s*D?/i,
-        /Flat\s+(\d{2}[.,]\d{1,2})/i,
-        /SimK\s*f[:\s]*(\d{2}[.,]\d{1,2})/i,
-        /Flat[^\d]{0,10}(\d{2}[.,]\d{2})/i
+    const flatPatterns = [
+        /[Ff][l1i]at\s*[Ss][il1]m\s*[Kk]\s*(\d{2}[\.,]\d{1,2})\s*[Dd]?/,
+        /[Ff]lat\s+(\d{2}[\.,]\d{1,2})\s*[Dd]/,
+        /Flat\s*SimK?\s*(\d{2}[\.,]\d{1,2})/i,
+        /SimK.*?Flat.*?(\d{2}[\.,]\d{2})/i,
     ];
     
-    for (const pattern of flatSimKPatterns) {
+    for (const pattern of flatPatterns) {
         const match = normalizedText.match(pattern);
         if (match) {
             const value = parseFloat(match[1].replace(',', '.'));
-            if (value >= 38 && value <= 52) {
+            if (value >= 35 && value <= 55) {
                 result.k1 = value;
-                console.log('✅ K1 (Flat SimK):', result.k1);
+                console.log('✅ K1 (Flat SimK):', result.k1, '| Pattern:', pattern.source);
                 break;
             }
         }
     }
     
     // ============================================
-    // 2. Steep SimK → K2 및 Axis 추출
-    // 패턴: "Steep SimK 43.59 @ 85" 또는 "Steep SimK 43.59 85"
+    // 2. Steep SimK → K2 및 Axis 추출  
+    // 패턴: "Steep SimK 41.44 D 88°"
     // ============================================
-    const steepSimKPatterns = [
-        /Steep\s*SimK?\s*[:\s]*(\d{2}[.,]\d{1,2})\s*D?\s*[@at]?\s*(\d{1,3})?/i,
-        /Steep\s+(\d{2}[.,]\d{1,2})\s*[@at]?\s*(\d{1,3})?/i,
-        /SimK\s*s[:\s]*(\d{2}[.,]\d{1,2})\s*[@at]?\s*(\d{1,3})?/i,
-        /Steep[^\d]{0,10}(\d{2}[.,]\d{2})\s*[@at°]?\s*(\d{1,3})?/i
+    const steepPatterns = [
+        /[Ss]teep\s*[Ss][il1]m\s*[Kk]\s*(\d{2}[\.,]\d{1,2})\s*[Dd]?\s*(\d{1,3})\s*°?/,
+        /[Ss]teep\s+(\d{2}[\.,]\d{1,2})\s*[Dd]?\s*(\d{1,3})/,
+        /Steep\s*SimK?\s*(\d{2}[\.,]\d{1,2})\s*[Dd]?\s*(\d{1,3})?/i,
     ];
     
-    for (const pattern of steepSimKPatterns) {
+    for (const pattern of steepPatterns) {
         const match = normalizedText.match(pattern);
         if (match) {
             const value = parseFloat(match[1].replace(',', '.'));
-            if (value >= 38 && value <= 52) {
+            if (value >= 35 && value <= 55) {
                 result.k2 = value;
-                console.log('✅ K2 (Steep SimK):', result.k2);
+                console.log('✅ K2 (Steep SimK):', result.k2, '| Pattern:', pattern.source);
                 
-                // Axis 추출 (@ 뒤 또는 K2 값 뒤의 숫자)
                 if (match[2]) {
-                    const axisValue = parseInt(match[2]);
-                    if (axisValue >= 0 && axisValue <= 180) {
-                        result.kAxis = axisValue;
+                    const axisVal = parseInt(match[2]);
+                    if (axisVal >= 0 && axisVal <= 180) {
+                        result.kAxis = axisVal;
                         console.log('✅ Axis:', result.kAxis);
                     }
                 }
@@ -4512,37 +4521,14 @@ function parseGalileiData(text) {
         }
     }
     
-    // Axis를 별도로 찾기 (위에서 못 찾은 경우)
-    if (result.k2 && !result.kAxis) {
-        // Steep 라인에서 @ 뒤의 숫자 찾기
-        const axisPatterns = [
-            /Steep[^@]*@\s*(\d{1,3})/i,
-            /Steep[^\d]*\d{2}[.,]\d{2}\s*[@°]?\s*(\d{1,3})/i,
-            /@\s*(\d{1,3})\s*[°]?/
-        ];
-        
-        for (const pattern of axisPatterns) {
-            const match = normalizedText.match(pattern);
-            if (match) {
-                const axisValue = parseInt(match[1]);
-                if (axisValue >= 0 && axisValue <= 180) {
-                    result.kAxis = axisValue;
-                    console.log('✅ Axis (별도 추출):', result.kAxis);
-                    break;
-                }
-            }
-        }
-    }
-    
     // ============================================
-    // 3. Thinnest → CCT 추출
-    // 패턴: "Thinnest 455" 또는 "o Thinnest 455 μm"
-    // Galilei에서 Thinnest가 CCT로 사용됨
+    // 3. o Thinnest → CCT 추출
+    // 패턴: "o Thinnest 580μm" 또는 "Thinnest 580"
     // ============================================
     const thinnestPatterns = [
-        /[o0]?\s*Thinnest\s*[:\s]*(\d{3,4})\s*(?:μm|um|pm)?/i,
-        /Thinnest\s*[:\s]*(\d{3,4})/i,
-        /Thinnest[^\d]{0,5}(\d{3})/i
+        /[o0]\s*[Tt]hinn?est\s*(\d{3,4})\s*[μuµ]?m?/,
+        /[Tt]hinn?est\s*(\d{3,4})\s*[μuµ]?m?/,
+        /[Tt]h[il1]nn?est\s*(\d{3,4})/,
     ];
     
     for (const pattern of thinnestPatterns) {
@@ -4551,8 +4537,8 @@ function parseGalileiData(text) {
             const value = parseInt(match[1]);
             if (value >= 350 && value <= 700) {
                 result.thinnest = value;
-                result.cct = value;  // Thinnest를 CCT로 사용
-                console.log('✅ CCT (Thinnest):', result.cct);
+                result.cct = value;
+                console.log('✅ CCT (Thinnest):', result.cct, '| Pattern:', pattern.source);
                 break;
             }
         }
@@ -4560,100 +4546,180 @@ function parseGalileiData(text) {
     
     // ============================================
     // 4. AQD → ACD 추출
-    // 패턴: "AQD 3.04" 또는 "AQD 3.04 mm"
+    // 패턴: "AQD 3.24 mm" 또는 "AQD 3.24"
     // ============================================
     const aqdPatterns = [
-        /AQD\s*[:\s]*(\d[.,]\d{1,2})\s*(?:mm)?/i,
-        /AQD[^\d]{0,5}(\d[.,]\d{2})/i,
-        /ACD\s*[:\s]*(\d[.,]\d{1,2})/i
+        /[Aa][Qq0O][Dd]\s*(\d[\.,]\d{1,2})\s*m?m?/,
+        /AQD\s+(\d[\.,]\d{2})/i,
+        /A[Q0O]D\s*(\d[\.,]\d{2})/i,
     ];
     
     for (const pattern of aqdPatterns) {
         const match = normalizedText.match(pattern);
         if (match) {
             const value = parseFloat(match[1].replace(',', '.'));
-            if (value >= 1.5 && value <= 5.0) {
+            if (value >= 1.5 && value <= 5.5) {
                 result.acd = value;
-                console.log('✅ ACD (AQD):', result.acd);
+                console.log('✅ ACD (AQD):', result.acd, '| Pattern:', pattern.source);
                 break;
             }
         }
     }
     
     // ============================================
-    // 5. WTW / N-T → WTW 추출
-    // 패턴: "WTW" 또는 "N-T 12.22" 또는 "N-T 12.22 mm"
+    // 5. WTW, N-T → WTW 추출
+    // 패턴: "WTW, N-T 12.77 mm" 또는 "N-T 12.77"
     // ============================================
     const wtwPatterns = [
-        /WTW\s*[:\s]*(\d{1,2}[.,]\d{1,2})\s*(?:mm)?/i,
-        /N-T\s*[:\s]*(\d{1,2}[.,]\d{1,2})\s*(?:mm)?/i,
-        /N\s*-\s*T\s*[:\s]*(\d{1,2}[.,]\d{1,2})/i,
-        /(?:White|W)\s*(?:to|-)?\s*(?:White|W)\s*[:\s]*(\d{1,2}[.,]\d{1,2})/i,
-        /WTW[^\d]{0,5}(\d{2}[.,]\d{2})/i,
-        /N-T[^\d]{0,5}(\d{2}[.,]\d{2})/i
+        /[Ww][Tt][Ww][\s,]*[Nn]\s*-?\s*[Tt]\s*(\d{1,2}[\.,]\d{1,2})\s*m?m?/,
+        /[Nn]\s*-?\s*[Tt]\s*(\d{1,2}[\.,]\d{1,2})\s*m?m?/,
+        /[Ww][Tt][Ww]\s*(\d{1,2}[\.,]\d{1,2})/,
+        /WTW.*?(\d{2}[\.,]\d{2})/i,
     ];
     
     for (const pattern of wtwPatterns) {
         const match = normalizedText.match(pattern);
         if (match) {
             const value = parseFloat(match[1].replace(',', '.'));
-            if (value >= 9.0 && value <= 14.0) {
+            if (value >= 9.0 && value <= 15.0) {
                 result.wtw = value;
-                console.log('✅ WTW (N-T):', result.wtw);
+                console.log('✅ WTW:', result.wtw, '| Pattern:', pattern.source);
                 break;
             }
         }
     }
     
     // ============================================
-    // 6. 백업: 숫자 패턴으로 K값 찾기
-    // K1, K2가 없는 경우 40-50 범위 숫자 찾기
+    // 백업 전략 1: "D" 단위가 붙은 K값 찾기
     // ============================================
     if (!result.k1 || !result.k2) {
-        console.log('⚠️ K값 백업 검색 시작...');
+        console.log('⚠️ K값 백업 검색 (D 단위)...');
         
-        // D 또는 디옵터 단위의 숫자 찾기
-        const kValuePattern = /(\d{2}[.,]\d{2})\s*D/g;
-        const kMatches = [...normalizedText.matchAll(kValuePattern)];
+        // "숫자 D" 패턴 찾기 (예: "39.69 D", "41.44 D")
+        const kWithDPattern = /(\d{2}[\.,]\d{2})\s*[Dd](?!\s*[ia])/g;
+        const kMatches = [...normalizedText.matchAll(kWithDPattern)];
         
-        const kCandidates = kMatches
+        const kValues = kMatches
             .map(m => parseFloat(m[1].replace(',', '.')))
-            .filter(k => k >= 38 && k <= 52)
+            .filter(v => v >= 38 && v <= 50)
             .sort((a, b) => a - b);
         
-        console.log('K값 후보:', kCandidates);
+        console.log('K값 후보 (D단위):', kValues);
         
-        if (kCandidates.length >= 2) {
+        if (kValues.length >= 2) {
             if (!result.k1) {
-                result.k1 = kCandidates[0];
+                result.k1 = kValues[0];
                 console.log('✅ K1 (백업):', result.k1);
             }
             if (!result.k2) {
-                result.k2 = kCandidates[kCandidates.length - 1];
+                result.k2 = kValues[kValues.length > 2 ? 1 : kValues.length - 1];
                 console.log('✅ K2 (백업):', result.k2);
             }
         }
     }
     
     // ============================================
-    // 7. 백업: 3자리 숫자로 CCT 찾기
+    // 백업 전략 2: μm 단위가 붙은 CCT 찾기
     // ============================================
     if (!result.cct) {
-        const cctPattern = /(\d{3})\s*(?:μm|um|pm)/gi;
-        const cctMatches = [...normalizedText.matchAll(cctPattern)];
+        console.log('⚠️ CCT 백업 검색 (μm 단위)...');
         
-        for (const match of cctMatches) {
-            const value = parseInt(match[1]);
-            if (value >= 400 && value <= 650) {
-                result.cct = value;
-                result.thinnest = value;
-                console.log('✅ CCT (백업):', result.cct);
-                break;
+        const cctWithUnitPattern = /(\d{3})\s*[μuµ]m/g;
+        const cctMatches = [...normalizedText.matchAll(cctWithUnitPattern)];
+        
+        const cctValues = cctMatches
+            .map(m => parseInt(m[1]))
+            .filter(v => v >= 400 && v <= 650)
+            .sort((a, b) => a - b);
+        
+        console.log('CCT 후보 (μm단위):', cctValues);
+        
+        if (cctValues.length > 0) {
+            result.cct = cctValues[0]; // 가장 작은 값 = Thinnest
+            result.thinnest = result.cct;
+            console.log('✅ CCT (백업):', result.cct);
+        }
+    }
+    
+    // ============================================
+    // 백업 전략 3: mm 단위가 붙은 값들 찾기
+    // ============================================
+    if (!result.acd || !result.wtw) {
+        console.log('⚠️ ACD/WTW 백업 검색 (mm 단위)...');
+        
+        const mmPattern = /(\d{1,2}[\.,]\d{2})\s*mm/gi;
+        const mmMatches = [...normalizedText.matchAll(mmPattern)];
+        
+        const mmValues = mmMatches.map(m => parseFloat(m[1].replace(',', '.')));
+        console.log('mm 단위 값들:', mmValues);
+        
+        for (const val of mmValues) {
+            if (!result.wtw && val >= 10 && val <= 14) {
+                result.wtw = val;
+                console.log('✅ WTW (백업):', result.wtw);
+            } else if (!result.acd && val >= 2.5 && val <= 4.5) {
+                result.acd = val;
+                console.log('✅ ACD (백업):', result.acd);
             }
         }
     }
     
-    console.log('=== 추출 결과 ===', result);
+    // ============================================
+    // 백업 전략 4: 범위 기반 숫자 찾기
+    // ============================================
+    
+    // K값 최종 백업
+    if (!result.k1 || !result.k2) {
+        const allDecimals = normalizedText.match(/\d{2}[\.,]\d{2}/g) || [];
+        const kCandidates = allDecimals
+            .map(n => parseFloat(n.replace(',', '.')))
+            .filter(n => n >= 38 && n <= 50)
+            .sort((a, b) => a - b);
+        
+        // 중복 제거
+        const uniqueK = [...new Set(kCandidates.map(k => k.toFixed(2)))].map(k => parseFloat(k));
+        console.log('K값 최종 후보:', uniqueK);
+        
+        if (uniqueK.length >= 2) {
+            if (!result.k1) result.k1 = uniqueK[0];
+            if (!result.k2) result.k2 = uniqueK[1];
+        }
+    }
+    
+    // Axis 백업 (K2 근처의 0-180 숫자)
+    if (result.k2 && !result.kAxis) {
+        // K2 값 뒤에 오는 2-3자리 숫자
+        const k2Str = result.k2.toFixed(2).replace('.', '[\.,]');
+        const axisAfterK2 = new RegExp(k2Str + '\\s*[Dd]?\\s*(\\d{1,3})');
+        const axisMatch = normalizedText.match(axisAfterK2);
+        
+        if (axisMatch) {
+            const axisVal = parseInt(axisMatch[1]);
+            if (axisVal >= 0 && axisVal <= 180) {
+                result.kAxis = axisVal;
+                console.log('✅ Axis (백업):', result.kAxis);
+            }
+        }
+    }
+    
+    // CCT 최종 백업
+    if (!result.cct) {
+        const threeDigits = normalizedText.match(/\d{3}/g) || [];
+        const cctCandidates = threeDigits
+            .map(n => parseInt(n))
+            .filter(n => n >= 450 && n <= 650);
+        
+        if (cctCandidates.length > 0) {
+            result.cct = Math.min(...cctCandidates);
+            result.thinnest = result.cct;
+            console.log('✅ CCT (최종 백업):', result.cct);
+        }
+    }
+    
+    console.log('=== 최종 추출 결과 ===');
+    console.log('K1:', result.k1, '| K2:', result.k2, '| Axis:', result.kAxis);
+    console.log('CCT:', result.cct, '| ACD:', result.acd, '| WTW:', result.wtw);
+    
     return result;
 }
 
