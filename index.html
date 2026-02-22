@@ -4052,27 +4052,25 @@ input:focus, select:focus {
 // Firebase & Authentication Module
 // ============================================
 
-// ⚠️ Firebase 설정 - 아래 값들을 본인의 Firebase 프로젝트 정보로 교체하세요
+// Firebase 설정
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDjXsLII4yWswECOjbSXDhrEvKDhV2WpUY",
+    authDomain: "refractive-surgery-check.firebaseapp.com",
+    projectId: "refractive-surgery-check",
+    storageBucket: "refractive-surgery-check.firebasestorage.app",
+    messagingSenderId: "877429462758",
+    appId: "1:877429462758:web:5115613120c61c7742cd27"
 };
 
-// ⚠️ DEMO_MODE 설정
-// - true: 데모 모드 (localStorage 사용, Firebase 불필요)
-// - false: 실제 운영 모드 (Firebase 필수)
-const DEMO_MODE = false;  // Firebase 활성화됨
+// Firebase 활성화
+const DEMO_MODE = false;
 
 console.log('🔧 DEMO_MODE:', DEMO_MODE);
 console.log('🔧 Firebase config apiKey:', firebaseConfig.apiKey ? firebaseConfig.apiKey.substring(0, 10) + '...' : 'NOT SET');
 
-// Firebase 초기화 (DEMO_MODE가 false일 때만)
+// Firebase 초기화
 let auth, db;
-if (!DEMO_MODE && firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+if (!DEMO_MODE && firebaseConfig.apiKey) {
     try {
         firebase.initializeApp(firebaseConfig);
         auth = firebase.auth();
@@ -4083,11 +4081,6 @@ if (!DEMO_MODE && firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_K
     } catch (error) {
         console.error('❌ Firebase initialization error:', error);
     }
-} else if (!DEMO_MODE) {
-    console.warn('⚠️ Firebase config not set. Please update firebaseConfig with your Firebase project settings.');
-    console.warn('⚠️ Current apiKey:', firebaseConfig.apiKey);
-} else {
-    console.log('ℹ️ Running in DEMO_MODE - Firebase disabled');
 }
 
 const LOCAL_STORAGE_KEY = 'yonsei_sol_patients';
@@ -4097,7 +4090,22 @@ const PREMIUM_USERS_KEY = 'yonsei_sol_premium_users';
 const ADMIN_EMAIL = 'totenhaft@gmail.com';
 
 // Claude API 설정 (관리자가 설정)
-const CLAUDE_API_KEY = ''; // 관리자가 Claude API 키를 설정
+// Claude API 키는 Firestore 'settings/apiKeys' 문서에서 가져옴 (보안)
+let CLAUDE_API_KEY = '';
+
+// API 키 로드 함수 (관리자/프리미엄 사용자만)
+async function loadClaudeApiKey() {
+    if (!db) return;
+    try {
+        const doc = await db.collection('settings').doc('apiKeys').get();
+        if (doc.exists) {
+            CLAUDE_API_KEY = doc.data().claudeApiKey || '';
+            console.log('✅ Claude API key loaded');
+        }
+    } catch (error) {
+        console.log('ℹ️ API key not available for this user');
+    }
+}
 
 // Current user state
 let currentUser = null;
@@ -4639,6 +4647,8 @@ function handleLogin() {
                             if (approved || userCredential.user.email === ADMIN_EMAIL) {
                                 currentUser = userCredential.user;
                                 updateAuthUI();
+                                loadClaudeApiKey(); // API 키 로드
+                                updateAIModeBadge();
                                 showNotification('로그인 성공!', 'success');
                             } else {
                                 auth.signOut();
@@ -7712,6 +7722,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (approved || user.email === ADMIN_EMAIL) {
                         currentUser = user;
                         updateAuthUI();
+                        loadClaudeApiKey(); // API 키 로드
                         updateAIModeBadge();
                     }
                 });
