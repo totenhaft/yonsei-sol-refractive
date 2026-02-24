@@ -3234,6 +3234,385 @@ input:focus, select:focus {
     margin: 0;
     font-size: 0.875rem;
 }
+
+/* ============================================
+   Wellington Nomogram Calculator Styles
+   ============================================ */
+
+.wellington-panel {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-top: var(--space-md);
+}
+
+.wellington-panel .panel-header {
+    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+    color: white;
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wellington-panel .panel-header h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.wellington-panel .panel-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.wellington-container {
+    padding: var(--space-lg);
+}
+
+.wellington-info-box {
+    background: #ecfeff;
+    border: 1px solid #a5f3fc;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    font-size: 0.85rem;
+}
+
+.wellington-info-box h4 {
+    color: #0891b2;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.wellington-info-box p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.wellington-eye-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+    .wellington-eye-panels {
+        grid-template-columns: 1fr;
+    }
+}
+
+.wellington-eye-panel {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    border: 2px solid transparent;
+}
+
+.wellington-eye-panel.od {
+    border-color: #3b82f6;
+}
+
+.wellington-eye-panel.os {
+    border-color: #22c55e;
+}
+
+.wellington-eye-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.wellington-eye-panel.od .wellington-eye-header span:first-child {
+    color: #3b82f6;
+}
+
+.wellington-eye-panel.os .wellington-eye-header span:first-child {
+    color: #22c55e;
+}
+
+.btn-copy-wellington {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+}
+
+.btn-copy-wellington:hover {
+    background: #ecfeff;
+    color: #0891b2;
+    border-color: #0891b2;
+}
+
+.wellington-input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+}
+
+.wellington-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wellington-input-group label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.wellington-input-group .input-with-unit input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.wellington-input-group .input-with-unit input:focus {
+    outline: none;
+    border-color: #0891b2;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.15);
+}
+
+.wellington-input-group select {
+    padding: 8px 10px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.wellington-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.btn-calculate-wellington {
+    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-calculate-wellington:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(8, 145, 178, 0.4);
+}
+
+.wellington-results-section {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-top: var(--space-lg);
+}
+
+.wellington-results-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.wellington-results-placeholder .placeholder-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-sm);
+    opacity: 0.5;
+}
+
+.wellington-result-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+    .wellington-result-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.wellington-result-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    border: 2px solid transparent;
+}
+
+.wellington-result-card.od {
+    border-color: #3b82f6;
+}
+
+.wellington-result-card.os {
+    border-color: #22c55e;
+}
+
+.wellington-result-header {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wellington-result-card.od .wellington-result-header {
+    color: #3b82f6;
+}
+
+.wellington-result-card.os .wellington-result-header {
+    color: #22c55e;
+}
+
+.wellington-type-badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.wellington-type-badge.myopia {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.wellington-type-badge.hyperopia {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.wellington-type-badge.mixed {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.wellington-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin-bottom: var(--space-md);
+}
+
+.wellington-table th,
+.wellington-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid var(--border-light);
+}
+
+.wellington-table th {
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.wellington-table .highlight {
+    background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+    font-weight: 700;
+}
+
+.wellington-table .value-changed {
+    color: #0891b2;
+    font-weight: 700;
+}
+
+.wellington-adjustment-box {
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    margin-top: var(--space-sm);
+}
+
+.wellington-adjustment-box .adj-title {
+    font-weight: 600;
+    color: #0f766e;
+    margin-bottom: 4px;
+}
+
+.wellington-adjustment-box .adj-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    border-bottom: 1px dashed #99f6e4;
+}
+
+.wellington-adjustment-box .adj-item:last-child {
+    border-bottom: none;
+}
+
+.wellington-adjustment-box .adj-value {
+    font-weight: 600;
+    color: #0891b2;
+}
+
+.wellington-print-actions {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: center;
+}
+
+.btn-print-wellington {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-print-wellington:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+}
+
+.btn-print-wellington:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
     </style>
 </head>
 <body>
@@ -3985,6 +4364,115 @@ input:focus, select:focus {
                         </div>
                         <p>환자 정보를 입력하고<br><strong>양안 계산하기</strong> 버튼을 클릭하세요</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- Wellington Nomogram Calculator Section -->
+            <section class="panel wellington-panel" id="wellington-panel">
+                <div class="panel-header">
+                    <h2>📊 Wellington Nomogram Calculator</h2>
+                    <span class="panel-badge">EX500 LASIK</span>
+                </div>
+
+                <div class="wellington-container">
+                    <div class="wellington-info-box">
+                        <h4>ℹ️ Wellington Nomogram 안내</h4>
+                        <p>
+                            Wellington Eye Clinic & Dr. Arthur Cummings의 EX500 Nomogram입니다.<br>
+                            • <strong>근시</strong>: SPH -2D 미만은 -0.25D 추가, -6D 이상은 단계별 공제<br>
+                            • <strong>난시</strong>: CYL -2D 이상은 20-25% 공제<br>
+                            • <strong>원시/혼합난시</strong>: 별도 프로토콜 적용
+                        </p>
+                    </div>
+
+                    <!-- 입력 섹션 -->
+                    <div class="wellington-eye-panels">
+                        <!-- 우안 -->
+                        <div class="wellington-eye-panel od">
+                            <div class="wellington-eye-header">
+                                <span>👁️ 우안 (OD)</span>
+                                <button type="button" class="btn-copy-wellington" onclick="copyToWellington('od')">
+                                    ↑ 메인 폼에서 복사
+                                </button>
+                            </div>
+                            <div class="wellington-input-grid">
+                                <div class="wellington-input-group">
+                                    <label>SPH</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="well-od-sph" step="0.25" value="-3.00">
+                                        <span class="unit">D</span>
+                                    </div>
+                                </div>
+                                <div class="wellington-input-group">
+                                    <label>CYL</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="well-od-cyl" step="0.25" value="-1.00">
+                                        <span class="unit">D</span>
+                                    </div>
+                                </div>
+                                <div class="wellington-input-group">
+                                    <label>AXIS</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="well-od-axis" min="1" max="180" value="180">
+                                        <span class="unit">°</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 좌안 -->
+                        <div class="wellington-eye-panel os">
+                            <div class="wellington-eye-header">
+                                <span>👁️ 좌안 (OS)</span>
+                                <button type="button" class="btn-copy-wellington" onclick="copyToWellington('os')">
+                                    ↑ 메인 폼에서 복사
+                                </button>
+                            </div>
+                            <div class="wellington-input-grid">
+                                <div class="wellington-input-group">
+                                    <label>SPH</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="well-os-sph" step="0.25" value="-3.25">
+                                        <span class="unit">D</span>
+                                    </div>
+                                </div>
+                                <div class="wellington-input-group">
+                                    <label>CYL</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="well-os-cyl" step="0.25" value="-0.75">
+                                        <span class="unit">D</span>
+                                    </div>
+                                </div>
+                                <div class="wellington-input-group">
+                                    <label>AXIS</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="well-os-axis" min="1" max="180" value="175">
+                                        <span class="unit">°</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wellington-actions">
+                        <button type="button" class="btn-calculate-wellington" onclick="calculateWellingtonNomogram()">
+                            📊 Wellington Nomogram 계산
+                        </button>
+                    </div>
+
+                    <!-- 결과 섹션 -->
+                    <div class="wellington-results-section" id="wellington-results">
+                        <div class="wellington-results-placeholder">
+                            <div class="placeholder-icon">📊</div>
+                            <p>굴절값을 입력하고 <strong>Wellington Nomogram 계산</strong> 버튼을 클릭하세요</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wellington-print-actions">
+                    <button type="button" class="btn-print-wellington" onclick="printWellingtonReport()" id="btn-print-wellington" disabled>
+                        🖨️ Nomogram 결과 출력
+                    </button>
                 </div>
             </section>
         </main>
@@ -8066,6 +8554,416 @@ class RefractiveCalculator {
     }
 }
 
+// ============================================
+// Wellington Nomogram Calculator Functions
+// ============================================
+
+/**
+ * 메인 폼에서 Wellington 입력란으로 값 복사
+ */
+function copyToWellington(eye) {
+    const sph = document.getElementById(`${eye}-sph`)?.value || -3;
+    const cyl = document.getElementById(`${eye}-cyl`)?.value || -1;
+    const axis = document.getElementById(`${eye}-axis`)?.value || 180;
+    
+    document.getElementById(`well-${eye}-sph`).value = sph;
+    document.getElementById(`well-${eye}-cyl`).value = cyl;
+    document.getElementById(`well-${eye}-axis`).value = axis;
+    
+    showNotification(`${eye.toUpperCase()} 값이 Wellington Nomogram에 복사되었습니다.`, 'success');
+}
+
+/**
+ * Wellington Nomogram 계산 - PDF 기반 정확한 구현
+ */
+function calculateWellingtonForEye(sph, cyl, axis) {
+    const originalSph = parseFloat(sph);
+    const originalCyl = parseFloat(cyl);
+    const originalAxis = parseFloat(axis);
+    
+    let modifiedSph = originalSph;
+    let modifiedCyl = originalCyl;
+    let modifiedAxis = originalAxis;
+    let adjustments = [];
+    let refractionType = '';
+    
+    // 굴절 유형 판단
+    const se = originalSph + (originalCyl / 2);
+    
+    if (originalSph < 0 && (originalSph + originalCyl) < 0) {
+        // 근시 (Myopia) - SPH 음수, SPH+CYL도 음수
+        refractionType = 'myopia';
+        
+        // Sphere 보정
+        if (originalSph > -2.00) {
+            // -2.00 D 미만: -0.25 D 추가 (더 많이 깎음)
+            modifiedSph = originalSph - 0.25;
+            adjustments.push({ label: 'SPH 보정 (저도근시)', value: '-0.25 D 추가', reason: 'SPH > -2.00D' });
+        } else if (originalSph >= -6.00) {
+            // -2.00 ~ -6.00 D: 보정 없음
+            adjustments.push({ label: 'SPH 보정', value: '없음', reason: '-2.00 ~ -6.00D' });
+        } else if (originalSph >= -7.00) {
+            // -6.25 ~ -7.00 D: 0.25 D 공제
+            modifiedSph = originalSph + 0.25;
+            adjustments.push({ label: 'SPH 보정', value: '+0.25 D 공제', reason: '-6.25 ~ -7.00D' });
+        } else if (originalSph >= -8.00) {
+            // -7.00 ~ -8.00 D: 0.50 D 공제
+            modifiedSph = originalSph + 0.50;
+            adjustments.push({ label: 'SPH 보정', value: '+0.50 D 공제', reason: '-7.00 ~ -8.00D' });
+        } else if (originalSph >= -9.00) {
+            // -8.00 ~ -9.00 D: 0.75 D 공제
+            modifiedSph = originalSph + 0.75;
+            adjustments.push({ label: 'SPH 보정', value: '+0.75 D 공제', reason: '-8.00 ~ -9.00D' });
+        } else if (originalSph >= -10.00) {
+            // -9.00 ~ -10.00 D: 1.00 D 공제
+            modifiedSph = originalSph + 1.00;
+            adjustments.push({ label: 'SPH 보정', value: '+1.00 D 공제', reason: '-9.00 ~ -10.00D' });
+        } else if (originalSph >= -11.00) {
+            // -10.00 ~ -11.00 D: 1.25 D 공제
+            modifiedSph = originalSph + 1.25;
+            adjustments.push({ label: 'SPH 보정', value: '+1.25 D 공제', reason: '-10.00 ~ -11.00D' });
+        } else {
+            // -11.00 ~ -12.00 D: 1.50 D 공제
+            modifiedSph = originalSph + 1.50;
+            adjustments.push({ label: 'SPH 보정', value: '+1.50 D 공제', reason: '-11.00 ~ -12.00D' });
+        }
+        
+        // Cylinder 보정 (근시)
+        if (Math.abs(originalCyl) < 2.00) {
+            // -2.00 D 미만: 보정 없음
+            adjustments.push({ label: 'CYL 보정', value: '없음', reason: 'CYL < -2.00D' });
+        } else {
+            // -2.00 D 이상: 20-25% 공제 (22.5% 사용)
+            const cylReduction = Math.abs(originalCyl) * 0.225;
+            modifiedCyl = originalCyl + cylReduction; // CYL이 음수이므로 + 하면 줄어듦
+            adjustments.push({ 
+                label: 'CYL 보정 (고도난시)', 
+                value: `${(cylReduction).toFixed(2)} D 공제 (22.5%)`, 
+                reason: 'CYL ≥ -2.00D' 
+            });
+        }
+        
+    } else if (originalSph > 0) {
+        // 원시 (Hyperopia)
+        refractionType = 'hyperopia';
+        
+        // Sphere 보정
+        if (originalSph < 5.00) {
+            adjustments.push({ label: 'SPH 보정', value: '없음', reason: 'SPH < +5.00D' });
+        } else if (originalSph < 6.00) {
+            modifiedSph = originalSph - 0.25;
+            adjustments.push({ label: 'SPH 보정', value: '-0.25 D 공제', reason: 'SPH ≥ +5.00D' });
+        } else {
+            // +6.00 D 이상: 추가 공제 (0.25 + 추가)
+            modifiedSph = originalSph - 0.50;
+            adjustments.push({ label: 'SPH 보정', value: '-0.50 D 공제', reason: 'SPH ≥ +6.00D' });
+        }
+        
+        // Cylinder 보정 (원시)
+        if (originalCyl > -2.25 && originalCyl <= 0) {
+            adjustments.push({ label: 'CYL 보정', value: '없음', reason: 'CYL > -2.25D' });
+        } else if (Math.abs(originalCyl) <= 5.00) {
+            const cylReduction = Math.abs(originalCyl) * 0.225;
+            modifiedCyl = originalCyl + cylReduction;
+            adjustments.push({ 
+                label: 'CYL 보정', 
+                value: `${cylReduction.toFixed(2)} D 공제 (22.5%)`, 
+                reason: '-2.25 ~ -5.00D' 
+            });
+        }
+        
+    } else if (originalSph > 0 && (originalSph + originalCyl) < 0) {
+        // 혼합난시 (Mixed Astigmatism) - SPH 양수, SPH+CYL 음수
+        refractionType = 'mixed';
+        
+        // 3단계 보정
+        adjustments.push({ label: '혼합난시 감지', value: '3단계 보정 적용', reason: 'SPH+, SPH+CYL-' });
+        
+        // 1단계: +cylinder로 전환 (이미 -cylinder 형식이므로 변환)
+        // -cylinder를 +cylinder로: SPH' = SPH + CYL, CYL' = -CYL, AXIS' = AXIS ± 90
+        const plusCylSph = originalSph + originalCyl;
+        const plusCylCyl = -originalCyl;
+        let plusCylAxis = originalAxis + 90;
+        if (plusCylAxis > 180) plusCylAxis -= 180;
+        
+        adjustments.push({ 
+            label: '1단계: +CYL 전환', 
+            value: `${plusCylSph.toFixed(2)} / +${plusCylCyl.toFixed(2)} x ${plusCylAxis}°`, 
+            reason: '' 
+        });
+        
+        // 2단계: 난시 20-25% 공제
+        const cylReduction = plusCylCyl * 0.225;
+        const step2Cyl = plusCylCyl - cylReduction;
+        adjustments.push({ 
+            label: '2단계: CYL 공제', 
+            value: `-${cylReduction.toFixed(2)} D (22.5%)`, 
+            reason: '' 
+        });
+        
+        // 3단계: 근시에 Nomogram 적용 (SPH가 음수인 경우)
+        let step3Sph = plusCylSph;
+        if (plusCylSph < 0 && plusCylSph > -2.00) {
+            step3Sph = plusCylSph - 0.25;
+            adjustments.push({ label: '3단계: SPH 보정', value: '-0.25 D 추가', reason: '저도근시' });
+        }
+        
+        // 다시 -cylinder로 변환
+        modifiedSph = step3Sph + step2Cyl;
+        modifiedCyl = -step2Cyl;
+        modifiedAxis = plusCylAxis - 90;
+        if (modifiedAxis <= 0) modifiedAxis += 180;
+        
+    } else {
+        // 기타 (정시 등)
+        refractionType = 'emmetropia';
+        adjustments.push({ label: '보정', value: '없음', reason: '정시 또는 저도 굴절이상' });
+    }
+    
+    // 0.25D 단위로 반올림
+    modifiedSph = Math.round(modifiedSph * 4) / 4;
+    modifiedCyl = Math.round(modifiedCyl * 4) / 4;
+    
+    return {
+        original: { sph: originalSph, cyl: originalCyl, axis: originalAxis, se: se },
+        modified: { 
+            sph: modifiedSph, 
+            cyl: modifiedCyl, 
+            axis: modifiedAxis,
+            se: modifiedSph + (modifiedCyl / 2)
+        },
+        refractionType: refractionType,
+        adjustments: adjustments
+    };
+}
+
+/**
+ * Wellington Nomogram 계산 실행
+ */
+function calculateWellingtonNomogram() {
+    const odResult = calculateWellingtonForEye(
+        document.getElementById('well-od-sph').value,
+        document.getElementById('well-od-cyl').value,
+        document.getElementById('well-od-axis').value
+    );
+    
+    const osResult = calculateWellingtonForEye(
+        document.getElementById('well-os-sph').value,
+        document.getElementById('well-os-cyl').value,
+        document.getElementById('well-os-axis').value
+    );
+    
+    window.wellingtonResults = { od: odResult, os: osResult };
+    renderWellingtonResults(odResult, osResult);
+    document.getElementById('btn-print-wellington').disabled = false;
+}
+
+/**
+ * Wellington 결과 렌더링
+ */
+function renderWellingtonResults(odResult, osResult) {
+    const container = document.getElementById('wellington-results');
+    container.innerHTML = `
+        <div class="wellington-result-cards">
+            ${renderWellingtonEyeResult('od', '우안 (OD)', odResult)}
+            ${renderWellingtonEyeResult('os', '좌안 (OS)', osResult)}
+        </div>
+    `;
+}
+
+function renderWellingtonEyeResult(eye, label, result) {
+    const typeLabels = {
+        'myopia': '근시',
+        'hyperopia': '원시',
+        'mixed': '혼합난시',
+        'emmetropia': '정시'
+    };
+    
+    const adjustmentsHtml = result.adjustments.map(adj => `
+        <div class="adj-item">
+            <span>${adj.label}</span>
+            <span class="adj-value">${adj.value}</span>
+        </div>
+        ${adj.reason ? `<div style="font-size: 0.7rem; color: var(--text-tertiary); margin-left: 8px;">(${adj.reason})</div>` : ''}
+    `).join('');
+    
+    const sphChanged = result.original.sph !== result.modified.sph;
+    const cylChanged = result.original.cyl !== result.modified.cyl;
+    const axisChanged = result.original.axis !== result.modified.axis;
+    
+    return `
+        <div class="wellington-result-card ${eye}">
+            <div class="wellington-result-header">
+                <span>👁️ ${label}</span>
+                <span class="wellington-type-badge ${result.refractionType}">${typeLabels[result.refractionType] || result.refractionType}</span>
+            </div>
+            
+            <table class="wellington-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>SPH</th>
+                        <th>CYL</th>
+                        <th>AXIS</th>
+                        <th>SE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>원본 (입력값)</td>
+                        <td>${result.original.sph.toFixed(2)}</td>
+                        <td>${result.original.cyl.toFixed(2)}</td>
+                        <td>${result.original.axis}°</td>
+                        <td>${result.original.se.toFixed(2)}</td>
+                    </tr>
+                    <tr class="highlight">
+                        <td><strong>보정값 (레이저 입력)</strong></td>
+                        <td class="${sphChanged ? 'value-changed' : ''}">${result.modified.sph.toFixed(2)}</td>
+                        <td class="${cylChanged ? 'value-changed' : ''}">${result.modified.cyl.toFixed(2)}</td>
+                        <td class="${axisChanged ? 'value-changed' : ''}">${result.modified.axis}°</td>
+                        <td>${result.modified.se.toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="wellington-adjustment-box">
+                <div class="adj-title">📋 적용된 보정</div>
+                ${adjustmentsHtml}
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Wellington Nomogram 인쇄
+ */
+function printWellingtonReport() {
+    if (!window.wellingtonResults) {
+        showNotification('먼저 Nomogram을 계산해주세요.', 'warning');
+        return;
+    }
+    
+    const results = window.wellingtonResults;
+    const patientName = document.getElementById('patient-name')?.value || '-';
+    const patientId = document.getElementById('patient-id')?.value || '-';
+    
+    const printContent = `
+        <!DOCTYPE html>
+        <html lang="ko">
+        <head>
+            <meta charset="UTF-8">
+            <title>Wellington Nomogram Report</title>
+            <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+            <style>
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body { font-family: 'Noto Sans KR', sans-serif; padding: 15mm; font-size: 10pt; color: #000; }
+                .header { display: flex; justify-content: space-between; border-bottom: 3px solid #0891b2; padding-bottom: 10px; margin-bottom: 20px; }
+                .header h1 { font-size: 16pt; color: #0891b2; }
+                .clinic { text-align: right; font-size: 9pt; color: #666; }
+                .patient-info { background: #f5f5f5; padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; display: flex; gap: 30px; }
+                .patient-info .item { display: flex; gap: 8px; }
+                .patient-info .label { color: #666; }
+                .patient-info .value { font-weight: 600; }
+                .eyes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+                .eye-box { border: 2px solid #ddd; border-radius: 8px; padding: 15px; }
+                .eye-box.od { border-color: #3b82f6; }
+                .eye-box.os { border-color: #22c55e; }
+                .eye-box h3 { margin: 0 0 15px 0; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+                .eye-box.od h3 { color: #3b82f6; }
+                .eye-box.os h3 { color: #22c55e; }
+                table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 12px; }
+                th, td { padding: 6px 8px; border: 1px solid #ddd; text-align: center; }
+                th { background: #f5f5f5; font-weight: 600; }
+                .modified { background: #ecfeff; font-weight: 700; }
+                .changed { color: #0891b2; }
+                .adjustments { background: #f0fdfa; padding: 10px; border-radius: 4px; font-size: 8pt; }
+                .adjustments .title { font-weight: 600; color: #0f766e; margin-bottom: 6px; }
+                .adj-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed #99f6e4; }
+                .adj-row:last-child { border-bottom: none; }
+                .footer { margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 8pt; color: #999; text-align: center; }
+                .disclaimer { background: #fff3cd; padding: 8px; border-radius: 4px; font-size: 7pt; color: #856404; margin-top: 15px; }
+                @media print { body { padding: 10mm; } @page { size: A4; margin: 10mm; } }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>📊 Wellington Nomogram Report</h1>
+                <div class="clinic">
+                    <div>연세솔안과</div>
+                    <div>YONSEI SOL EYE CLINIC</div>
+                    <div>${new Date().toLocaleDateString('ko-KR')}</div>
+                </div>
+            </div>
+            
+            <div class="patient-info">
+                <div class="item"><span class="label">환자명:</span><span class="value">${patientName}</span></div>
+                <div class="item"><span class="label">등록번호:</span><span class="value">${patientId}</span></div>
+            </div>
+            
+            <div class="eyes-grid">
+                ${generateWellingtonPrintEye('od', '우안 (OD)', results.od)}
+                ${generateWellingtonPrintEye('os', '좌안 (OS)', results.os)}
+            </div>
+            
+            <div class="disclaimer">
+                ⚠️ Wellington Nomogram은 Wellington Eye Clinic & Dr. Arthur Cummings의 EX500 임상 결과를 기반으로 합니다.
+                최종 수술 파라미터는 반드시 집도의의 임상적 판단에 따라 결정해야 합니다.
+            </div>
+            
+            <div class="footer">
+                Generated by Refractive Surgery Calculator | ${new Date().toLocaleString('ko-KR')}
+            </div>
+            
+            <script>window.onload = function() { window.print(); }<\/script>
+        </body>
+        </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+}
+
+function generateWellingtonPrintEye(eye, label, result) {
+    const typeLabels = { 'myopia': '근시', 'hyperopia': '원시', 'mixed': '혼합난시', 'emmetropia': '정시' };
+    
+    const sphChanged = result.original.sph !== result.modified.sph;
+    const cylChanged = result.original.cyl !== result.modified.cyl;
+    
+    const adjHtml = result.adjustments.map(adj => 
+        `<div class="adj-row"><span>${adj.label}</span><span style="color:#0891b2;font-weight:600;">${adj.value}</span></div>`
+    ).join('');
+    
+    return `
+        <div class="eye-box ${eye}">
+            <h3>👁️ ${label} (${typeLabels[result.refractionType] || ''})</h3>
+            <table>
+                <thead><tr><th>구분</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>SE</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>원본</td>
+                        <td>${result.original.sph.toFixed(2)}</td>
+                        <td>${result.original.cyl.toFixed(2)}</td>
+                        <td>${result.original.axis}°</td>
+                        <td>${result.original.se.toFixed(2)}</td>
+                    </tr>
+                    <tr class="modified">
+                        <td><strong>보정값</strong></td>
+                        <td class="${sphChanged ? 'changed' : ''}">${result.modified.sph.toFixed(2)}</td>
+                        <td class="${cylChanged ? 'changed' : ''}">${result.modified.cyl.toFixed(2)}</td>
+                        <td>${result.modified.axis}°</td>
+                        <td>${result.modified.se.toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="adjustments">
+                <div class="title">📋 적용된 보정</div>
+                ${adjHtml}
+            </div>
+        </div>
+    `;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Show login screen initially
     showLoginScreen();
@@ -8079,6 +8977,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Update AI mode badge based on user premium status
     updateAIModeBadge();
+    
     
     // Check for Firebase auth state (if Firebase is configured)
     if (!DEMO_MODE && typeof auth !== 'undefined') {
