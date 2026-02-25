@@ -6581,6 +6581,11 @@ function printPatientReport() {
                 © 연세솔안과 YONSEI SOL EYE CLINIC | Munnerlyn's Formula 기반 계산 | Randleman ERSS & PTA 위험도 평가
             </div>
         </div>
+        
+        <!-- ========== 2페이지: Nomogram 결과 ========== -->
+        <div style="page-break-before: always; font-family: 'Noto Sans KR', -apple-system, sans-serif; font-size: 9pt; color: #000; padding: 0; max-width: 210mm; margin: 0 auto;">
+            ${generateNomogramPrintPage(patientName, patientId, age, printDate)}
+        </div>
     `;
     
     const printContainer = document.getElementById('print-container');
@@ -6600,6 +6605,175 @@ function printPatientReport() {
             document.title = '시력교정술 적합성 검사 | Refractive Surgery Eligibility Checker';
         }, 500);
     }, 300);
+}
+
+/**
+ * Nomogram 인쇄 페이지 생성 (2페이지)
+ */
+function generateNomogramPrintPage(patientName, patientId, age, printDate) {
+    // Nomogram 결과가 없으면 빈 페이지
+    if (!window.wellingtonResults || !window.alconResults) {
+        return `
+            <div style="text-align: center; padding: 50px; color: #666;">
+                <p>Nomogram 결과가 없습니다.</p>
+                <p style="font-size: 8pt;">먼저 '양안 계산하기' 버튼을 눌러 Nomogram을 계산해주세요.</p>
+            </div>
+        `;
+    }
+    
+    const wellOd = window.wellingtonResults.od;
+    const wellOs = window.wellingtonResults.os;
+    const alconOd = window.alconResults.od;
+    const alconOs = window.alconResults.os;
+    const ageAdj = window.ageAdjustment?.adjustment || { sphAdjustment: 0, description: '표준 교정' };
+    
+    // 최종 권장값 계산
+    const finalWellOdSph = Math.round((wellOd.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    const finalWellOsSph = Math.round((wellOs.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    const finalAlconOdSph = Math.round((alconOd.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    const finalAlconOsSph = Math.round((alconOs.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    
+    return `
+        <!-- 헤더 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0891b2; padding-bottom: 8px; margin-bottom: 15px;">
+            <div>
+                <div style="font-size: 16pt; font-weight: 700; color: #0891b2;">📊 EX500 Nomogram 계산 결과</div>
+                <div style="font-size: 10pt; color: #666;">연세솔안과 YONSEI SOL EYE CLINIC</div>
+            </div>
+            <div style="text-align: right; font-size: 8pt; color: #666;">
+                검사일시: ${printDate}<br>
+                환자: ${patientName} (${patientId})
+            </div>
+        </div>
+        
+        <!-- 나이별 보정 정보 -->
+        <div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border: 1px solid #e879f9; padding: 10px 15px; border-radius: 6px; margin-bottom: 15px;">
+            <div style="font-weight: 600; color: #a21caf; margin-bottom: 5px;">👤 나이: ${age}세 | ${ageAdj.description}</div>
+            <div style="font-size: 8pt; color: #666;">
+                나이 보정값: <strong style="color: #a21caf;">${ageAdj.sphAdjustment > 0 ? '+' : ''}${ageAdj.sphAdjustment.toFixed(2)} D</strong>
+                ${ageAdj.monovision ? ` | Monovision 권장: ${ageAdj.monovisionTarget || ''}` : ''}
+            </div>
+        </div>
+        
+        <!-- ========== 우안 (OD) ========== -->
+        <div style="border: 2px solid #3b82f6; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+            <div style="background: #3b82f6; color: white; padding: 10px 15px; font-weight: 700; font-size: 12pt;">
+                👁 우안 (OD)
+            </div>
+            <div style="padding: 15px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 9pt;">
+                    <thead>
+                        <tr style="background: #f1f5f9;">
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 20%;"></th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">SPH</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">CYL</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">AXIS</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">SE</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">최종 SPH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; background: #f8fafc;">원본</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOd.original.sph.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOd.original.cyl.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOd.original.axis}°</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOd.original.se.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">-</td>
+                        </tr>
+                        <tr style="background: #ecfeff;">
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; color: #0891b2;">Wellington</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${wellOd.original.sph !== wellOd.modified.sph ? 'color: #0891b2; font-weight: 700;' : ''}">${wellOd.modified.sph.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${wellOd.original.cyl !== wellOd.modified.cyl ? 'color: #0891b2; font-weight: 700;' : ''}">${wellOd.modified.cyl.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOd.modified.axis}°</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOd.modified.se.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background: #cffafe; font-weight: 700; color: #0e7490;">${finalWellOdSph.toFixed(2)}</td>
+                        </tr>
+                        <tr style="background: #fef9c3;">
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; color: #a16207;">Alcon</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${alconOd.original.sph !== alconOd.modified.sph ? 'color: #ca8a04; font-weight: 700;' : ''}">${alconOd.modified.sph.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${alconOd.original.cyl !== alconOd.modified.cyl ? 'color: #ca8a04; font-weight: 700;' : ''}">${alconOd.modified.cyl.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${alconOd.modified.axis}°</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${alconOd.modified.se.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background: #fef08a; font-weight: 700; color: #a16207;">${finalAlconOdSph.toFixed(2)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- ========== 좌안 (OS) ========== -->
+        <div style="border: 2px solid #22c55e; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+            <div style="background: #22c55e; color: white; padding: 10px 15px; font-weight: 700; font-size: 12pt;">
+                👁 좌안 (OS)
+            </div>
+            <div style="padding: 15px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 9pt;">
+                    <thead>
+                        <tr style="background: #f1f5f9;">
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 20%;"></th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">SPH</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">CYL</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">AXIS</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">SE</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 16%;">최종 SPH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; background: #f8fafc;">원본</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOs.original.sph.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOs.original.cyl.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOs.original.axis}°</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOs.original.se.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">-</td>
+                        </tr>
+                        <tr style="background: #ecfeff;">
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; color: #0891b2;">Wellington</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${wellOs.original.sph !== wellOs.modified.sph ? 'color: #0891b2; font-weight: 700;' : ''}">${wellOs.modified.sph.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${wellOs.original.cyl !== wellOs.modified.cyl ? 'color: #0891b2; font-weight: 700;' : ''}">${wellOs.modified.cyl.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOs.modified.axis}°</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${wellOs.modified.se.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background: #cffafe; font-weight: 700; color: #0e7490;">${finalWellOsSph.toFixed(2)}</td>
+                        </tr>
+                        <tr style="background: #fef9c3;">
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: 600; color: #a16207;">Alcon</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${alconOs.original.sph !== alconOs.modified.sph ? 'color: #ca8a04; font-weight: 700;' : ''}">${alconOs.modified.sph.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; ${alconOs.original.cyl !== alconOs.modified.cyl ? 'color: #ca8a04; font-weight: 700;' : ''}">${alconOs.modified.cyl.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${alconOs.modified.axis}°</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${alconOs.modified.se.toFixed(2)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background: #fef08a; font-weight: 700; color: #a16207;">${finalAlconOsSph.toFixed(2)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 범례 및 설명 -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+            <div style="background: #f0f9ff; border: 1px solid #0ea5e9; padding: 10px; border-radius: 6px; font-size: 8pt;">
+                <div style="font-weight: 600; color: #0369a1; margin-bottom: 5px;">📊 Wellington Nomogram</div>
+                <div style="color: #666;">Dr. Arthur Cummings (Wellington Eye Clinic) 기반<br>
+                SPH/CYL 범위별 보정값 적용</div>
+            </div>
+            <div style="background: #fffbeb; border: 1px solid #f59e0b; padding: 10px; border-radius: 6px; font-size: 8pt;">
+                <div style="font-weight: 600; color: #b45309; margin-bottom: 5px;">📋 Alcon Standard Nomogram</div>
+                <div style="color: #666;">Alcon WaveLight EX500 공식 차트 기반<br>
+                SPH × CYL 매트릭스 보정값 적용</div>
+            </div>
+        </div>
+        
+        <!-- 주의사항 -->
+        <div style="background: #fef3c7; padding: 10px 15px; border-radius: 6px; margin-top: 15px; font-size: 8pt; color: #92400e; border: 1px solid #f59e0b;">
+            ⚠️ <strong>주의사항:</strong> 최종 SPH = Nomogram 보정값 + 나이 보정값 (${ageAdj.sphAdjustment > 0 ? '+' : ''}${ageAdj.sphAdjustment.toFixed(2)}D)
+            <br>본 Nomogram은 참고용이며, 최종 수술 파라미터는 반드시 집도의의 임상적 판단에 따라 결정해야 합니다.
+        </div>
+        
+        <!-- 푸터 -->
+        <div style="text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 7pt; color: #999;">
+            © 연세솔안과 YONSEI SOL EYE CLINIC | Wellington Nomogram + Alcon Standard Nomogram
+        </div>
+    `;
 }
 
 // Generate detailed eye section for print (SMILE 제외)
@@ -8599,6 +8773,30 @@ class RefractiveCalculator {
         };
         
         this.renderResults();
+        
+        // Nomogram 자동 계산 - 메인 폼 데이터를 Nomogram 입력란에 복사 후 계산
+        this.calculateNomogramFromMainForm(formData);
+    }
+    
+    /**
+     * 메인 폼 데이터로 Nomogram 자동 계산
+     */
+    calculateNomogramFromMainForm(formData) {
+        // Wellington 입력란에 값 복사
+        document.getElementById('well-od-sph').value = formData.od.sph;
+        document.getElementById('well-od-cyl').value = formData.od.cyl;
+        document.getElementById('well-od-axis').value = formData.od.axis;
+        
+        document.getElementById('well-os-sph').value = formData.os.sph;
+        document.getElementById('well-os-cyl').value = formData.os.cyl;
+        document.getElementById('well-os-axis').value = formData.os.axis;
+        
+        document.getElementById('well-age').value = formData.common.age;
+        
+        // Nomogram 계산 실행
+        if (typeof calculateAllNomograms === 'function') {
+            calculateAllNomograms();
+        }
     }
     
     renderResults() {
