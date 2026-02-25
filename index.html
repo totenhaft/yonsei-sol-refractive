@@ -2820,10 +2820,29 @@ input:focus, select:focus {
         top: 0;
         width: 100%;
         max-width: 210mm;
-        padding: 8mm;
+        padding: 8mm 10mm 10mm 10mm;
         background: white;
         overflow: visible !important;
         height: auto !important;
+    }
+    
+    /* 테이블 및 박스 잘림 방지 */
+    .print-container table,
+    .print-container div[style*="border"] {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    
+    /* 종합 평가 섹션 잘림 방지 - 강화 */
+    .print-container > div {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-top: 2mm;
+    }
+    
+    /* 테두리 있는 박스 상단 보호 */
+    .print-container div[style*="border-radius: 6px 6px 0 0"] {
+        margin-top: 3mm !important;
     }
     
     .no-print, .login-screen, .app-container, .modal-overlay {
@@ -2834,7 +2853,11 @@ input:focus, select:focus {
     
     @page {
         size: A4;
-        margin: 10mm;
+        margin: 8mm 10mm 10mm 10mm;
+    }
+    
+    @page :first {
+        margin-top: 10mm;
     }
 }
 
@@ -3612,6 +3635,357 @@ input:focus, select:focus {
 .btn-print-wellington:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Nomogram 통합 결과 스타일 */
+.nomogram-dual-results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+}
+
+@media (max-width: 1200px) {
+    .nomogram-dual-results {
+        grid-template-columns: 1fr;
+    }
+}
+
+.nomogram-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.nomogram-section-title.wellington {
+    background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+    color: #0e7490;
+    border-left: 4px solid #0891b2;
+}
+
+.nomogram-section-title.alcon {
+    background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+    color: #a16207;
+    border-left: 4px solid #eab308;
+}
+
+.alcon-result-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    border: 2px solid transparent;
+    margin-bottom: var(--space-md);
+}
+
+.alcon-result-card.od {
+    border-color: #3b82f6;
+}
+
+.alcon-result-card.os {
+    border-color: #22c55e;
+}
+
+.alcon-result-header {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alcon-result-card.od .alcon-result-header {
+    color: #3b82f6;
+}
+
+.alcon-result-card.os .alcon-result-header {
+    color: #22c55e;
+}
+
+.alcon-type-badge {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #fef9c3;
+    color: #a16207;
+    font-weight: 500;
+}
+
+.alcon-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin-bottom: var(--space-sm);
+}
+
+.alcon-table th,
+.alcon-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border: 1px solid var(--border-light);
+}
+
+.alcon-table th {
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.alcon-table .highlight {
+    background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%);
+    font-weight: 700;
+}
+
+.alcon-table .value-changed {
+    color: #ca8a04;
+    font-weight: 700;
+}
+
+.alcon-adjustment-box {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+}
+
+.alcon-adjustment-box .adj-title {
+    font-weight: 600;
+    color: #a16207;
+    margin-bottom: 4px;
+}
+
+.alcon-adjustment-box .adj-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+}
+
+.alcon-adjustment-box .adj-value {
+    font-weight: 600;
+    color: #ca8a04;
+}
+
+.nomogram-comparison-summary {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #86efac;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-lg);
+}
+
+.nomogram-comparison-summary h4 {
+    color: #166534;
+    margin-bottom: var(--space-sm);
+    font-size: 0.9rem;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #86efac;
+}
+
+.comparison-table th {
+    background: #bbf7d0;
+    font-weight: 600;
+    color: #166534;
+}
+
+.comparison-table .diff-highlight {
+    background: #fef08a;
+    font-weight: 600;
+}
+
+/* 나이 입력 및 나이별 보정 스타일 */
+.wellington-age-section {
+    background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+    border: 1px solid #e879f9;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+}
+
+.wellington-age-section h4 {
+    color: #a21caf;
+    font-size: 0.9rem;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.age-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.age-input-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.age-input-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.age-input-group input {
+    width: 80px;
+    padding: 8px 12px;
+    border: 2px solid #e879f9;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    background: white;
+}
+
+.age-input-group input:focus {
+    outline: none;
+    border-color: #a21caf;
+    box-shadow: 0 0 0 3px rgba(162, 28, 175, 0.15);
+}
+
+.age-input-group .unit {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.btn-copy-age {
+    background: white;
+    border: 1px solid #e879f9;
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: #a21caf;
+    transition: all var(--transition-fast);
+}
+
+.btn-copy-age:hover {
+    background: #fae8ff;
+    border-color: #a21caf;
+}
+
+/* 나이별 보정 결과 카드 */
+.age-adjustment-card {
+    background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+    border: 2px solid #d946ef;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.age-adjustment-card h4 {
+    color: #a21caf;
+    font-size: 0.95rem;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.age-adjustment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+}
+
+.age-adjustment-item {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-left: 3px solid #d946ef;
+}
+
+.age-adjustment-item .age-label {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    margin-bottom: 2px;
+}
+
+.age-adjustment-item .age-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #a21caf;
+}
+
+.age-adjustment-item .age-reason {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.age-adjustment-item.highlight {
+    background: #fae8ff;
+    border-left-color: #a21caf;
+}
+
+/* 최종 권장값 테이블 */
+.final-recommendation-card {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid #10b981;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.final-recommendation-card h4 {
+    color: #059669;
+    font-size: 0.95rem;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.final-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.final-table th,
+.final-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid #6ee7b7;
+}
+
+.final-table th {
+    background: #a7f3d0;
+    font-weight: 600;
+    color: #065f46;
+}
+
+.final-table .final-row {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    font-weight: 700;
+    color: #065f46;
+}
+
+.final-table .changed {
+    color: #059669;
+    font-weight: 700;
 }
     </style>
 </head>
@@ -4454,9 +4828,27 @@ input:focus, select:focus {
                         </div>
                     </div>
 
+                    <!-- 나이 입력 섹션 -->
+                    <div class="wellington-age-section">
+                        <h4>👤 환자 나이 (Age Adjustment)</h4>
+                        <div class="age-input-row">
+                            <div class="age-input-group">
+                                <label>나이:</label>
+                                <input type="number" id="well-age" min="18" max="70" value="30">
+                                <span class="unit">세</span>
+                            </div>
+                            <button type="button" class="btn-copy-age" onclick="copyAgeFromMain()">
+                                ↑ 메인 폼에서 복사
+                            </button>
+                            <small style="color: var(--text-tertiary);">
+                                • 25세 미만: 과교정 (+0.25D) | 25-34세: 표준 | 35-39세: 노안 상담 | 40세 이상: 저교정 (-0.25D~)
+                            </small>
+                        </div>
+                    </div>
+
                     <div class="wellington-actions">
-                        <button type="button" class="btn-calculate-wellington" onclick="calculateWellingtonNomogram()">
-                            📊 Wellington Nomogram 계산
+                        <button type="button" class="btn-calculate-wellington" onclick="calculateAllNomograms()">
+                            📊 Nomogram 변환
                         </button>
                     </div>
 
@@ -4464,7 +4856,8 @@ input:focus, select:focus {
                     <div class="wellington-results-section" id="wellington-results">
                         <div class="wellington-results-placeholder">
                             <div class="placeholder-icon">📊</div>
-                            <p>굴절값을 입력하고 <strong>Wellington Nomogram 계산</strong> 버튼을 클릭하세요</p>
+                            <p>굴절값을 입력하고 <strong>Nomogram 변환</strong> 버튼을 클릭하세요<br>
+                            <small>Wellington Nomogram + Alcon Standard Nomogram 동시 적용</small></p>
                         </div>
                     </div>
                 </div>
@@ -6095,10 +6488,11 @@ function printPatientReport() {
             </div>
             
             <!-- ========== 종합 평가 ========== -->
-            <div style="background: #1e3a5f; color: white; padding: 8px 12px; border-radius: 6px 6px 0 0; font-weight: 700; font-size: 11pt;">
-                📋 종합 평가 (Summary)
-            </div>
-            <div style="border: 2px solid #1e3a5f; border-top: none; border-radius: 0 0 6px 6px; padding: 12px; margin-bottom: 15px;">
+            <div style="margin-top: 20px; padding-top: 5px; page-break-inside: avoid; break-inside: avoid;">
+                <div style="background: #1e3a5f; color: white; padding: 8px 12px; border: 2px solid #1e3a5f; border-radius: 6px 6px 0 0; font-weight: 700; font-size: 11pt; margin-top: 0;">
+                    📋 종합 평가 (Summary)
+                </div>
+                <div style="border: 2px solid #1e3a5f; border-top: none; border-radius: 0 0 6px 6px; padding: 12px; margin-bottom: 15px;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 9pt;">
                     <thead>
                         <tr style="background: #f8fafc;">
@@ -6150,6 +6544,7 @@ function printPatientReport() {
                         </tr>
                     </tbody>
                 </table>
+            </div>
             </div>
             
             <!-- ========== 양안 데이터 (좌우 배치) ========== -->
@@ -8559,6 +8954,15 @@ class RefractiveCalculator {
 // ============================================
 
 /**
+ * 메인 폼에서 나이 복사
+ */
+function copyAgeFromMain() {
+    const age = document.getElementById('age')?.value || 30;
+    document.getElementById('well-age').value = age;
+    showNotification(`나이 ${age}세가 복사되었습니다.`, 'success');
+}
+
+/**
  * 메인 폼에서 Wellington 입력란으로 값 복사
  */
 function copyToWellington(eye) {
@@ -8570,7 +8974,266 @@ function copyToWellington(eye) {
     document.getElementById(`well-${eye}-cyl`).value = cyl;
     document.getElementById(`well-${eye}-axis`).value = axis;
     
-    showNotification(`${eye.toUpperCase()} 값이 Wellington Nomogram에 복사되었습니다.`, 'success');
+    // 나이도 함께 복사
+    const age = document.getElementById('age')?.value || 30;
+    document.getElementById('well-age').value = age;
+    
+    showNotification(`${eye.toUpperCase()} 값이 복사되었습니다.`, 'success');
+}
+
+/**
+ * 나이별 Nomogram 보정값 계산
+ */
+function getAgeAdjustment(age) {
+    const ageNum = parseInt(age);
+    
+    if (ageNum < 25) {
+        return {
+            sphAdjustment: -0.25,  // 과교정 (더 많이 깎음)
+            description: '25세 미만: 과교정 권장',
+            reason: '조절력이 강하고 수술 후 퇴행 가능성이 있어 약간의 과교정 권장',
+            category: 'young',
+            monovision: false
+        };
+    } else if (ageNum < 35) {
+        return {
+            sphAdjustment: 0,
+            description: '25-34세: 표준 교정',
+            reason: '표준 교정으로 plano 목표',
+            category: 'standard',
+            monovision: false
+        };
+    } else if (ageNum < 40) {
+        return {
+            sphAdjustment: 0,
+            description: '35-39세: 표준 교정 (노안 상담 필요)',
+            reason: '노안 진행 시작 가능성, 근거리 시력에 대한 상담 권장',
+            category: 'pre-presbyopia',
+            monovision: false
+        };
+    } else if (ageNum < 45) {
+        return {
+            sphAdjustment: 0.25,  // 저교정 (덜 깎음)
+            description: '40-44세: 저교정 권장',
+            reason: '노안 진행으로 근거리 불편 예방을 위해 -0.25D 저교정 권장',
+            category: 'early-presbyopia',
+            monovision: true,
+            monovisionTarget: '-0.75 ~ -1.25D (비주시안)'
+        };
+    } else if (ageNum < 50) {
+        return {
+            sphAdjustment: 0.50,
+            description: '45-49세: 저교정 또는 Monovision',
+            reason: '노안이 진행되어 Monovision 적극 고려',
+            category: 'presbyopia',
+            monovision: true,
+            monovisionTarget: '-1.00 ~ -1.50D (비주시안)'
+        };
+    } else {
+        return {
+            sphAdjustment: 0.50,
+            description: '50세 이상: Monovision 또는 노안교정술 권장',
+            reason: '원거리 + 근거리 모두 고려한 전략 필요',
+            category: 'advanced-presbyopia',
+            monovision: true,
+            monovisionTarget: '-1.25 ~ -1.75D (비주시안)'
+        };
+    }
+}
+
+/**
+ * 메인 폼에서 Nomogram 입력란으로 값 복사 (이전 함수 - 호환성 유지)
+ */
+function copyToNomogram(eye) {
+    const sph = document.getElementById(`${eye}-sph`)?.value || -3;
+    const cyl = document.getElementById(`${eye}-cyl`)?.value || -1;
+    const axis = document.getElementById(`${eye}-axis`)?.value || 180;
+    
+    document.getElementById(`nomo-${eye}-sph`).value = sph;
+    document.getElementById(`nomo-${eye}-cyl`).value = cyl;
+    document.getElementById(`nomo-${eye}-axis`).value = axis;
+    
+    showNotification(`${eye.toUpperCase()} 값이 Nomogram에 복사되었습니다.`, 'success');
+}
+
+/**
+ * Alcon Standard Nomogram - PDF 차트 기반
+ * SPH와 CYL 조합에 따른 보정값 Lookup Table
+ */
+function calculateAlconStandardForEye(sph, cyl, axis) {
+    const originalSph = parseFloat(sph);
+    const originalCyl = parseFloat(cyl);
+    const originalAxis = parseFloat(axis);
+    
+    // SPH 보정값 테이블 (PDF 오른쪽 차트 "ENTER FOR SPHERE" 기반)
+    // Key: SPH 범위, Value: [CYL 0~-2 보정, CYL -2~-4 보정, CYL -4~-6 보정]
+    function getSphAdjustment(sph, cyl) {
+        const absCyl = Math.abs(cyl);
+        
+        // SPH 범위별 보정값
+        if (sph > -0.5) {
+            return -0.25; // 저도근시: 추가 교정
+        } else if (sph >= -2.0) {
+            return -0.25; // -0.5 ~ -2.0: -0.25 추가
+        } else if (sph >= -6.0) {
+            return 0; // -2.0 ~ -6.0: 보정 없음
+        } else if (sph >= -6.5) {
+            return 0.25; // -6.0 ~ -6.5
+        } else if (sph >= -7.0) {
+            return 0.25; // -6.5 ~ -7.0
+        } else if (sph >= -7.5) {
+            if (absCyl <= 2.0) return 0.50;
+            else if (absCyl <= 3.5) return 0.25;
+            else return 0;
+        } else if (sph >= -8.0) {
+            if (absCyl <= 2.0) return 0.50;
+            else if (absCyl <= 3.5) return 0.50;
+            else return 0.25;
+        } else if (sph >= -8.5) {
+            if (absCyl <= 2.0) return 0.75;
+            else if (absCyl <= 3.5) return 0.50;
+            else return 0.25;
+        } else if (sph >= -9.0) {
+            if (absCyl <= 2.0) return 0.75;
+            else if (absCyl <= 3.5) return 0.50;
+            else return 0.50;
+        } else if (sph >= -9.5) {
+            if (absCyl <= 2.0) return 1.00;
+            else if (absCyl <= 3.5) return 0.75;
+            else return 0.50;
+        } else if (sph >= -10.0) {
+            if (absCyl <= 2.0) return 1.00;
+            else if (absCyl <= 3.5) return 0.75;
+            else return 0.75;
+        } else if (sph >= -10.5) {
+            if (absCyl <= 2.0) return 1.00;
+            else if (absCyl <= 3.5) return 1.00;
+            else return 0.75;
+        } else if (sph >= -11.0) {
+            if (absCyl <= 2.0) return 1.25;
+            else if (absCyl <= 3.5) return 1.00;
+            else return 1.00;
+        } else if (sph >= -11.5) {
+            if (absCyl <= 2.0) return 1.25;
+            else if (absCyl <= 3.5) return 1.25;
+            else return 1.00;
+        } else if (sph >= -12.0) {
+            if (absCyl <= 2.0) return 1.50;
+            else if (absCyl <= 3.5) return 1.25;
+            else return 1.25;
+        } else if (sph >= -12.5) {
+            if (absCyl <= 2.0) return 1.75;
+            else if (absCyl <= 3.5) return 1.50;
+            else return 1.25;
+        } else if (sph >= -13.0) {
+            if (absCyl <= 2.0) return 2.00;
+            else if (absCyl <= 3.5) return 1.75;
+            else return 1.50;
+        } else if (sph >= -13.5) {
+            if (absCyl <= 2.0) return 2.00;
+            else if (absCyl <= 3.5) return 2.00;
+            else return 1.75;
+        } else {
+            // -14.0 이하
+            if (absCyl <= 2.0) return 2.25;
+            else if (absCyl <= 3.5) return 2.00;
+            else return 2.00;
+        }
+    }
+    
+    // CYL 보정값 테이블 (PDF 왼쪽 차트 "ENTER FOR CYLINDER" 기반)
+    function getCylAdjustment(sph, cyl) {
+        const absCyl = Math.abs(cyl);
+        const absSph = Math.abs(sph);
+        
+        // CYL이 낮으면 보정 없음
+        if (absCyl < 2.25) {
+            return 0;
+        }
+        
+        // CYL -2.25 ~ -3.0 범위
+        if (absCyl <= 3.0) {
+            if (absSph <= 2.5) return 0;
+            else if (absSph <= 3.5) return 0.25;
+            else return 0.25;
+        }
+        
+        // CYL -3.0 ~ -3.5 범위
+        if (absCyl <= 3.5) {
+            if (absSph <= 3.0) return 0.25;
+            else if (absSph <= 4.0) return 0.50;
+            else return 0.50;
+        }
+        
+        // CYL -3.5 ~ -4.5 범위
+        if (absCyl <= 4.5) {
+            if (absSph <= 3.5) return 0.50;
+            else if (absSph <= 5.0) return 0.75;
+            else return 0.75;
+        }
+        
+        // CYL -4.5 ~ -5.5 범위
+        if (absCyl <= 5.5) {
+            if (absSph <= 4.0) return 0.75;
+            else if (absSph <= 5.5) return 1.00;
+            else return 1.00;
+        }
+        
+        // CYL -5.5 ~ -6.0 범위
+        if (absCyl <= 6.0) {
+            if (absSph <= 5.0) return 1.00;
+            else return 1.25;
+        }
+        
+        return 1.25; // CYL > -6.0
+    }
+    
+    const sphAdj = getSphAdjustment(originalSph, originalCyl);
+    const cylAdj = getCylAdjustment(originalSph, originalCyl);
+    
+    // 보정값 적용 (양수 보정값 = 덜 깎음, 음수 = 더 깎음)
+    const modifiedSph = originalSph + sphAdj;
+    const modifiedCyl = originalCyl + cylAdj; // CYL이 음수이므로 양수 더하면 절댓값 감소
+    
+    // 0.25D 단위로 반올림
+    const finalSph = Math.round(modifiedSph * 4) / 4;
+    const finalCyl = Math.round(modifiedCyl * 4) / 4;
+    
+    const adjustments = [];
+    if (sphAdj !== 0) {
+        adjustments.push({
+            label: 'SPH 보정',
+            value: `${sphAdj > 0 ? '+' : ''}${sphAdj.toFixed(2)} D`,
+            reason: `SPH ${originalSph.toFixed(2)}D, CYL ${originalCyl.toFixed(2)}D 기준`
+        });
+    } else {
+        adjustments.push({ label: 'SPH 보정', value: '없음', reason: '표준 범위' });
+    }
+    
+    if (cylAdj !== 0) {
+        adjustments.push({
+            label: 'CYL 보정',
+            value: `+${cylAdj.toFixed(2)} D 공제`,
+            reason: `CYL ${originalCyl.toFixed(2)}D 기준`
+        });
+    } else {
+        adjustments.push({ label: 'CYL 보정', value: '없음', reason: 'CYL < -2.25D' });
+    }
+    
+    const se = originalSph + (originalCyl / 2);
+    
+    return {
+        original: { sph: originalSph, cyl: originalCyl, axis: originalAxis, se: se },
+        modified: {
+            sph: finalSph,
+            cyl: finalCyl,
+            axis: originalAxis,
+            se: finalSph + (finalCyl / 2)
+        },
+        adjustments: adjustments,
+        sphAdj: sphAdj,
+        cylAdj: cylAdj
+    };
 }
 
 /**
@@ -8835,15 +9498,16 @@ function renderWellingtonEyeResult(eye, label, result) {
 }
 
 /**
- * Wellington Nomogram 인쇄
+ * 통합 Nomogram 인쇄
  */
 function printWellingtonReport() {
-    if (!window.wellingtonResults) {
+    if (!window.wellingtonResults || !window.alconResults) {
         showNotification('먼저 Nomogram을 계산해주세요.', 'warning');
         return;
     }
     
-    const results = window.wellingtonResults;
+    const wellResults = window.wellingtonResults;
+    const alconResults = window.alconResults;
     const patientName = document.getElementById('patient-name')?.value || '-';
     const patientId = document.getElementById('patient-id')?.value || '-';
     
@@ -8852,62 +9516,113 @@ function printWellingtonReport() {
         <html lang="ko">
         <head>
             <meta charset="UTF-8">
-            <title>Wellington Nomogram Report</title>
+            <title>EX500 Nomogram Report</title>
             <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
             <style>
                 * { box-sizing: border-box; margin: 0; padding: 0; }
-                body { font-family: 'Noto Sans KR', sans-serif; padding: 15mm; font-size: 10pt; color: #000; }
-                .header { display: flex; justify-content: space-between; border-bottom: 3px solid #0891b2; padding-bottom: 10px; margin-bottom: 20px; }
-                .header h1 { font-size: 16pt; color: #0891b2; }
-                .clinic { text-align: right; font-size: 9pt; color: #666; }
-                .patient-info { background: #f5f5f5; padding: 10px 15px; border-radius: 6px; margin-bottom: 20px; display: flex; gap: 30px; }
-                .patient-info .item { display: flex; gap: 8px; }
+                body { font-family: 'Noto Sans KR', sans-serif; padding: 12mm; font-size: 9pt; color: #000; }
+                .header { display: flex; justify-content: space-between; border-bottom: 3px solid #0891b2; padding-bottom: 8px; margin-bottom: 15px; }
+                .header h1 { font-size: 14pt; color: #0891b2; }
+                .clinic { text-align: right; font-size: 8pt; color: #666; }
+                .patient-info { background: #f5f5f5; padding: 8px 12px; border-radius: 4px; margin-bottom: 15px; display: flex; gap: 20px; font-size: 9pt; }
                 .patient-info .label { color: #666; }
                 .patient-info .value { font-weight: 600; }
-                .eyes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-                .eye-box { border: 2px solid #ddd; border-radius: 8px; padding: 15px; }
-                .eye-box.od { border-color: #3b82f6; }
-                .eye-box.os { border-color: #22c55e; }
-                .eye-box h3 { margin: 0 0 15px 0; padding-bottom: 8px; border-bottom: 1px solid #eee; }
-                .eye-box.od h3 { color: #3b82f6; }
-                .eye-box.os h3 { color: #22c55e; }
-                table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 12px; }
-                th, td { padding: 6px 8px; border: 1px solid #ddd; text-align: center; }
+                .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+                .section-title { font-size: 10pt; font-weight: 600; padding: 6px 10px; border-radius: 4px; margin-bottom: 10px; }
+                .section-title.wellington { background: #ecfeff; color: #0e7490; border-left: 3px solid #0891b2; }
+                .section-title.alcon { background: #fef9c3; color: #a16207; border-left: 3px solid #eab308; }
+                .eye-box { border: 1px solid #ddd; border-radius: 6px; padding: 10px; margin-bottom: 10px; }
+                .eye-box.od { border-left: 3px solid #3b82f6; }
+                .eye-box.os { border-left: 3px solid #22c55e; }
+                .eye-box h4 { font-size: 9pt; margin-bottom: 8px; }
+                .eye-box.od h4 { color: #3b82f6; }
+                .eye-box.os h4 { color: #22c55e; }
+                table { width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 8px; }
+                th, td { padding: 4px 6px; border: 1px solid #ddd; text-align: center; }
                 th { background: #f5f5f5; font-weight: 600; }
-                .modified { background: #ecfeff; font-weight: 700; }
-                .changed { color: #0891b2; }
-                .adjustments { background: #f0fdfa; padding: 10px; border-radius: 4px; font-size: 8pt; }
-                .adjustments .title { font-weight: 600; color: #0f766e; margin-bottom: 6px; }
-                .adj-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed #99f6e4; }
-                .adj-row:last-child { border-bottom: none; }
-                .footer { margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 8pt; color: #999; text-align: center; }
-                .disclaimer { background: #fff3cd; padding: 8px; border-radius: 4px; font-size: 7pt; color: #856404; margin-top: 15px; }
-                @media print { body { padding: 10mm; } @page { size: A4; margin: 10mm; } }
+                .modified { background: #e0f2fe; font-weight: 600; }
+                .modified.alcon { background: #fef9c3; }
+                .changed { color: #0891b2; font-weight: 700; }
+                .changed.alcon { color: #ca8a04; }
+                .comparison { margin-top: 15px; }
+                .comparison h3 { font-size: 10pt; color: #166534; margin-bottom: 8px; }
+                .comparison table th { background: #dcfce7; }
+                .diff { background: #fef08a; font-weight: 600; }
+                .footer { margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 7pt; color: #999; text-align: center; }
+                .disclaimer { background: #fff3cd; padding: 6px; border-radius: 4px; font-size: 7pt; color: #856404; margin-top: 10px; }
+                @media print { body { padding: 8mm; } @page { size: A4; margin: 8mm; } }
             </style>
         </head>
         <body>
             <div class="header">
-                <h1>📊 Wellington Nomogram Report</h1>
+                <h1>📊 EX500 Nomogram Report</h1>
                 <div class="clinic">
                     <div>연세솔안과</div>
-                    <div>YONSEI SOL EYE CLINIC</div>
                     <div>${new Date().toLocaleDateString('ko-KR')}</div>
                 </div>
             </div>
             
             <div class="patient-info">
-                <div class="item"><span class="label">환자명:</span><span class="value">${patientName}</span></div>
-                <div class="item"><span class="label">등록번호:</span><span class="value">${patientId}</span></div>
+                <div><span class="label">환자명:</span> <span class="value">${patientName}</span></div>
+                <div><span class="label">등록번호:</span> <span class="value">${patientId}</span></div>
             </div>
             
-            <div class="eyes-grid">
-                ${generateWellingtonPrintEye('od', '우안 (OD)', results.od)}
-                ${generateWellingtonPrintEye('os', '좌안 (OS)', results.os)}
+            <div class="dual-grid">
+                <div>
+                    <div class="section-title wellington">📊 Wellington Nomogram</div>
+                    ${generatePrintEyeBox('od', 'OD (우안)', wellResults.od, 'wellington')}
+                    ${generatePrintEyeBox('os', 'OS (좌안)', wellResults.os, 'wellington')}
+                </div>
+                <div>
+                    <div class="section-title alcon">📋 Alcon Standard Nomogram</div>
+                    ${generatePrintEyeBox('od', 'OD (우안)', alconResults.od, 'alcon')}
+                    ${generatePrintEyeBox('os', 'OS (좌안)', alconResults.os, 'alcon')}
+                </div>
+            </div>
+            
+            <div class="comparison">
+                <h3>📊 비교 요약</h3>
+                <table>
+                    <thead>
+                        <tr><th>눈</th><th>항목</th><th>원본</th><th>Wellington</th><th>Alcon</th><th>차이</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2" style="font-weight:600;">OD</td>
+                            <td>SPH</td>
+                            <td>${wellResults.od.original.sph.toFixed(2)}</td>
+                            <td>${wellResults.od.modified.sph.toFixed(2)}</td>
+                            <td>${alconResults.od.modified.sph.toFixed(2)}</td>
+                            <td class="${wellResults.od.modified.sph !== alconResults.od.modified.sph ? 'diff' : ''}">${(wellResults.od.modified.sph - alconResults.od.modified.sph).toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>CYL</td>
+                            <td>${wellResults.od.original.cyl.toFixed(2)}</td>
+                            <td>${wellResults.od.modified.cyl.toFixed(2)}</td>
+                            <td>${alconResults.od.modified.cyl.toFixed(2)}</td>
+                            <td class="${wellResults.od.modified.cyl !== alconResults.od.modified.cyl ? 'diff' : ''}">${(wellResults.od.modified.cyl - alconResults.od.modified.cyl).toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="font-weight:600;">OS</td>
+                            <td>SPH</td>
+                            <td>${wellResults.os.original.sph.toFixed(2)}</td>
+                            <td>${wellResults.os.modified.sph.toFixed(2)}</td>
+                            <td>${alconResults.os.modified.sph.toFixed(2)}</td>
+                            <td class="${wellResults.os.modified.sph !== alconResults.os.modified.sph ? 'diff' : ''}">${(wellResults.os.modified.sph - alconResults.os.modified.sph).toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>CYL</td>
+                            <td>${wellResults.os.original.cyl.toFixed(2)}</td>
+                            <td>${wellResults.os.modified.cyl.toFixed(2)}</td>
+                            <td>${alconResults.os.modified.cyl.toFixed(2)}</td>
+                            <td class="${wellResults.os.modified.cyl !== alconResults.os.modified.cyl ? 'diff' : ''}">${(wellResults.os.modified.cyl - alconResults.os.modified.cyl).toFixed(2)}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             
             <div class="disclaimer">
-                ⚠️ Wellington Nomogram은 Wellington Eye Clinic & Dr. Arthur Cummings의 EX500 임상 결과를 기반으로 합니다.
-                최종 수술 파라미터는 반드시 집도의의 임상적 판단에 따라 결정해야 합니다.
+                ⚠️ 본 Nomogram은 참고용이며, 최종 수술 파라미터는 반드시 집도의의 임상적 판단에 따라 결정해야 합니다.
             </div>
             
             <div class="footer">
@@ -8924,21 +9639,451 @@ function printWellingtonReport() {
     printWindow.document.close();
 }
 
-function generateWellingtonPrintEye(eye, label, result) {
-    const typeLabels = { 'myopia': '근시', 'hyperopia': '원시', 'mixed': '혼합난시', 'emmetropia': '정시' };
-    
+function generatePrintEyeBox(eye, label, result, type) {
     const sphChanged = result.original.sph !== result.modified.sph;
     const cylChanged = result.original.cyl !== result.modified.cyl;
-    
-    const adjHtml = result.adjustments.map(adj => 
-        `<div class="adj-row"><span>${adj.label}</span><span style="color:#0891b2;font-weight:600;">${adj.value}</span></div>`
-    ).join('');
+    const modClass = type === 'alcon' ? 'modified alcon' : 'modified';
+    const changedClass = type === 'alcon' ? 'changed alcon' : 'changed';
     
     return `
         <div class="eye-box ${eye}">
-            <h3>👁️ ${label} (${typeLabels[result.refractionType] || ''})</h3>
+            <h4>${label}</h4>
             <table>
-                <thead><tr><th>구분</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>SE</th></tr></thead>
+                <tr><th>구분</th><th>SPH</th><th>CYL</th><th>AXIS</th></tr>
+                <tr>
+                    <td>원본</td>
+                    <td>${result.original.sph.toFixed(2)}</td>
+                    <td>${result.original.cyl.toFixed(2)}</td>
+                    <td>${result.original.axis}°</td>
+                </tr>
+                <tr class="${modClass}">
+                    <td>보정</td>
+                    <td class="${sphChanged ? changedClass : ''}">${result.modified.sph.toFixed(2)}</td>
+                    <td class="${cylChanged ? changedClass : ''}">${result.modified.cyl.toFixed(2)}</td>
+                    <td>${result.modified.axis}°</td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+// ============================================
+// Alcon Standard Nomogram Calculator Functions
+// ============================================
+
+/**
+ * Alcon Standard Nomogram - SPH 보정값 Lookup Table
+ * PDF 차트 기반 (SPH vs CYL 매트릭스)
+ */
+function getAlconSphAdjustment(sph, cyl) {
+    const absSph = Math.abs(sph);
+    const absCyl = Math.abs(cyl);
+    
+    // SPH가 양수(원시)인 경우 - 이 차트는 근시용
+    if (sph >= 0) {
+        return { adjustment: 0, reason: '원시는 별도 프로토콜 적용' };
+    }
+    
+    // SPH 보정값 매트릭스 (차트에서 추출)
+    // X축: SPH, Y축: CYL에 따른 SPH 보정값
+    
+    // 저도근시 (0 ~ -2.0D): -0.25 추가
+    if (absSph <= 2.0) {
+        return { adjustment: -0.25, reason: 'SPH 0 ~ -2.0D' };
+    }
+    
+    // 중등도근시 (-2.0 ~ -6.0D): 보정 없음
+    if (absSph <= 6.0) {
+        return { adjustment: 0, reason: 'SPH -2.0 ~ -6.0D' };
+    }
+    
+    // 고도근시 - CYL에 따라 다른 보정
+    if (absSph <= 7.0) {
+        if (absCyl <= 1.0) return { adjustment: 0.25, reason: 'SPH -6.0~-7.0D, CYL≤1.0' };
+        if (absCyl <= 2.0) return { adjustment: 0.50, reason: 'SPH -6.0~-7.0D, CYL≤2.0' };
+        return { adjustment: 0.75, reason: 'SPH -6.0~-7.0D, CYL>2.0' };
+    }
+    
+    if (absSph <= 8.0) {
+        if (absCyl <= 1.0) return { adjustment: 0.50, reason: 'SPH -7.0~-8.0D, CYL≤1.0' };
+        if (absCyl <= 2.0) return { adjustment: 0.75, reason: 'SPH -7.0~-8.0D, CYL≤2.0' };
+        return { adjustment: 1.00, reason: 'SPH -7.0~-8.0D, CYL>2.0' };
+    }
+    
+    if (absSph <= 9.0) {
+        if (absCyl <= 1.0) return { adjustment: 0.75, reason: 'SPH -8.0~-9.0D, CYL≤1.0' };
+        if (absCyl <= 2.0) return { adjustment: 1.00, reason: 'SPH -8.0~-9.0D, CYL≤2.0' };
+        return { adjustment: 1.25, reason: 'SPH -8.0~-9.0D, CYL>2.0' };
+    }
+    
+    if (absSph <= 10.0) {
+        if (absCyl <= 1.0) return { adjustment: 1.00, reason: 'SPH -9.0~-10.0D, CYL≤1.0' };
+        if (absCyl <= 2.0) return { adjustment: 1.25, reason: 'SPH -9.0~-10.0D, CYL≤2.0' };
+        return { adjustment: 1.50, reason: 'SPH -9.0~-10.0D, CYL>2.0' };
+    }
+    
+    if (absSph <= 11.0) {
+        if (absCyl <= 1.0) return { adjustment: 1.25, reason: 'SPH -10.0~-11.0D' };
+        return { adjustment: 1.50, reason: 'SPH -10.0~-11.0D, CYL>1.0' };
+    }
+    
+    if (absSph <= 12.0) {
+        return { adjustment: 1.50, reason: 'SPH -11.0~-12.0D' };
+    }
+    
+    // 초고도근시
+    return { adjustment: 2.00, reason: 'SPH > -12.0D (초고도근시)' };
+}
+
+/**
+ * Alcon Standard Nomogram - CYL 보정값 Lookup Table
+ * PDF 차트 기반 (SPH vs CYL 매트릭스)
+ */
+function getAlconCylAdjustment(sph, cyl) {
+    const absSph = Math.abs(sph);
+    const absCyl = Math.abs(cyl);
+    
+    // 원시인 경우
+    if (sph >= 0) {
+        return { adjustment: 0, reason: '원시는 별도 프로토콜 적용' };
+    }
+    
+    // CYL이 낮은 경우 보정 없음
+    if (absCyl < 2.0) {
+        return { adjustment: 0, reason: 'CYL < -2.0D' };
+    }
+    
+    // CYL 보정값 매트릭스 (차트에서 추출)
+    // 고도난시의 경우 SPH에 따라 다른 보정
+    
+    if (absCyl <= 2.5) {
+        if (absSph <= 3.0) return { adjustment: 0, reason: 'CYL -2.0~-2.5D, 저도근시' };
+        return { adjustment: 0.25, reason: 'CYL -2.0~-2.5D' };
+    }
+    
+    if (absCyl <= 3.0) {
+        if (absSph <= 3.0) return { adjustment: 0.25, reason: 'CYL -2.5~-3.0D, 저도근시' };
+        return { adjustment: 0.50, reason: 'CYL -2.5~-3.0D' };
+    }
+    
+    if (absCyl <= 3.5) {
+        return { adjustment: 0.50, reason: 'CYL -3.0~-3.5D' };
+    }
+    
+    if (absCyl <= 4.0) {
+        return { adjustment: 0.75, reason: 'CYL -3.5~-4.0D' };
+    }
+    
+    if (absCyl <= 4.5) {
+        return { adjustment: 0.75, reason: 'CYL -4.0~-4.5D' };
+    }
+    
+    if (absCyl <= 5.0) {
+        return { adjustment: 1.00, reason: 'CYL -4.5~-5.0D' };
+    }
+    
+    if (absCyl <= 5.5) {
+        return { adjustment: 1.00, reason: 'CYL -5.0~-5.5D' };
+    }
+    
+    // 초고도난시
+    return { adjustment: 1.25, reason: 'CYL > -5.5D (초고도난시)' };
+}
+
+/**
+ * Alcon Standard Nomogram 계산
+ */
+function calculateAlconStandardForEye(sph, cyl, axis) {
+    const originalSph = parseFloat(sph);
+    const originalCyl = parseFloat(cyl);
+    const originalAxis = parseFloat(axis);
+    
+    const sphAdj = getAlconSphAdjustment(originalSph, originalCyl);
+    const cylAdj = getAlconCylAdjustment(originalSph, originalCyl);
+    
+    // 보정값 적용 (음수 SPH에 양수 adjustment = 덜 깎음)
+    let modifiedSph = originalSph + sphAdj.adjustment;
+    let modifiedCyl = originalCyl + cylAdj.adjustment; // CYL도 음수이므로 + 하면 절대값 감소
+    let modifiedAxis = originalAxis;
+    
+    // 0.25D 단위 반올림
+    modifiedSph = Math.round(modifiedSph * 4) / 4;
+    modifiedCyl = Math.round(modifiedCyl * 4) / 4;
+    
+    const adjustments = [];
+    if (sphAdj.adjustment !== 0) {
+        adjustments.push({ 
+            label: 'SPH 보정', 
+            value: `${sphAdj.adjustment > 0 ? '+' : ''}${sphAdj.adjustment.toFixed(2)} D`,
+            reason: sphAdj.reason
+        });
+    } else {
+        adjustments.push({ label: 'SPH 보정', value: '없음', reason: sphAdj.reason });
+    }
+    
+    if (cylAdj.adjustment !== 0) {
+        adjustments.push({ 
+            label: 'CYL 보정', 
+            value: `+${cylAdj.adjustment.toFixed(2)} D`,
+            reason: cylAdj.reason
+        });
+    } else {
+        adjustments.push({ label: 'CYL 보정', value: '없음', reason: cylAdj.reason });
+    }
+    
+    const se = originalSph + (originalCyl / 2);
+    
+    return {
+        original: { sph: originalSph, cyl: originalCyl, axis: originalAxis, se: se },
+        modified: {
+            sph: modifiedSph,
+            cyl: modifiedCyl,
+            axis: modifiedAxis,
+            se: modifiedSph + (modifiedCyl / 2)
+        },
+        adjustments: adjustments
+    };
+}
+
+/**
+ * 통합 Nomogram 계산 실행 (Wellington + Alcon Standard)
+ */
+function calculateAllNomograms() {
+    // 나이 가져오기
+    const age = parseInt(document.getElementById('well-age').value) || 30;
+    const ageAdj = getAgeAdjustment(age);
+    
+    // Wellington Nomogram 계산
+    const wellOdResult = calculateWellingtonForEye(
+        document.getElementById('well-od-sph').value,
+        document.getElementById('well-od-cyl').value,
+        document.getElementById('well-od-axis').value
+    );
+    
+    const wellOsResult = calculateWellingtonForEye(
+        document.getElementById('well-os-sph').value,
+        document.getElementById('well-os-cyl').value,
+        document.getElementById('well-os-axis').value
+    );
+    
+    // Alcon Standard Nomogram 계산
+    const alconOdResult = calculateAlconStandardForEye(
+        document.getElementById('well-od-sph').value,
+        document.getElementById('well-od-cyl').value,
+        document.getElementById('well-od-axis').value
+    );
+    
+    const alconOsResult = calculateAlconStandardForEye(
+        document.getElementById('well-os-sph').value,
+        document.getElementById('well-os-cyl').value,
+        document.getElementById('well-os-axis').value
+    );
+    
+    // 결과 저장
+    window.wellingtonResults = { od: wellOdResult, os: wellOsResult };
+    window.alconResults = { od: alconOdResult, os: alconOsResult };
+    window.ageAdjustment = { age: age, adjustment: ageAdj };
+    
+    // 통합 결과 렌더링 (나이 포함)
+    renderDualNomogramResults(wellOdResult, wellOsResult, alconOdResult, alconOsResult, age, ageAdj);
+    document.getElementById('btn-print-wellington').disabled = false;
+}
+
+/**
+ * 통합 Nomogram 결과 렌더링
+ */
+function renderDualNomogramResults(wellOd, wellOs, alconOd, alconOs, age, ageAdj) {
+    const container = document.getElementById('wellington-results');
+    
+    container.innerHTML = `
+        <div class="nomogram-dual-results">
+            <!-- Wellington Nomogram 결과 -->
+            <div class="wellington-section">
+                <div class="nomogram-section-title wellington">
+                    📊 Wellington Nomogram
+                    <small style="font-weight:normal; font-size:0.75rem;">(Dr. Cummings)</small>
+                </div>
+                <div class="wellington-result-cards" style="display:block;">
+                    ${renderWellingtonEyeResult('od', '우안 (OD)', wellOd)}
+                    ${renderWellingtonEyeResult('os', '좌안 (OS)', wellOs)}
+                </div>
+            </div>
+            
+            <!-- Alcon Standard Nomogram 결과 -->
+            <div class="alcon-section">
+                <div class="nomogram-section-title alcon">
+                    📋 Alcon Standard Nomogram
+                    <small style="font-weight:normal; font-size:0.75rem;">(EX500 공식)</small>
+                </div>
+                <div class="alcon-result-cards">
+                    ${renderAlconEyeResult('od', '우안 (OD)', alconOd)}
+                    ${renderAlconEyeResult('os', '좌안 (OS)', alconOs)}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 나이별 보정 -->
+        ${renderAgeAdjustmentCard(age, ageAdj)}
+        
+        <!-- 최종 권장값 (나이 보정 적용) -->
+        ${renderFinalRecommendation(wellOd, wellOs, alconOd, alconOs, ageAdj)}
+        
+        <!-- 비교 요약 -->
+        ${renderComparisonSummary(wellOd, wellOs, alconOd, alconOs)}
+    `;
+}
+
+/**
+ * 나이별 보정 카드 렌더링
+ */
+function renderAgeAdjustmentCard(age, ageAdj) {
+    const categoryColors = {
+        'young': '#3b82f6',
+        'standard': '#22c55e',
+        'pre-presbyopia': '#f59e0b',
+        'early-presbyopia': '#f97316',
+        'presbyopia': '#ef4444',
+        'advanced-presbyopia': '#dc2626'
+    };
+    
+    const monovisionHtml = ageAdj.monovision ? `
+        <div class="age-adjustment-item">
+            <div class="age-label">Monovision 권장</div>
+            <div class="age-value">${ageAdj.monovisionTarget || '권장'}</div>
+            <div class="age-reason">비주시안 근거리 교정</div>
+        </div>
+    ` : '';
+    
+    return `
+        <div class="age-adjustment-card">
+            <h4>👤 나이별 보정 (Age: ${age}세)</h4>
+            <div class="age-adjustment-grid">
+                <div class="age-adjustment-item highlight">
+                    <div class="age-label">나이 그룹</div>
+                    <div class="age-value" style="color: ${categoryColors[ageAdj.category] || '#a21caf'};">${ageAdj.description}</div>
+                </div>
+                <div class="age-adjustment-item">
+                    <div class="age-label">SPH 나이 보정값</div>
+                    <div class="age-value">${ageAdj.sphAdjustment > 0 ? '+' : ''}${ageAdj.sphAdjustment.toFixed(2)} D</div>
+                    <div class="age-reason">${ageAdj.sphAdjustment < 0 ? '과교정 (더 깎음)' : ageAdj.sphAdjustment > 0 ? '저교정 (덜 깎음)' : '표준'}</div>
+                </div>
+                ${monovisionHtml}
+                <div class="age-adjustment-item">
+                    <div class="age-label">권장 사유</div>
+                    <div class="age-reason" style="font-size: 0.8rem;">${ageAdj.reason}</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * 최종 권장값 렌더링 (Nomogram + 나이 보정)
+ */
+function renderFinalRecommendation(wellOd, wellOs, alconOd, alconOs, ageAdj) {
+    // Wellington 기준으로 나이 보정 적용
+    const finalOdSph = Math.round((wellOd.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    const finalOsSph = Math.round((wellOs.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    
+    // Alcon 기준으로 나이 보정 적용
+    const finalOdSphAlcon = Math.round((alconOd.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    const finalOsSphAlcon = Math.round((alconOs.modified.sph + ageAdj.sphAdjustment) * 4) / 4;
+    
+    return `
+        <div class="final-recommendation-card">
+            <h4>✅ 최종 권장값 (Nomogram + 나이 보정 적용)</h4>
+            <table class="final-table">
+                <thead>
+                    <tr>
+                        <th>눈</th>
+                        <th>기준</th>
+                        <th>원본 SPH</th>
+                        <th>Nomogram 보정</th>
+                        <th>나이 보정 (${ageAdj.sphAdjustment > 0 ? '+' : ''}${ageAdj.sphAdjustment.toFixed(2)}D)</th>
+                        <th>최종 SPH</th>
+                        <th>CYL</th>
+                        <th>AXIS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2" style="background:#dbeafe;font-weight:600;">OD</td>
+                        <td>Wellington</td>
+                        <td>${wellOd.original.sph.toFixed(2)}</td>
+                        <td>${wellOd.modified.sph.toFixed(2)}</td>
+                        <td>${ageAdj.sphAdjustment !== 0 ? (ageAdj.sphAdjustment > 0 ? '+' : '') + ageAdj.sphAdjustment.toFixed(2) : '-'}</td>
+                        <td class="final-row changed">${finalOdSph.toFixed(2)}</td>
+                        <td>${wellOd.modified.cyl.toFixed(2)}</td>
+                        <td>${wellOd.modified.axis}°</td>
+                    </tr>
+                    <tr>
+                        <td>Alcon</td>
+                        <td>${alconOd.original.sph.toFixed(2)}</td>
+                        <td>${alconOd.modified.sph.toFixed(2)}</td>
+                        <td>${ageAdj.sphAdjustment !== 0 ? (ageAdj.sphAdjustment > 0 ? '+' : '') + ageAdj.sphAdjustment.toFixed(2) : '-'}</td>
+                        <td class="final-row changed">${finalOdSphAlcon.toFixed(2)}</td>
+                        <td>${alconOd.modified.cyl.toFixed(2)}</td>
+                        <td>${alconOd.modified.axis}°</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" style="background:#dcfce7;font-weight:600;">OS</td>
+                        <td>Wellington</td>
+                        <td>${wellOs.original.sph.toFixed(2)}</td>
+                        <td>${wellOs.modified.sph.toFixed(2)}</td>
+                        <td>${ageAdj.sphAdjustment !== 0 ? (ageAdj.sphAdjustment > 0 ? '+' : '') + ageAdj.sphAdjustment.toFixed(2) : '-'}</td>
+                        <td class="final-row changed">${finalOsSph.toFixed(2)}</td>
+                        <td>${wellOs.modified.cyl.toFixed(2)}</td>
+                        <td>${wellOs.modified.axis}°</td>
+                    </tr>
+                    <tr>
+                        <td>Alcon</td>
+                        <td>${alconOs.original.sph.toFixed(2)}</td>
+                        <td>${alconOs.modified.sph.toFixed(2)}</td>
+                        <td>${ageAdj.sphAdjustment !== 0 ? (ageAdj.sphAdjustment > 0 ? '+' : '') + ageAdj.sphAdjustment.toFixed(2) : '-'}</td>
+                        <td class="final-row changed">${finalOsSphAlcon.toFixed(2)}</td>
+                        <td>${alconOs.modified.cyl.toFixed(2)}</td>
+                        <td>${alconOs.modified.axis}°</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 8px;">
+                💡 최종 권장값 = Nomogram 보정값 + 나이별 SPH 보정값
+            </p>
+        </div>
+    `;
+}
+
+/**
+ * Alcon 결과 카드 렌더링
+ */
+function renderAlconEyeResult(eye, label, result) {
+    const sphChanged = result.original.sph !== result.modified.sph;
+    const cylChanged = result.original.cyl !== result.modified.cyl;
+    
+    const adjustmentsHtml = result.adjustments.map(adj => `
+        <div class="adj-item">
+            <span>${adj.label}</span>
+            <span class="adj-value">${adj.value}</span>
+        </div>
+    `).join('');
+    
+    return `
+        <div class="alcon-result-card ${eye}">
+            <div class="alcon-result-header">
+                <span>👁️ ${label}</span>
+                <span class="alcon-type-badge">Alcon Standard</span>
+            </div>
+            
+            <table class="alcon-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>SPH</th>
+                        <th>CYL</th>
+                        <th>AXIS</th>
+                        <th>SE</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <td>원본</td>
@@ -8947,19 +10092,78 @@ function generateWellingtonPrintEye(eye, label, result) {
                         <td>${result.original.axis}°</td>
                         <td>${result.original.se.toFixed(2)}</td>
                     </tr>
-                    <tr class="modified">
+                    <tr class="highlight">
                         <td><strong>보정값</strong></td>
-                        <td class="${sphChanged ? 'changed' : ''}">${result.modified.sph.toFixed(2)}</td>
-                        <td class="${cylChanged ? 'changed' : ''}">${result.modified.cyl.toFixed(2)}</td>
+                        <td class="${sphChanged ? 'value-changed' : ''}">${result.modified.sph.toFixed(2)}</td>
+                        <td class="${cylChanged ? 'value-changed' : ''}">${result.modified.cyl.toFixed(2)}</td>
                         <td>${result.modified.axis}°</td>
                         <td>${result.modified.se.toFixed(2)}</td>
                     </tr>
                 </tbody>
             </table>
-            <div class="adjustments">
-                <div class="title">📋 적용된 보정</div>
-                ${adjHtml}
+            
+            <div class="alcon-adjustment-box">
+                <div class="adj-title">📋 적용된 보정</div>
+                ${adjustmentsHtml}
             </div>
+        </div>
+    `;
+}
+
+/**
+ * 비교 요약 테이블 렌더링
+ */
+function renderComparisonSummary(wellOd, wellOs, alconOd, alconOs) {
+    return `
+        <div class="nomogram-comparison-summary">
+            <h4>📊 Nomogram 비교 요약</h4>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>눈</th>
+                        <th>항목</th>
+                        <th>원본</th>
+                        <th>Wellington</th>
+                        <th>Alcon Standard</th>
+                        <th>차이</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2" style="background:#dbeafe;font-weight:600;">OD</td>
+                        <td>SPH</td>
+                        <td>${wellOd.original.sph.toFixed(2)}</td>
+                        <td>${wellOd.modified.sph.toFixed(2)}</td>
+                        <td>${alconOd.modified.sph.toFixed(2)}</td>
+                        <td class="${wellOd.modified.sph !== alconOd.modified.sph ? 'diff-highlight' : ''}">${(wellOd.modified.sph - alconOd.modified.sph).toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>CYL</td>
+                        <td>${wellOd.original.cyl.toFixed(2)}</td>
+                        <td>${wellOd.modified.cyl.toFixed(2)}</td>
+                        <td>${alconOd.modified.cyl.toFixed(2)}</td>
+                        <td class="${wellOd.modified.cyl !== alconOd.modified.cyl ? 'diff-highlight' : ''}">${(wellOd.modified.cyl - alconOd.modified.cyl).toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" style="background:#dcfce7;font-weight:600;">OS</td>
+                        <td>SPH</td>
+                        <td>${wellOs.original.sph.toFixed(2)}</td>
+                        <td>${wellOs.modified.sph.toFixed(2)}</td>
+                        <td>${alconOs.modified.sph.toFixed(2)}</td>
+                        <td class="${wellOs.modified.sph !== alconOs.modified.sph ? 'diff-highlight' : ''}">${(wellOs.modified.sph - alconOs.modified.sph).toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>CYL</td>
+                        <td>${wellOs.original.cyl.toFixed(2)}</td>
+                        <td>${wellOs.modified.cyl.toFixed(2)}</td>
+                        <td>${alconOs.modified.cyl.toFixed(2)}</td>
+                        <td class="${wellOs.modified.cyl !== alconOs.modified.cyl ? 'diff-highlight' : ''}">${(wellOs.modified.cyl - alconOs.modified.cyl).toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size:0.75rem; color:var(--text-tertiary); margin-top:8px;">
+                💡 두 Nomogram 간 차이가 있는 경우 노란색으로 표시됩니다. 최종 선택은 술자의 경험과 선호도에 따라 결정하세요.
+            </p>
         </div>
     `;
 }
