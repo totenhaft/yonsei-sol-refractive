@@ -5151,6 +5151,16 @@ if (!DEMO_MODE && firebaseConfig.apiKey) {
         firebase.initializeApp(firebaseConfig);
         auth = firebase.auth();
         db = firebase.firestore();
+        
+        // Auth persistence 설정 - 브라우저 세션 간에도 로그인 상태 유지
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log('✅ Firebase Auth persistence set to LOCAL');
+            })
+            .catch((error) => {
+                console.error('❌ Firebase Auth persistence error:', error);
+            });
+        
         console.log('✅ Firebase initialized successfully');
         console.log('✅ auth:', auth ? 'OK' : 'FAILED');
         console.log('✅ db:', db ? 'OK' : 'FAILED');
@@ -5751,12 +5761,16 @@ function switchLoginTab(tab) {
 // Show/hide login screen
 function showLoginScreen() {
     document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('app-container').classList.remove('logged-in');
+    document.getElementById('app-container').style.display = 'none';
 }
 
 function hideLoginScreen() {
     document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app-container').classList.add('logged-in');
+    document.getElementById('app-container').style.display = 'block';
 }
 
 // Update auth UI based on login state
@@ -10385,14 +10399,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!DEMO_MODE && typeof auth !== 'undefined') {
         auth.onAuthStateChanged((user) => {
             if (user) {
+                console.log('🔄 Auth state changed: User logged in -', user.email);
                 checkUserApprovalFirebase(user.email).then(approved => {
                     if (approved || user.email === ADMIN_EMAIL) {
                         currentUser = user;
                         updateAuthUI();
                         loadClaudeApiKey(); // API 키 로드
                         updateAIModeBadge();
+                        hideLoginScreen();
+                        console.log('✅ Auto-login successful for:', user.email);
+                    } else {
+                        // 승인되지 않은 사용자
+                        console.log('⚠️ User not approved:', user.email);
+                        showLoginScreen();
+                        showNotification('승인 대기 중입니다. 관리자 승인 후 이용 가능합니다.', 'warning');
                     }
                 });
+            } else {
+                console.log('🔄 Auth state changed: No user logged in');
+                currentUser = null;
+                showLoginScreen();
             }
         });
     }
