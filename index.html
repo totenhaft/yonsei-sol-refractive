@@ -9594,6 +9594,37 @@ async function loadPatient(patientId) {
 }
 
 // Save patient to localStorage (enhanced version)
+/**
+ * 환자 데이터 저장 (플로팅 버튼용)
+ */
+function savePatient() {
+    // 계산 결과가 있는지 확인
+    if (!window.calculator || !window.calculator.results) {
+        showNotification('먼저 계산을 수행해주세요.', 'error');
+        return;
+    }
+    
+    // 환자 정보 확인
+    const patientName = document.getElementById('patient-name').value;
+    const patientId = document.getElementById('patient-id').value;
+    
+    if (!patientName || !patientId) {
+        showNotification('환자명과 등록번호를 입력해주세요.', 'error');
+        return;
+    }
+    
+    // 폼 데이터 수집
+    const formData = window.calculator.getFormData();
+    const results = window.calculator.results;
+    
+    // 저장 실행
+    const savedData = savePatientData(formData, results);
+    
+    if (savedData) {
+        showNotification(`환자 "${patientName}" (${patientId}) 데이터가 저장되었습니다.`, 'success');
+    }
+}
+
 function savePatientData(formData, results) {
     const patientData = {
         patientName: formData.common?.patientName || document.getElementById('patient-name').value,
