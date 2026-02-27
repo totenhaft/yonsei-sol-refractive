@@ -5071,8 +5071,8 @@ input:focus, select:focus {
                     <div class="shared-section topography-upload-section">
                         <div class="shared-section-title" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
                             <span>📷</span>
-                            각막지형도 OCR 자동 추출 (Galilei / Oculus)
-                            <span class="ai-badge" id="ai-mode-badge">Tesseract OCR</span>
+                            각막지형도 AI 자동 추출 (Galilei / Oculus)
+                            <span class="ai-badge" id="ai-mode-badge">Claude AI</span>
                         </div>
                         <div class="topography-upload-container">
                             <div class="upload-zones">
@@ -6252,11 +6252,17 @@ function clearTopoUpload(eye) {
     checkOCRResultsVisibility();
 }
 
-// OCR로 데이터 추출
+// OCR로 데이터 추출 - Claude API 사용
 async function extractDataWithOCR(eye) {
     const data = ocrExtractedData[eye];
     if (!data || !data.imageData) {
         showNotification('이미지를 먼저 업로드하세요.', 'error');
+        return;
+    }
+    
+    // Claude API 키 확인
+    if (!CLAUDE_API_KEY) {
+        showNotification('Claude API 키가 설정되지 않았습니다. 관리자에게 문의하세요.', 'error');
         return;
     }
     
@@ -6266,30 +6272,18 @@ async function extractDataWithOCR(eye) {
     const progressText = document.getElementById(`progress-text-${eye}`);
     
     extractBtn.disabled = true;
-    extractBtn.innerHTML = '⏳ 추출 중...';
+    extractBtn.innerHTML = '⏳ AI 분석 중...';
     progressDiv.style.display = 'block';
-    progressFill.style.width = '0%';
+    progressFill.style.width = '30%';
+    progressText.textContent = 'Claude AI가 이미지를 분석하고 있습니다...';
     
     try {
-        // Tesseract OCR 실행
-        const result = await Tesseract.recognize(
-            data.imageData,
-            'eng', // 영어 + 숫자 인식
-            {
-                logger: m => {
-                    if (m.status === 'recognizing text') {
-                        const percent = Math.round(m.progress * 100);
-                        progressFill.style.width = `${percent}%`;
-                        progressText.textContent = `OCR 분석 중... ${percent}%`;
-                    }
-                }
-            }
-        );
+        // Claude API로 이미지 분석
+        const extracted = await extractDataWithClaudeOCR(data.imageData);
         
-        console.log('OCR Raw Text:', result.data.text);
+        progressFill.style.width = '100%';
+        progressText.textContent = '분석 완료!';
         
-        // 텍스트에서 데이터 추출
-        const extracted = parseGalileiData(result.data.text);
         ocrExtractedData[eye].extracted = extracted;
         
         // 결과 표시
@@ -6298,13 +6292,130 @@ async function extractDataWithOCR(eye) {
         showNotification(`${eye.toUpperCase()} 데이터 추출이 완료되었습니다.`, 'success');
         
     } catch (error) {
-        console.error('OCR Error:', error);
-        showNotification('OCR 분석 중 오류가 발생했습니다: ' + error.message, 'error');
+        console.error('Claude OCR Error:', error);
+        showNotification('AI 분석 중 오류가 발생했습니다: ' + error.message, 'error');
         progressDiv.style.display = 'none';
     } finally {
         extractBtn.disabled = false;
         extractBtn.innerHTML = '🔍 데이터 자동 추출';
     }
+}
+
+/**
+ * Claude API를 사용한 OCR 데이터 추출
+ */
+async function extractDataWithClaudeOCR(imageData) {
+    // base64 데이터에서 prefix 제거
+    const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+    const mediaType = imageData.match(/^data:(image\/\w+);/)?.[1] || 'image/png';
+    
+    const prompt = `이 Galilei G4 각막지형도 이미지에서 다음 수치들을 정확하게 읽어주세요.
+
+**추출해야 할 항목:**
+
+1. **Flat SimK (K1)**: 평평한 각막곡률 값 (D 단위)
+2. **Steep SimK (K2)**: 가파른 각막곡률 값 (D 단위)  
+3. **Steep SimK Axis**: K2의 축 (도, °)
+4. **Thinnest (CCT)**: 가장 얇은 각막두께 (μm 단위)
+5. **AQD (ACD)**: 전방깊이 (mm 단위)
+6. **WTW, N-T**: 각막직경 (mm 단위)
+
+**응답 형식:**
+반드시 아래 JSON 형식으로만 응답해주세요. 다른 설명 없이 JSON만 출력하세요.
+읽을 수 없는 값은 null로 표시하세요.
+
+{
+    "k1": 43.25,
+    "k2": 44.50,
+    "kAxis": 88,
+    "cct": 540,
+    "thinnest": 540,
+    "acd": 3.24,
+    "wtw": 12.77
+}
+
+**주의사항:**
+- K값은 보통 38~50D 범위입니다
+- CCT는 보통 400~650μm 범위입니다
+- ACD는 보통 2.0~4.5mm 범위입니다
+- WTW는 보통 10~14mm 범위입니다
+- 이미지에서 숫자를 정확하게 읽어주세요`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': CLAUDE_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 500,
+            messages: [{
+                role: 'user',
+                content: [
+                    {
+                        type: 'image',
+                        source: {
+                            type: 'base64',
+                            media_type: mediaType,
+                            data: base64Data
+                        }
+                    },
+                    {
+                        type: 'text',
+                        text: prompt
+                    }
+                ]
+            }]
+        })
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || `API 오류: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const content = data.content[0]?.text || '';
+    
+    console.log('Claude OCR Response:', content);
+    
+    // JSON 추출
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+        try {
+            const parsed = JSON.parse(jsonMatch[0]);
+            
+            // 값 검증 및 반환
+            return {
+                k1: validateRange(parsed.k1, 35, 55),
+                k2: validateRange(parsed.k2, 35, 55),
+                kAxis: validateRange(parsed.kAxis, 0, 180),
+                cct: validateRange(parsed.cct, 350, 700),
+                thinnest: validateRange(parsed.thinnest, 350, 700),
+                acd: validateRange(parsed.acd, 1.5, 5.5),
+                wtw: validateRange(parsed.wtw, 9, 15)
+            };
+        } catch (e) {
+            console.error('JSON 파싱 오류:', e);
+            throw new Error('AI 응답을 파싱할 수 없습니다.');
+        }
+    }
+    
+    throw new Error('AI가 유효한 결과를 반환하지 않았습니다.');
+}
+
+/**
+ * 값 범위 검증
+ */
+function validateRange(value, min, max) {
+    if (value === null || value === undefined) return null;
+    const num = parseFloat(value);
+    if (isNaN(num)) return null;
+    if (num < min || num > max) return null;
+    return num;
 }
 
 // Galilei 데이터 파싱 함수 - 실제 Galilei G4 리포트 형식에 최적화
