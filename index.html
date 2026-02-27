@@ -4135,6 +4135,275 @@ input:focus, select:focus {
         display: none !important;
     }
 }
+
+/* ============================================
+   Contoura Vision Nomogram 스타일
+   ============================================ */
+.contoura-panel {
+    background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+    border: 2px solid #eab308;
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-top: var(--space-xl);
+}
+
+.contoura-panel h4 {
+    color: #a16207;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid #fde047;
+}
+
+.contoura-description {
+    background: white;
+    border: 1px solid #fde047;
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-md);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.contoura-eye-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+}
+
+@media (max-width: 900px) {
+    .contoura-eye-panels {
+        grid-template-columns: 1fr;
+    }
+}
+
+.contoura-eye-panel {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    border: 2px solid transparent;
+}
+
+.contoura-eye-panel.od {
+    border-color: #3b82f6;
+}
+
+.contoura-eye-panel.os {
+    border-color: #22c55e;
+}
+
+.contoura-eye-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+    font-weight: 600;
+}
+
+.contoura-eye-panel.od .contoura-eye-header {
+    color: #3b82f6;
+}
+
+.contoura-eye-panel.os .contoura-eye-header {
+    color: #22c55e;
+}
+
+.contoura-input-section {
+    margin-bottom: var(--space-md);
+}
+
+.contoura-input-section .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-xs);
+    text-transform: uppercase;
+}
+
+.contoura-input-section.measured .section-label {
+    color: #ca8a04;
+}
+
+.contoura-input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+}
+
+.contoura-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.contoura-input-group label {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+}
+
+.contoura-input-group input {
+    padding: 6px 8px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.contoura-input-group input:focus {
+    outline: none;
+    border-color: #eab308;
+    box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.2);
+}
+
+.contoura-input-section.measured input {
+    background: #fffbeb;
+    border-color: #fde047;
+}
+
+.btn-copy-contoura {
+    background: white;
+    border: 1px solid #fde047;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    cursor: pointer;
+    color: #a16207;
+    transition: all var(--transition-fast);
+}
+
+.btn-copy-contoura:hover {
+    background: #fef9c3;
+    border-color: #eab308;
+}
+
+.contoura-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-md);
+}
+
+.btn-calculate-contoura {
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.btn-calculate-contoura:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(234, 179, 8, 0.4);
+}
+
+.contoura-results-section {
+    margin-top: var(--space-lg);
+}
+
+.contoura-result-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    border: 2px solid transparent;
+}
+
+.contoura-result-card.od {
+    border-color: #3b82f6;
+}
+
+.contoura-result-card.os {
+    border-color: #22c55e;
+}
+
+.contoura-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.contoura-badge {
+    background: linear-gradient(135deg, #fef9c3 0%, #fde047 100%);
+    color: #a16207;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+.contoura-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin-bottom: var(--space-sm);
+}
+
+.contoura-table th,
+.contoura-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border: 1px solid var(--border-light);
+}
+
+.contoura-table th {
+    background: #fffbeb;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: #a16207;
+}
+
+.contoura-table .modified-row {
+    background: linear-gradient(135deg, #fef9c3 0%, #fde047 100%);
+    font-weight: 700;
+}
+
+.contoura-table .changed {
+    color: #ca8a04;
+    font-weight: 700;
+}
+
+.contoura-seq-check {
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.contoura-seq-check.match {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.contoura-seq-check.mismatch {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.contoura-warning {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: #92400e;
+    margin-top: var(--space-md);
+}
     </style>
 </head>
 <body>
@@ -5007,6 +5276,122 @@ input:focus, select:focus {
                             <p>굴절값을 입력하고 <strong>Nomogram 변환</strong> 버튼을 클릭하세요<br>
                             <small>Wellington Nomogram + Alcon Standard Nomogram 동시 적용</small></p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Contoura Vision Nomogram Section -->
+                <div class="contoura-panel">
+                    <h4>🎯 Contoura Vision Nomogram (Topography-Guided)</h4>
+                    
+                    <div class="contoura-description">
+                        💡 <strong>Contoura Vision</strong>은 각막 지형도(Topography) 기반 수술 모드입니다. 
+                        Manifest Refraction과 Measured (Topography) 값을 비교하여 Modified 값을 계산합니다.
+                        <br>⚠️ Refraction CYL과 Measured CYL의 차이가 1.25D 이상이거나, Axis 차이가 크면 WFO 모드를 권장합니다.
+                    </div>
+                    
+                    <div class="contoura-eye-panels">
+                        <!-- 우안 (OD) -->
+                        <div class="contoura-eye-panel od">
+                            <div class="contoura-eye-header">
+                                <span>👁️ 우안 (OD)</span>
+                                <button type="button" class="btn-copy-contoura" onclick="copyToContoura('od')">
+                                    ↑ 위에서 복사
+                                </button>
+                            </div>
+                            
+                            <div class="contoura-input-section">
+                                <div class="section-label">Manifest Refraction (현성굴절)</div>
+                                <div class="contoura-input-grid">
+                                    <div class="contoura-input-group">
+                                        <label>SPH</label>
+                                        <input type="number" id="cont-od-ref-sph" step="0.25" value="-3.00">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>CYL</label>
+                                        <input type="number" id="cont-od-ref-cyl" step="0.25" value="-1.00">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>AXIS</label>
+                                        <input type="number" id="cont-od-ref-axis" min="1" max="180" value="180">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="contoura-input-section measured">
+                                <div class="section-label">📐 Measured (Topolyzer)</div>
+                                <div class="contoura-input-grid">
+                                    <div class="contoura-input-group">
+                                        <label>SPH</label>
+                                        <input type="number" id="cont-od-meas-sph" step="0.25" value="-2.00">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>CYL</label>
+                                        <input type="number" id="cont-od-meas-cyl" step="0.25" value="-1.50">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>AXIS</label>
+                                        <input type="number" id="cont-od-meas-axis" min="1" max="180" value="179">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 좌안 (OS) -->
+                        <div class="contoura-eye-panel os">
+                            <div class="contoura-eye-header">
+                                <span>👁️ 좌안 (OS)</span>
+                                <button type="button" class="btn-copy-contoura" onclick="copyToContoura('os')">
+                                    ↑ 위에서 복사
+                                </button>
+                            </div>
+                            
+                            <div class="contoura-input-section">
+                                <div class="section-label">Manifest Refraction (현성굴절)</div>
+                                <div class="contoura-input-grid">
+                                    <div class="contoura-input-group">
+                                        <label>SPH</label>
+                                        <input type="number" id="cont-os-ref-sph" step="0.25" value="-3.25">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>CYL</label>
+                                        <input type="number" id="cont-os-ref-cyl" step="0.25" value="-0.75">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>AXIS</label>
+                                        <input type="number" id="cont-os-ref-axis" min="1" max="180" value="175">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="contoura-input-section measured">
+                                <div class="section-label">📐 Measured (Topolyzer)</div>
+                                <div class="contoura-input-grid">
+                                    <div class="contoura-input-group">
+                                        <label>SPH</label>
+                                        <input type="number" id="cont-os-meas-sph" step="0.25" value="-2.75">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>CYL</label>
+                                        <input type="number" id="cont-os-meas-cyl" step="0.25" value="-1.75">
+                                    </div>
+                                    <div class="contoura-input-group">
+                                        <label>AXIS</label>
+                                        <input type="number" id="cont-os-meas-axis" min="1" max="180" value="179">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contoura-actions">
+                        <button type="button" class="btn-calculate-contoura" onclick="calculateContouraVision()">
+                            🎯 Contoura Vision 계산
+                        </button>
+                    </div>
+                    
+                    <!-- 결과 섹션 -->
+                    <div class="contoura-results-section" id="contoura-results">
+                        <!-- 결과가 여기에 표시됩니다 -->
                     </div>
                 </div>
 
@@ -7019,6 +7404,268 @@ function openSummaryView() {
     const newWindow = window.open('', '_blank');
     newWindow.document.write(summaryHTML);
     newWindow.document.close();
+}
+
+// ============================================
+// Contoura Vision Nomogram Calculator
+// ============================================
+
+/**
+ * Wellington Nomogram 값을 Contoura 입력란으로 복사
+ */
+function copyToContoura(eye) {
+    // Refraction 값은 Wellington 입력에서 복사
+    const refSph = document.getElementById(`well-${eye}-sph`)?.value || -3;
+    const refCyl = document.getElementById(`well-${eye}-cyl`)?.value || -1;
+    const refAxis = document.getElementById(`well-${eye}-axis`)?.value || 180;
+    
+    document.getElementById(`cont-${eye}-ref-sph`).value = refSph;
+    document.getElementById(`cont-${eye}-ref-cyl`).value = refCyl;
+    document.getElementById(`cont-${eye}-ref-axis`).value = refAxis;
+    
+    showNotification(`${eye.toUpperCase()} Refraction 값이 복사되었습니다. Measured 값은 Topolyzer에서 직접 입력하세요.`, 'info');
+}
+
+/**
+ * Contoura Vision Nomogram 계산 - Alcon Advisory Board Protocol
+ */
+function calculateContouraForEye(refSph, refCyl, refAxis, measSph, measCyl, measAxis) {
+    // 입력값 파싱
+    const refraction = {
+        sph: parseFloat(refSph),
+        cyl: parseFloat(refCyl),  // 음수
+        axis: parseFloat(refAxis)
+    };
+    
+    const measured = {
+        sph: parseFloat(measSph),
+        cyl: parseFloat(measCyl),  // 음수
+        axis: parseFloat(measAxis)
+    };
+    
+    // 절대값으로 비교 (CYL은 음수이므로)
+    const absRefCyl = Math.abs(refraction.cyl);
+    const absMeasCyl = Math.abs(measured.cyl);
+    
+    // SEQ 계산
+    const refSeq = refraction.sph + (refraction.cyl / 2);
+    
+    // Step 1: Axis - Measured Axis 사용
+    const modifiedAxis = measured.axis;
+    
+    // Step 2: Cylinder 결정
+    let modifiedCyl;
+    let cylMethod;
+    
+    if (absRefCyl >= absMeasCyl) {
+        // Step 2.a: Refraction CYL ≥ Measured CYL → Measured CYL 사용
+        modifiedCyl = measured.cyl;
+        cylMethod = 'Measured CYL 사용 (Ref CYL ≥ Meas CYL)';
+    } else {
+        // Step 2.b: Refraction CYL < Measured CYL
+        // Refraction CYL + (Measured CYL - Refraction CYL) / 2
+        const cylDiff = measured.cyl - refraction.cyl;  // 음수 - 음수 = 음수 (더 큰 음수)
+        modifiedCyl = refraction.cyl + (cylDiff / 2);
+        cylMethod = 'Ref CYL + (Meas CYL - Ref CYL) / 2';
+    }
+    
+    // Step 3: Sphere 결정
+    let modifiedSph;
+    let sphMethod;
+    const cylDifference = refraction.cyl - measured.cyl;  // 음수 - 음수
+    
+    if (refraction.sph <= 0) {
+        // 근시 (Myopia): Step 3.a or 3.b
+        if (absRefCyl >= absMeasCyl) {
+            // Step 3.a: Ref CYL ≥ Meas CYL
+            // Refraction SPH + (Refraction CYL - Measured CYL) / 2
+            modifiedSph = refraction.sph + (cylDifference / 2);
+            sphMethod = 'Ref SPH + (Ref CYL - Meas CYL) / 2';
+        } else {
+            // Step 3.b: Ref CYL < Meas CYL
+            // Refraction SPH - (Measured CYL - Refraction CYL) / 4
+            const diff = measured.cyl - refraction.cyl;
+            modifiedSph = refraction.sph - (diff / 4);
+            sphMethod = 'Ref SPH - (Meas CYL - Ref CYL) / 4';
+        }
+    } else {
+        // 원시 (Hyperopia) - NOT AVAILABLE IN USA, but included for completeness
+        if (absRefCyl >= absMeasCyl) {
+            // Refraction SPH - (Refraction CYL - Measured CYL) / 2
+            modifiedSph = refraction.sph - (cylDifference / 2);
+            sphMethod = 'Ref SPH - (Ref CYL - Meas CYL) / 2 [원시]';
+        } else {
+            // Refraction SPH + (Measured CYL - Refraction CYL) / 4
+            const diff = measured.cyl - refraction.cyl;
+            modifiedSph = refraction.sph + (diff / 4);
+            sphMethod = 'Ref SPH + (Meas CYL - Ref CYL) / 4 [원시]';
+        }
+    }
+    
+    // 0.25D 단위 반올림
+    modifiedSph = Math.round(modifiedSph * 4) / 4;
+    modifiedCyl = Math.round(modifiedCyl * 4) / 4;
+    
+    // Modified SEQ 계산
+    const modifiedSeq = modifiedSph + (modifiedCyl / 2);
+    
+    // SEQ 일치 여부 확인
+    const seqMatch = Math.abs(refSeq - modifiedSeq) < 0.13;  // 0.125D 이내
+    
+    // 경고 조건 확인
+    const warnings = [];
+    const cylDiff = Math.abs(absRefCyl - absMeasCyl);
+    const axisDiff = Math.abs(refraction.axis - measured.axis);
+    
+    if (cylDiff > 1.25) {
+        warnings.push(`CYL 차이 ${cylDiff.toFixed(2)}D > 1.25D: WFO 모드 권장`);
+    }
+    
+    if (absRefCyl >= 2.0 && axisDiff > 5) {
+        warnings.push(`AXIS 차이 ${axisDiff}° > 5° (CYL≥2.0D): WFO 모드 권장`);
+    } else if (absRefCyl < 2.0 && axisDiff > 10) {
+        warnings.push(`AXIS 차이 ${axisDiff}° > 10° (CYL<2.0D): WFO 모드 권장`);
+    }
+    
+    return {
+        refraction: refraction,
+        measured: measured,
+        modified: {
+            sph: modifiedSph,
+            cyl: modifiedCyl,
+            axis: modifiedAxis
+        },
+        refSeq: refSeq,
+        modifiedSeq: modifiedSeq,
+        seqMatch: seqMatch,
+        methods: {
+            cyl: cylMethod,
+            sph: sphMethod
+        },
+        warnings: warnings
+    };
+}
+
+/**
+ * Contoura Vision 계산 실행
+ */
+function calculateContouraVision() {
+    // 우안 계산
+    const odResult = calculateContouraForEye(
+        document.getElementById('cont-od-ref-sph').value,
+        document.getElementById('cont-od-ref-cyl').value,
+        document.getElementById('cont-od-ref-axis').value,
+        document.getElementById('cont-od-meas-sph').value,
+        document.getElementById('cont-od-meas-cyl').value,
+        document.getElementById('cont-od-meas-axis').value
+    );
+    
+    // 좌안 계산
+    const osResult = calculateContouraForEye(
+        document.getElementById('cont-os-ref-sph').value,
+        document.getElementById('cont-os-ref-cyl').value,
+        document.getElementById('cont-os-ref-axis').value,
+        document.getElementById('cont-os-meas-sph').value,
+        document.getElementById('cont-os-meas-cyl').value,
+        document.getElementById('cont-os-meas-axis').value
+    );
+    
+    // 결과 저장
+    window.contouraResults = { od: odResult, os: osResult };
+    
+    // 결과 렌더링
+    renderContouraResults(odResult, osResult);
+}
+
+/**
+ * Contoura Vision 결과 렌더링
+ */
+function renderContouraResults(odResult, osResult) {
+    const container = document.getElementById('contoura-results');
+    
+    container.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+            ${renderContouraEyeResult('od', '우안 (OD)', odResult)}
+            ${renderContouraEyeResult('os', '좌안 (OS)', osResult)}
+        </div>
+        
+        <div class="contoura-warning">
+            ⚠️ <strong>주의:</strong> Contoura Vision 결과에 개인 Nomogram(SPH only)을 추가로 적용할 수 있습니다. 
+            최종 수술 파라미터는 집도의의 임상적 판단에 따라 결정하세요.
+        </div>
+    `;
+}
+
+/**
+ * Contoura Vision 개별 눈 결과 렌더링
+ */
+function renderContouraEyeResult(eye, label, result) {
+    const sphChanged = result.refraction.sph !== result.modified.sph;
+    const cylChanged = result.refraction.cyl !== result.modified.cyl;
+    const axisChanged = result.refraction.axis !== result.modified.axis;
+    
+    const warningsHtml = result.warnings.length > 0 
+        ? `<div style="background: #fee2e2; border: 1px solid #fca5a5; padding: 8px; border-radius: 4px; margin-top: 8px; font-size: 0.75rem; color: #991b1b;">
+            ⚠️ ${result.warnings.join('<br>⚠️ ')}
+           </div>`
+        : '';
+    
+    return `
+        <div class="contoura-result-card ${eye}">
+            <div class="contoura-result-header">
+                <span style="font-weight: 600;">👁️ ${label}</span>
+                <span class="contoura-badge">Contoura Vision</span>
+            </div>
+            
+            <table class="contoura-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>SPH</th>
+                        <th>CYL</th>
+                        <th>AXIS</th>
+                        <th>SEQ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Refraction</td>
+                        <td>${result.refraction.sph.toFixed(2)}</td>
+                        <td>${result.refraction.cyl.toFixed(2)}</td>
+                        <td>${result.refraction.axis}°</td>
+                        <td>${result.refSeq.toFixed(2)}</td>
+                    </tr>
+                    <tr style="background: #fffbeb;">
+                        <td>Measured</td>
+                        <td>${result.measured.sph.toFixed(2)}</td>
+                        <td>${result.measured.cyl.toFixed(2)}</td>
+                        <td>${result.measured.axis}°</td>
+                        <td>-</td>
+                    </tr>
+                    <tr class="modified-row">
+                        <td><strong>Modified</strong></td>
+                        <td class="${sphChanged ? 'changed' : ''}">${result.modified.sph.toFixed(2)}</td>
+                        <td class="${cylChanged ? 'changed' : ''}">${result.modified.cyl.toFixed(2)}</td>
+                        <td class="${axisChanged ? 'changed' : ''}">${result.modified.axis}°</td>
+                        <td>${result.modifiedSeq.toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="contoura-seq-check ${result.seqMatch ? 'match' : 'mismatch'}">
+                ${result.seqMatch 
+                    ? '✅ SEQ 일치: Refraction SEQ = Modified SEQ' 
+                    : `❌ SEQ 불일치: ${result.refSeq.toFixed(2)} ≠ ${result.modifiedSeq.toFixed(2)} (확인 필요)`}
+            </div>
+            
+            <div style="font-size: 0.7rem; color: var(--text-tertiary); margin-top: 8px;">
+                <div>• CYL: ${result.methods.cyl}</div>
+                <div>• SPH: ${result.methods.sph}</div>
+            </div>
+            
+            ${warningsHtml}
+        </div>
+    `;
 }
 
 /**
