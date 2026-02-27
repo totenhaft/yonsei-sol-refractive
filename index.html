@@ -4404,6 +4404,410 @@ input:focus, select:focus {
     color: #92400e;
     margin-top: var(--space-md);
 }
+
+/* ============================================
+   AI 각막지형도 분석 스타일
+   ============================================ */
+.ai-topography-panel {
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+    border: 2px solid #8b5cf6;
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-top: var(--space-xl);
+}
+
+.ai-topography-panel h4 {
+    color: #6d28d9;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid #a78bfa;
+}
+
+.ai-topography-panel h4 .premium-badge {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.ai-upload-zone {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+}
+
+@media (max-width: 900px) {
+    .ai-upload-zone {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ai-upload-box {
+    background: white;
+    border: 2px dashed #a78bfa;
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-upload-box:hover {
+    border-color: #8b5cf6;
+    background: #faf5ff;
+}
+
+.ai-upload-box.dragover {
+    border-color: #6d28d9;
+    background: #ede9fe;
+    transform: scale(1.02);
+}
+
+.ai-upload-box.has-image {
+    border-style: solid;
+    border-color: #8b5cf6;
+}
+
+.ai-upload-box.od {
+    border-color: #3b82f6;
+}
+
+.ai-upload-box.od.has-image {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.ai-upload-box.os {
+    border-color: #22c55e;
+}
+
+.ai-upload-box.os.has-image {
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
+
+.ai-upload-box .eye-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: white;
+}
+
+.ai-upload-box.od .eye-label {
+    background: #3b82f6;
+}
+
+.ai-upload-box.os .eye-label {
+    background: #22c55e;
+}
+
+.ai-upload-box .upload-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+    opacity: 0.7;
+}
+
+.ai-upload-box .upload-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.ai-upload-box .upload-hint {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+.ai-upload-box .preview-image {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+}
+
+.ai-upload-box .remove-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.ai-upload-box .remove-image:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+.ai-upload-box input[type="file"] {
+    display: none;
+}
+
+.ai-analyze-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.btn-ai-analyze {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.btn-ai-analyze:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+.btn-ai-analyze:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-ai-analyze.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-ai-analyze.loading::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.ai-results-section {
+    margin-top: var(--space-lg);
+}
+
+.ai-result-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    border: 2px solid transparent;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.ai-result-card.od {
+    border-color: #3b82f6;
+}
+
+.ai-result-card.os {
+    border-color: #22c55e;
+}
+
+.ai-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.ai-result-header .eye-title {
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.ai-result-header .confidence-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.ai-result-header .confidence-badge.high {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.ai-result-header .confidence-badge.medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.ai-result-header .confidence-badge.low {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.ai-result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.ai-result-item {
+    background: var(--bg-secondary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+
+.ai-result-item .item-label {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.ai-result-item .item-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ai-result-item .item-unit {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.ai-pattern-analysis {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #86efac;
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-md);
+}
+
+.ai-pattern-analysis.warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: #f59e0b;
+}
+
+.ai-pattern-analysis.danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-color: #f87171;
+}
+
+.ai-pattern-analysis .pattern-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: var(--space-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.ai-pattern-analysis .pattern-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.ai-notes {
+    background: #f8fafc;
+    border: 1px solid var(--border-light);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.btn-apply-ai-results {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+}
+
+.btn-apply-ai-results:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.ai-error-message {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+    margin-top: var(--space-md);
+}
+
+.ai-premium-required {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.ai-premium-required .premium-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+}
+
+.ai-premium-required h5 {
+    color: #92400e;
+    margin-bottom: var(--space-sm);
+}
+
+.ai-premium-required p {
+    font-size: 0.85rem;
+    color: #a16207;
+}
     </style>
 </head>
 <body>
@@ -5276,6 +5680,18 @@ input:focus, select:focus {
                             <p>굴절값을 입력하고 <strong>Nomogram 변환</strong> 버튼을 클릭하세요<br>
                             <small>Wellington Nomogram + Alcon Standard Nomogram 동시 적용</small></p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- AI 각막지형도 분석 Section -->
+                <div class="ai-topography-panel" id="ai-topography-panel">
+                    <h4>
+                        🤖 AI 각막지형도 자동 판독 (Galilei G4)
+                        <span class="premium-badge">Premium</span>
+                    </h4>
+                    
+                    <div id="ai-content-area">
+                        <!-- 프리미엄 사용자만 볼 수 있는 영역 - JavaScript로 제어 -->
                     </div>
                 </div>
 
@@ -6448,6 +6864,7 @@ function handleLogin() {
                                 updateAuthUI();
                                 loadClaudeApiKey(); // API 키 로드
                                 updateAIModeBadge();
+                                initAITopographyPanel(); // AI 패널 초기화
                                 showNotification('로그인 성공!', 'success');
                             } else {
                                 auth.signOut();
@@ -7404,6 +7821,545 @@ function openSummaryView() {
     const newWindow = window.open('', '_blank');
     newWindow.document.write(summaryHTML);
     newWindow.document.close();
+}
+
+// ============================================
+// AI 각막지형도 자동 판독 (Galilei G4)
+// ============================================
+
+// AI 분석용 이미지 저장
+let aiTopographyImages = {
+    od: null,
+    os: null
+};
+
+/**
+ * AI 분석 패널 초기화
+ */
+function initAITopographyPanel() {
+    const contentArea = document.getElementById('ai-content-area');
+    if (!contentArea) return;
+    
+    // 프리미엄 사용자 확인
+    const isPremium = isPremiumUser(currentUser?.email);
+    
+    if (!isPremium) {
+        contentArea.innerHTML = `
+            <div class="ai-premium-required">
+                <div class="premium-icon">🔒</div>
+                <h5>프리미엄 기능</h5>
+                <p>AI 각막지형도 자동 판독은 프리미엄 사용자만 이용할 수 있습니다.<br>
+                관리자에게 프리미엄 권한을 요청하세요.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // 프리미엄 사용자용 UI 렌더링
+    contentArea.innerHTML = `
+        <div class="ai-upload-zone">
+            <!-- 우안 업로드 -->
+            <div class="ai-upload-box od" id="ai-upload-od" onclick="document.getElementById('ai-file-od').click()">
+                <span class="eye-label">OD 우안</span>
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Galilei G4 이미지 업로드</div>
+                <div class="upload-hint">클릭 또는 드래그 앤 드롭</div>
+                <input type="file" id="ai-file-od" accept="image/*" onchange="handleAIImageUpload('od', event)">
+            </div>
+            
+            <!-- 좌안 업로드 -->
+            <div class="ai-upload-box os" id="ai-upload-os" onclick="document.getElementById('ai-file-os').click()">
+                <span class="eye-label">OS 좌안</span>
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Galilei G4 이미지 업로드</div>
+                <div class="upload-hint">클릭 또는 드래그 앤 드롭</div>
+                <input type="file" id="ai-file-os" accept="image/*" onchange="handleAIImageUpload('os', event)">
+            </div>
+        </div>
+        
+        <div class="ai-analyze-actions">
+            <button type="button" class="btn-ai-analyze" id="btn-ai-analyze" onclick="analyzeTopographyWithAI()" disabled>
+                🤖 AI 분석 시작
+            </button>
+        </div>
+        
+        <div class="ai-results-section" id="ai-results-section">
+            <!-- 분석 결과가 여기에 표시됩니다 -->
+        </div>
+    `;
+    
+    // 드래그 앤 드롭 설정
+    setupAIDragAndDrop('od');
+    setupAIDragAndDrop('os');
+}
+
+/**
+ * 드래그 앤 드롭 설정
+ */
+function setupAIDragAndDrop(eye) {
+    const dropZone = document.getElementById(`ai-upload-${eye}`);
+    if (!dropZone) return;
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.add('dragover');
+        });
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.remove('dragover');
+        });
+    });
+    
+    dropZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleAIImageFile(eye, files[0]);
+        }
+    });
+}
+
+/**
+ * 이미지 업로드 핸들러
+ */
+function handleAIImageUpload(eye, event) {
+    const file = event.target.files[0];
+    if (file) {
+        handleAIImageFile(eye, file);
+    }
+}
+
+/**
+ * 이미지 파일 처리
+ */
+function handleAIImageFile(eye, file) {
+    if (!file.type.startsWith('image/')) {
+        showNotification('이미지 파일만 업로드할 수 있습니다.', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const base64 = e.target.result;
+        aiTopographyImages[eye] = base64;
+        
+        // 미리보기 표시
+        const uploadBox = document.getElementById(`ai-upload-${eye}`);
+        uploadBox.classList.add('has-image');
+        uploadBox.innerHTML = `
+            <span class="eye-label">${eye.toUpperCase()} ${eye === 'od' ? '우안' : '좌안'}</span>
+            <img src="${base64}" class="preview-image" alt="${eye} topography">
+            <button type="button" class="remove-image" onclick="removeAIImage('${eye}', event)">×</button>
+            <input type="file" id="ai-file-${eye}" accept="image/*" onchange="handleAIImageUpload('${eye}', event)">
+        `;
+        
+        // 분석 버튼 활성화 확인
+        updateAIAnalyzeButton();
+    };
+    reader.readAsDataURL(file);
+}
+
+/**
+ * 이미지 제거
+ */
+function removeAIImage(eye, event) {
+    event.stopPropagation();
+    aiTopographyImages[eye] = null;
+    
+    const uploadBox = document.getElementById(`ai-upload-${eye}`);
+    uploadBox.classList.remove('has-image');
+    uploadBox.innerHTML = `
+        <span class="eye-label">${eye.toUpperCase()} ${eye === 'od' ? '우안' : '좌안'}</span>
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">Galilei G4 이미지 업로드</div>
+        <div class="upload-hint">클릭 또는 드래그 앤 드롭</div>
+        <input type="file" id="ai-file-${eye}" accept="image/*" onchange="handleAIImageUpload('${eye}', event)">
+    `;
+    
+    updateAIAnalyzeButton();
+}
+
+/**
+ * 분석 버튼 상태 업데이트
+ */
+function updateAIAnalyzeButton() {
+    const btn = document.getElementById('btn-ai-analyze');
+    if (btn) {
+        btn.disabled = !(aiTopographyImages.od || aiTopographyImages.os);
+    }
+}
+
+/**
+ * Claude API를 사용한 각막지형도 분석
+ */
+async function analyzeTopographyWithAI() {
+    if (!CLAUDE_API_KEY) {
+        showNotification('Claude API 키가 설정되지 않았습니다. 관리자에게 문의하세요.', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('btn-ai-analyze');
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btn.innerHTML = '<span style="visibility:hidden;">🤖 AI 분석 시작</span>';
+    
+    const resultsSection = document.getElementById('ai-results-section');
+    resultsSection.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-secondary);">🔄 AI가 각막지형도를 분석하고 있습니다...</div>';
+    
+    try {
+        const results = {};
+        
+        // 우안 분석
+        if (aiTopographyImages.od) {
+            results.od = await analyzeEyeTopography('od', aiTopographyImages.od);
+        }
+        
+        // 좌안 분석
+        if (aiTopographyImages.os) {
+            results.os = await analyzeEyeTopography('os', aiTopographyImages.os);
+        }
+        
+        // 결과 저장 및 렌더링
+        window.aiTopographyResults = results;
+        renderAIResults(results);
+        
+    } catch (error) {
+        console.error('AI 분석 오류:', error);
+        resultsSection.innerHTML = `
+            <div class="ai-error-message">
+                ❌ AI 분석 중 오류가 발생했습니다.<br>
+                <small>${error.message || '잠시 후 다시 시도해주세요.'}</small>
+            </div>
+        `;
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btn.innerHTML = '🤖 AI 분석 시작';
+        updateAIAnalyzeButton();
+    }
+}
+
+/**
+ * 개별 눈 분석
+ */
+async function analyzeEyeTopography(eye, imageBase64) {
+    // base64 데이터에서 prefix 제거
+    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    const mediaType = imageBase64.match(/^data:(image\/\w+);/)?.[1] || 'image/png';
+    
+    const prompt = `이 Galilei G4 각막지형도 이미지를 상세히 분석해주세요.
+
+다음 수치들을 정확하게 읽어서 JSON 형식으로 추출해주세요:
+
+1. **각막곡률 (Keratometry)**
+   - K1 (Flat K): 값(D)과 축(°)
+   - K2 (Steep K): 값(D)과 축(°)
+   - 평균 K (Avg K 또는 Km)
+   - 각막난시 (K2 - K1)
+
+2. **각막두께**
+   - CCT (중심각막두께, μm)
+   - 가장 얇은 부위 두께 (TCT)와 위치
+
+3. **전방 데이터**
+   - ACD (전방깊이, mm)
+   - ACV (전방용적, mm³) - 있는 경우
+   - WTW (각막직경 / White-to-White, mm)
+
+4. **동공**
+   - 동공 크기 (mm) - 있는 경우
+
+5. **각막 분석**
+   - 전면/후면 elevation 이상 여부
+   - Topography 패턴 분류:
+     * 정상 (Regular)
+     * 대칭 보타이 (Symmetric Bowtie)
+     * 비대칭 보타이 (Asymmetric Bowtie) 
+     * 불규칙 (Irregular)
+     * 원추각막 의심 (Keratoconus suspect)
+     * 원추각막 (Keratoconus)
+     * 펠루시드 각막변성 의심 (PMD suspect)
+
+6. **원추각막 지표** (있는 경우)
+   - BAD-D (Belin/Ambrosio D)
+   - Kmax
+   - I-S value
+   - SRAX
+   - 기타 원추각막 관련 지표
+
+7. **전체 소견 및 주의사항**
+
+JSON 형식으로 응답해주세요:
+{
+    "k1": { "value": 43.25, "axis": 180 },
+    "k2": { "value": 44.50, "axis": 90 },
+    "avgK": 43.88,
+    "astigmatism": 1.25,
+    "cct": 540,
+    "tct": { "value": 535, "location": "inferotemporal 0.8mm" },
+    "acd": 3.20,
+    "acv": 180,
+    "wtw": 11.8,
+    "pupil": 3.5,
+    "pattern": "정상",
+    "patternDetail": "대칭적인 보타이 패턴, 정상 범위",
+    "elevationAnterior": "정상",
+    "elevationPosterior": "정상",
+    "keratoconusRisk": "low",
+    "badD": null,
+    "kmax": 44.8,
+    "isValue": null,
+    "confidence": "high",
+    "notes": "정상 각막 소견. 시력교정술 가능.",
+    "warnings": []
+}
+
+주의사항:
+- 수치를 정확히 읽을 수 없는 경우 null로 표시
+- confidence는 "high", "medium", "low" 중 하나
+- warnings 배열에 주의가 필요한 사항 기록
+- keratoconusRisk는 "low", "moderate", "high" 중 하나`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': CLAUDE_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 2000,
+            messages: [{
+                role: 'user',
+                content: [
+                    {
+                        type: 'image',
+                        source: {
+                            type: 'base64',
+                            media_type: mediaType,
+                            data: base64Data
+                        }
+                    },
+                    {
+                        type: 'text',
+                        text: prompt
+                    }
+                ]
+            }]
+        })
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || `API 오류: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const content = data.content[0]?.text || '';
+    
+    // JSON 추출
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+        try {
+            return JSON.parse(jsonMatch[0]);
+        } catch (e) {
+            console.error('JSON 파싱 오류:', e);
+            throw new Error('AI 응답을 파싱할 수 없습니다.');
+        }
+    }
+    
+    throw new Error('AI가 유효한 결과를 반환하지 않았습니다.');
+}
+
+/**
+ * AI 분석 결과 렌더링
+ */
+function renderAIResults(results) {
+    const resultsSection = document.getElementById('ai-results-section');
+    
+    let html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">';
+    
+    if (results.od) {
+        html += renderAIEyeResult('od', '우안 (OD)', results.od);
+    }
+    
+    if (results.os) {
+        html += renderAIEyeResult('os', '좌안 (OS)', results.os);
+    }
+    
+    html += '</div>';
+    
+    resultsSection.innerHTML = html;
+}
+
+/**
+ * 개별 눈 AI 결과 렌더링
+ */
+function renderAIEyeResult(eye, label, result) {
+    const confidenceClass = result.confidence || 'medium';
+    const confidenceText = {
+        'high': '높은 신뢰도',
+        'medium': '중간 신뢰도',
+        'low': '낮은 신뢰도'
+    }[confidenceClass] || '확인 필요';
+    
+    // 패턴 분석 스타일
+    let patternClass = '';
+    if (result.keratoconusRisk === 'high' || result.pattern?.includes('원추각막')) {
+        patternClass = 'danger';
+    } else if (result.keratoconusRisk === 'moderate' || result.pattern?.includes('의심') || result.pattern?.includes('비대칭')) {
+        patternClass = 'warning';
+    }
+    
+    const warningsHtml = result.warnings && result.warnings.length > 0
+        ? `<div style="background: #fee2e2; border: 1px solid #fca5a5; padding: 8px; border-radius: 4px; margin-top: 8px; font-size: 0.75rem; color: #991b1b;">
+            ⚠️ ${result.warnings.join('<br>⚠️ ')}
+           </div>`
+        : '';
+    
+    return `
+        <div class="ai-result-card ${eye}">
+            <div class="ai-result-header">
+                <span class="eye-title">👁️ ${label}</span>
+                <span class="confidence-badge ${confidenceClass}">${confidenceText}</span>
+            </div>
+            
+            <div class="ai-result-grid">
+                <div class="ai-result-item">
+                    <div class="item-label">K1 (Flat)</div>
+                    <div class="item-value">${result.k1?.value ?? '-'} <span class="item-unit">D @ ${result.k1?.axis ?? '-'}°</span></div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">K2 (Steep)</div>
+                    <div class="item-value">${result.k2?.value ?? '-'} <span class="item-unit">D @ ${result.k2?.axis ?? '-'}°</span></div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">Avg K</div>
+                    <div class="item-value">${result.avgK ?? '-'} <span class="item-unit">D</span></div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">각막난시</div>
+                    <div class="item-value">${result.astigmatism ?? '-'} <span class="item-unit">D</span></div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">CCT</div>
+                    <div class="item-value">${result.cct ?? '-'} <span class="item-unit">μm</span></div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">TCT (최소)</div>
+                    <div class="item-value">${result.tct?.value ?? '-'} <span class="item-unit">μm</span></div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">ACD</div>
+                    <div class="item-value">${result.acd ?? '-'} <span class="item-unit">mm</span></div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">WTW</div>
+                    <div class="item-value">${result.wtw ?? '-'} <span class="item-unit">mm</span></div>
+                </div>
+            </div>
+            
+            ${result.badD ? `
+            <div class="ai-result-grid" style="margin-top: 8px;">
+                <div class="ai-result-item">
+                    <div class="item-label">BAD-D</div>
+                    <div class="item-value">${result.badD}</div>
+                </div>
+                <div class="ai-result-item">
+                    <div class="item-label">Kmax</div>
+                    <div class="item-value">${result.kmax ?? '-'} <span class="item-unit">D</span></div>
+                </div>
+            </div>
+            ` : ''}
+            
+            <div class="ai-pattern-analysis ${patternClass}">
+                <div class="pattern-title">
+                    ${patternClass === 'danger' ? '🔴' : patternClass === 'warning' ? '🟡' : '🟢'}
+                    패턴: ${result.pattern || '확인 필요'}
+                </div>
+                <div class="pattern-desc">${result.patternDetail || result.notes || ''}</div>
+            </div>
+            
+            ${result.notes ? `<div class="ai-notes">📝 ${result.notes}</div>` : ''}
+            
+            ${warningsHtml}
+            
+            <button type="button" class="btn-apply-ai-results" onclick="applyAIResultsToForm('${eye}')">
+                📥 메인 폼에 적용
+            </button>
+        </div>
+    `;
+}
+
+/**
+ * AI 분석 결과를 메인 폼에 적용
+ */
+function applyAIResultsToForm(eye) {
+    const result = window.aiTopographyResults?.[eye];
+    if (!result) {
+        showNotification('적용할 AI 분석 결과가 없습니다.', 'error');
+        return;
+    }
+    
+    // 메인 폼에 값 적용
+    if (result.k1?.value) {
+        const k1Input = document.getElementById(`${eye}-k1`);
+        if (k1Input) k1Input.value = result.k1.value;
+    }
+    
+    if (result.k2?.value) {
+        const k2Input = document.getElementById(`${eye}-k2`);
+        if (k2Input) k2Input.value = result.k2.value;
+    }
+    
+    if (result.k2?.axis) {
+        const steepAxisInput = document.getElementById(`${eye}-steep-axis`);
+        if (steepAxisInput) steepAxisInput.value = result.k2.axis;
+    }
+    
+    if (result.cct) {
+        const cctInput = document.getElementById(`${eye}-cct`);
+        if (cctInput) cctInput.value = result.cct;
+    }
+    
+    if (result.acd) {
+        const acdInput = document.getElementById(`${eye}-acd`);
+        if (acdInput) acdInput.value = result.acd;
+    }
+    
+    if (result.wtw) {
+        const wtwInput = document.getElementById(`${eye}-wtw`);
+        if (wtwInput) wtwInput.value = result.wtw;
+    }
+    
+    // Topography 패턴 선택
+    if (result.pattern) {
+        const topoSelect = document.getElementById(`${eye}-topography`);
+        if (topoSelect) {
+            // 패턴에 따라 적절한 옵션 선택
+            if (result.pattern.includes('정상') || result.pattern.includes('Regular')) {
+                topoSelect.value = 'normal';
+            } else if (result.pattern.includes('비대칭') || result.pattern.includes('Asymmetric')) {
+                topoSelect.value = 'asymmetric-bowtie';
+            } else if (result.pattern.includes('불규칙') || result.pattern.includes('Irregular')) {
+                topoSelect.value = 'irregular';
+            } else if (result.pattern.includes('원추각막') || result.pattern.includes('Keratoconus')) {
+                topoSelect.value = 'keratoconus-suspect';
+            }
+        }
+    }
+    
+    showNotification(`${eye.toUpperCase()} AI 분석 결과가 메인 폼에 적용되었습니다.`, 'success');
 }
 
 // ============================================
@@ -11740,6 +12696,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         loadClaudeApiKey(); // API 키 로드
                         updateAIModeBadge();
                         hideLoginScreen();
+                        initAITopographyPanel(); // AI 패널 초기화
                         console.log('✅ Auto-login successful for:', user.email);
                     } else {
                         // 승인되지 않은 사용자
