@@ -3987,6 +3987,154 @@ input:focus, select:focus {
     color: #059669;
     font-weight: 700;
 }
+
+/* ============================================
+   플로팅 액션 버튼 패널 (우측 고정)
+   ============================================ */
+.floating-action-panel {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .floating-action-panel {
+    background: rgba(30, 41, 59, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.floating-action-panel .panel-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 5px;
+}
+
+.floating-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 60px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.7rem;
+    font-weight: 500;
+    gap: 4px;
+}
+
+.floating-btn .btn-icon {
+    font-size: 1.3rem;
+}
+
+.floating-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.floating-btn:active {
+    transform: translateY(0);
+}
+
+.floating-btn.calculate {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+}
+
+.floating-btn.calculate:hover {
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.floating-btn.print {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    color: white;
+}
+
+.floating-btn.print:hover {
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.floating-btn.summary {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+}
+
+.floating-btn.summary:hover {
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+}
+
+.floating-btn.save {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.floating-btn.save:hover {
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.floating-btn.new-patient {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.floating-btn.new-patient:hover {
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.floating-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* 모바일에서는 하단 고정 */
+@media (max-width: 1200px) {
+    .floating-action-panel {
+        right: 10px;
+        top: auto;
+        bottom: 20px;
+        transform: none;
+        flex-direction: row;
+        padding: 10px 15px;
+    }
+    
+    .floating-action-panel .panel-title {
+        display: none;
+    }
+    
+    .floating-btn {
+        width: 55px;
+        height: 50px;
+        font-size: 0.6rem;
+    }
+    
+    .floating-btn .btn-icon {
+        font-size: 1.1rem;
+    }
+}
+
+/* 인쇄 시 숨김 */
+@media print {
+    .floating-action-panel {
+        display: none !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -4869,6 +5017,36 @@ input:focus, select:focus {
                 </div>
             </section>
         </main>
+
+        <!-- 플로팅 액션 버튼 패널 -->
+        <div class="floating-action-panel" id="floating-panel">
+            <div class="panel-title">빠른 실행</div>
+            
+            <button class="floating-btn calculate" onclick="document.getElementById('calculator-form').dispatchEvent(new Event('submit'))" title="양안 계산하기">
+                <span class="btn-icon">🔬</span>
+                <span>계산</span>
+            </button>
+            
+            <button class="floating-btn summary" onclick="openSummaryView()" title="요약본 보기 (새 탭)">
+                <span class="btn-icon">📋</span>
+                <span>요약본</span>
+            </button>
+            
+            <button class="floating-btn print" onclick="printPatientReport()" title="인쇄">
+                <span class="btn-icon">🖨️</span>
+                <span>인쇄</span>
+            </button>
+            
+            <button class="floating-btn save" onclick="savePatient()" title="환자 저장">
+                <span class="btn-icon">💾</span>
+                <span>저장</span>
+            </button>
+            
+            <button class="floating-btn new-patient" onclick="resetForm()" title="새 환자">
+                <span class="btn-icon">👤</span>
+                <span>새 환자</span>
+            </button>
+        </div>
 
         <footer class="footer">
             <p>⚠️ 본 프로그램은 참고용이며, 최종 수술 결정은 반드시 전문의와 상담하세요.</p>
@@ -6407,6 +6585,514 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.remove();
     }, 3000);
+}
+
+/**
+ * 요약본 보기 - 새 탭에서 한 화면에 모든 정보 표시
+ */
+function openSummaryView() {
+    if (!window.calculator || !window.calculator.results) {
+        showNotification('먼저 계산을 수행해주세요.', 'error');
+        return;
+    }
+    
+    const results = window.calculator.results;
+    const patientName = document.getElementById('patient-name').value || '환자';
+    const patientId = document.getElementById('patient-id').value || '00000000';
+    const age = document.getElementById('age').value || '-';
+    const gender = document.getElementById('gender').value === 'male' ? '남성' : '여성';
+    const printDate = new Date().toLocaleString('ko-KR');
+    
+    const odData = results.od?.data || {};
+    const osData = results.os?.data || {};
+    const odResults = results.od?.surgeryResults || {};
+    const osResults = results.os?.surgeryResults || {};
+    const odErss = results.od?.erssResult || {};
+    const osErss = results.os?.erssResult || {};
+    
+    // Nomogram 결과
+    const wellOd = window.wellingtonResults?.od;
+    const wellOs = window.wellingtonResults?.os;
+    const alconOd = window.alconResults?.od;
+    const alconOs = window.alconResults?.os;
+    const ageAdj = window.ageAdjustment?.adjustment || { sphAdjustment: 0, description: '표준 교정' };
+    
+    // 적합성 판단
+    const getEligibility = (surgeryResult) => {
+        if (!surgeryResult) return { text: '-', class: 'neutral', bg: '#f3f4f6', color: '#6b7280' };
+        if (surgeryResult.rsb < 280 || surgeryResult.pta >= 40) {
+            return { text: '부적합', class: 'danger', bg: '#fee2e2', color: '#991b1b' };
+        } else if (surgeryResult.rsb < 300 || surgeryResult.pta >= 35) {
+            return { text: '주의', class: 'warning', bg: '#fef3c7', color: '#92400e' };
+        }
+        return { text: '적합', class: 'success', bg: '#dcfce7', color: '#166534' };
+    };
+    
+    const odLasik = getEligibility(odResults.lasik);
+    const odLasek = getEligibility(odResults.lasek);
+    const osLasik = getEligibility(osResults.lasik);
+    const osLasek = getEligibility(osResults.lasek);
+    
+    const getErssText = (score) => score <= 2 ? '저위험' : score === 3 ? '중등도' : '고위험';
+    
+    // 최종 Nomogram 값
+    const finalWellOdSph = wellOd ? Math.round((wellOd.modified.sph + ageAdj.sphAdjustment) * 4) / 4 : '-';
+    const finalWellOsSph = wellOs ? Math.round((wellOs.modified.sph + ageAdj.sphAdjustment) * 4) / 4 : '-';
+    const finalAlconOdSph = alconOd ? Math.round((alconOd.modified.sph + ageAdj.sphAdjustment) * 4) / 4 : '-';
+    const finalAlconOsSph = alconOs ? Math.round((alconOs.modified.sph + ageAdj.sphAdjustment) * 4) / 4 : '-';
+    
+    const summaryHTML = `
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${patientName}_${patientId}_요약</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            background: #f8fafc; 
+            padding: 15px;
+            min-height: 100vh;
+        }
+        .summary-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #0284c7;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        .header h1 { font-size: 18pt; color: #0284c7; }
+        .header .clinic { font-size: 10pt; color: #666; }
+        .header .meta { text-align: right; font-size: 9pt; color: #666; }
+        
+        .patient-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #0284c7;
+        }
+        .patient-bar .item { text-align: center; }
+        .patient-bar .label { font-size: 9pt; color: #666; }
+        .patient-bar .value { font-size: 14pt; font-weight: 700; color: #0c4a6e; }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .section-box {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .section-box.od { border-color: #3b82f6; }
+        .section-box.os { border-color: #22c55e; }
+        
+        .section-header {
+            padding: 8px 15px;
+            font-weight: 700;
+            font-size: 11pt;
+            color: white;
+        }
+        .section-header.od { background: #3b82f6; }
+        .section-header.os { background: #22c55e; }
+        .section-header.summary { background: #1e3a5f; }
+        .section-header.nomogram { background: #0891b2; }
+        
+        .section-content { padding: 12px; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+        th, td { padding: 6px 8px; border: 1px solid #e2e8f0; text-align: center; }
+        th { background: #f8fafc; font-weight: 600; color: #475569; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 10pt;
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .data-item .label { color: #64748b; font-size: 9pt; }
+        .data-item .value { font-weight: 600; font-size: 9pt; }
+        
+        .nomogram-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px;
+            gap: 5px;
+            padding: 6px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 9pt;
+            text-align: center;
+        }
+        .nomogram-row.header { font-weight: 600; background: #f8fafc; }
+        .nomogram-row .changed { color: #0891b2; font-weight: 700; }
+        .nomogram-row .final { background: #cffafe; font-weight: 700; color: #0e7490; border-radius: 4px; }
+        
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .risk-item {
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .risk-item.low { background: #dcfce7; }
+        .risk-item.moderate { background: #fef3c7; }
+        .risk-item.high { background: #fee2e2; }
+        .risk-item .label { font-size: 8pt; color: #666; }
+        .risk-item .value { font-size: 12pt; font-weight: 700; }
+        
+        .age-info {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border: 1px solid #e879f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 10pt;
+        }
+        .age-info strong { color: #a21caf; }
+        
+        .footer {
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 8pt;
+            color: #94a3b8;
+        }
+        
+        .print-tip {
+            background: #dbeafe;
+            border: 1px solid #3b82f6;
+            padding: 8px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 9pt;
+            color: #1e40af;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <div class="print-tip">
+            💡 <strong>Tip:</strong> Print Screen 키를 눌러 화면을 캡처하거나, Ctrl+P로 PDF 저장할 수 있습니다.
+        </div>
+        
+        <div class="header">
+            <div>
+                <h1>📊 시력교정술 검사 요약</h1>
+                <div class="clinic">연세솔안과 YONSEI SOL EYE CLINIC</div>
+            </div>
+            <div class="meta">
+                ${printDate}<br>
+                담당: ${currentUser?.email || '-'}
+            </div>
+        </div>
+        
+        <div class="patient-bar">
+            <div class="item"><div class="label">환자명</div><div class="value">${patientName}</div></div>
+            <div class="item"><div class="label">등록번호</div><div class="value">${patientId}</div></div>
+            <div class="item"><div class="label">나이</div><div class="value">${age}세</div></div>
+            <div class="item"><div class="label">성별</div><div class="value">${gender}</div></div>
+        </div>
+        
+        <!-- 종합 판정 -->
+        <div class="section-box" style="margin-bottom: 15px;">
+            <div class="section-header summary">📋 종합 판정</div>
+            <div class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:15%"></th>
+                            <th style="width:42.5%; background:#dbeafe;">👁 우안 (OD)</th>
+                            <th style="width:42.5%; background:#dcfce7;">👁 좌안 (OS)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight:600;">LASIK</td>
+                            <td><span class="status-badge" style="background:${odLasik.bg};color:${odLasik.color};">${odLasik.text}</span></td>
+                            <td><span class="status-badge" style="background:${osLasik.bg};color:${osLasik.color};">${osLasik.text}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">LASEK</td>
+                            <td><span class="status-badge" style="background:${odLasek.bg};color:${odLasek.color};">${odLasek.text}</span></td>
+                            <td><span class="status-badge" style="background:${osLasek.bg};color:${osLasek.color};">${osLasek.text}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">ERSS</td>
+                            <td><strong>${odErss.total || 0}점</strong> (${getErssText(odErss.total || 0)})</td>
+                            <td><strong>${osErss.total || 0}점</strong> (${getErssText(osErss.total || 0)})</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 양안 데이터 -->
+        <div class="main-grid">
+            <!-- 우안 -->
+            <div class="section-box od">
+                <div class="section-header od">👁 우안 (OD)</div>
+                <div class="section-content">
+                    <div class="data-grid">
+                        <div>
+                            <div class="data-item"><span class="label">SPH</span><span class="value">${(odData.sph || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">CYL</span><span class="value">${(odData.cyl || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">AXIS</span><span class="value">${odData.axis || 0}°</span></div>
+                            <div class="data-item"><span class="label">SE</span><span class="value" style="color:#0284c7;">${((odData.sph || 0) + (odData.cyl || 0) / 2).toFixed(2)} D</span></div>
+                        </div>
+                        <div>
+                            <div class="data-item"><span class="label">CCT</span><span class="value">${odData.cct || 0} μm</span></div>
+                            <div class="data-item"><span class="label">K1</span><span class="value">${(odData.k1 || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">K2</span><span class="value">${(odData.k2 || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">Avg K</span><span class="value">${(((odData.k1 || 0) + (odData.k2 || 0)) / 2).toFixed(2)} D</span></div>
+                        </div>
+                    </div>
+                    <div class="risk-grid">
+                        <div class="risk-item ${odErss.total <= 2 ? 'low' : odErss.total === 3 ? 'moderate' : 'high'}">
+                            <div class="label">ERSS</div>
+                            <div class="value">${odErss.total || 0}점</div>
+                        </div>
+                        <div class="risk-item ${(odResults.lasik?.pta || 0) < 35 ? 'low' : (odResults.lasik?.pta || 0) < 40 ? 'moderate' : 'high'}">
+                            <div class="label">PTA (LASIK)</div>
+                            <div class="value">${(odResults.lasik?.pta || 0).toFixed(1)}%</div>
+                        </div>
+                        <div class="risk-item ${(odResults.lasek?.pta || 0) < 35 ? 'low' : (odResults.lasek?.pta || 0) < 40 ? 'moderate' : 'high'}">
+                            <div class="label">PTA (LASEK)</div>
+                            <div class="value">${(odResults.lasek?.pta || 0).toFixed(1)}%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 좌안 -->
+            <div class="section-box os">
+                <div class="section-header os">👁 좌안 (OS)</div>
+                <div class="section-content">
+                    <div class="data-grid">
+                        <div>
+                            <div class="data-item"><span class="label">SPH</span><span class="value">${(osData.sph || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">CYL</span><span class="value">${(osData.cyl || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">AXIS</span><span class="value">${osData.axis || 0}°</span></div>
+                            <div class="data-item"><span class="label">SE</span><span class="value" style="color:#0284c7;">${((osData.sph || 0) + (osData.cyl || 0) / 2).toFixed(2)} D</span></div>
+                        </div>
+                        <div>
+                            <div class="data-item"><span class="label">CCT</span><span class="value">${osData.cct || 0} μm</span></div>
+                            <div class="data-item"><span class="label">K1</span><span class="value">${(osData.k1 || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">K2</span><span class="value">${(osData.k2 || 0).toFixed(2)} D</span></div>
+                            <div class="data-item"><span class="label">Avg K</span><span class="value">${(((osData.k1 || 0) + (osData.k2 || 0)) / 2).toFixed(2)} D</span></div>
+                        </div>
+                    </div>
+                    <div class="risk-grid">
+                        <div class="risk-item ${osErss.total <= 2 ? 'low' : osErss.total === 3 ? 'moderate' : 'high'}">
+                            <div class="label">ERSS</div>
+                            <div class="value">${osErss.total || 0}점</div>
+                        </div>
+                        <div class="risk-item ${(osResults.lasik?.pta || 0) < 35 ? 'low' : (osResults.lasik?.pta || 0) < 40 ? 'moderate' : 'high'}">
+                            <div class="label">PTA (LASIK)</div>
+                            <div class="value">${(osResults.lasik?.pta || 0).toFixed(1)}%</div>
+                        </div>
+                        <div class="risk-item ${(osResults.lasek?.pta || 0) < 35 ? 'low' : (osResults.lasek?.pta || 0) < 40 ? 'moderate' : 'high'}">
+                            <div class="label">PTA (LASEK)</div>
+                            <div class="value">${(osResults.lasek?.pta || 0).toFixed(1)}%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nomogram 결과 -->
+        <div class="age-info">
+            👤 <strong>나이: ${age}세</strong> | ${ageAdj.description} | 나이 보정: <strong>${ageAdj.sphAdjustment > 0 ? '+' : ''}${ageAdj.sphAdjustment.toFixed(2)} D</strong>
+        </div>
+        
+        <div class="section-box" style="border-color: #0891b2;">
+            <div class="section-header nomogram">📊 Nomogram 계산 결과</div>
+            <div class="section-content">
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: 600; margin-bottom: 8px; color: #3b82f6;">👁 우안 (OD)</div>
+                    <div class="nomogram-row header">
+                        <div></div><div>SPH</div><div>CYL</div><div>AXIS</div><div>SE</div><div>최종 SPH</div>
+                    </div>
+                    <div class="nomogram-row">
+                        <div style="font-weight:600;">원본</div>
+                        <div>${wellOd ? wellOd.original.sph.toFixed(2) : '-'}</div>
+                        <div>${wellOd ? wellOd.original.cyl.toFixed(2) : '-'}</div>
+                        <div>${wellOd ? wellOd.original.axis + '°' : '-'}</div>
+                        <div>${wellOd ? wellOd.original.se.toFixed(2) : '-'}</div>
+                        <div>-</div>
+                    </div>
+                    <div class="nomogram-row" style="background:#ecfeff;">
+                        <div style="font-weight:600;color:#0891b2;">Wellington</div>
+                        <div class="${wellOd && wellOd.original.sph !== wellOd.modified.sph ? 'changed' : ''}">${wellOd ? wellOd.modified.sph.toFixed(2) : '-'}</div>
+                        <div class="${wellOd && wellOd.original.cyl !== wellOd.modified.cyl ? 'changed' : ''}">${wellOd ? wellOd.modified.cyl.toFixed(2) : '-'}</div>
+                        <div>${wellOd ? wellOd.modified.axis + '°' : '-'}</div>
+                        <div>${wellOd ? wellOd.modified.se.toFixed(2) : '-'}</div>
+                        <div class="final">${typeof finalWellOdSph === 'number' ? finalWellOdSph.toFixed(2) : '-'}</div>
+                    </div>
+                    <div class="nomogram-row" style="background:#fef9c3;">
+                        <div style="font-weight:600;color:#a16207;">Alcon</div>
+                        <div class="${alconOd && alconOd.original.sph !== alconOd.modified.sph ? 'changed' : ''}" style="color:#ca8a04;">${alconOd ? alconOd.modified.sph.toFixed(2) : '-'}</div>
+                        <div class="${alconOd && alconOd.original.cyl !== alconOd.modified.cyl ? 'changed' : ''}" style="color:#ca8a04;">${alconOd ? alconOd.modified.cyl.toFixed(2) : '-'}</div>
+                        <div>${alconOd ? alconOd.modified.axis + '°' : '-'}</div>
+                        <div>${alconOd ? alconOd.modified.se.toFixed(2) : '-'}</div>
+                        <div class="final" style="background:#fef08a;color:#a16207;">${typeof finalAlconOdSph === 'number' ? finalAlconOdSph.toFixed(2) : '-'}</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 8px; color: #22c55e;">👁 좌안 (OS)</div>
+                    <div class="nomogram-row header">
+                        <div></div><div>SPH</div><div>CYL</div><div>AXIS</div><div>SE</div><div>최종 SPH</div>
+                    </div>
+                    <div class="nomogram-row">
+                        <div style="font-weight:600;">원본</div>
+                        <div>${wellOs ? wellOs.original.sph.toFixed(2) : '-'}</div>
+                        <div>${wellOs ? wellOs.original.cyl.toFixed(2) : '-'}</div>
+                        <div>${wellOs ? wellOs.original.axis + '°' : '-'}</div>
+                        <div>${wellOs ? wellOs.original.se.toFixed(2) : '-'}</div>
+                        <div>-</div>
+                    </div>
+                    <div class="nomogram-row" style="background:#ecfeff;">
+                        <div style="font-weight:600;color:#0891b2;">Wellington</div>
+                        <div class="${wellOs && wellOs.original.sph !== wellOs.modified.sph ? 'changed' : ''}">${wellOs ? wellOs.modified.sph.toFixed(2) : '-'}</div>
+                        <div class="${wellOs && wellOs.original.cyl !== wellOs.modified.cyl ? 'changed' : ''}">${wellOs ? wellOs.modified.cyl.toFixed(2) : '-'}</div>
+                        <div>${wellOs ? wellOs.modified.axis + '°' : '-'}</div>
+                        <div>${wellOs ? wellOs.modified.se.toFixed(2) : '-'}</div>
+                        <div class="final">${typeof finalWellOsSph === 'number' ? finalWellOsSph.toFixed(2) : '-'}</div>
+                    </div>
+                    <div class="nomogram-row" style="background:#fef9c3;">
+                        <div style="font-weight:600;color:#a16207;">Alcon</div>
+                        <div class="${alconOs && alconOs.original.sph !== alconOs.modified.sph ? 'changed' : ''}" style="color:#ca8a04;">${alconOs ? alconOs.modified.sph.toFixed(2) : '-'}</div>
+                        <div class="${alconOs && alconOs.original.cyl !== alconOs.modified.cyl ? 'changed' : ''}" style="color:#ca8a04;">${alconOs ? alconOs.modified.cyl.toFixed(2) : '-'}</div>
+                        <div>${alconOs ? alconOs.modified.axis + '°' : '-'}</div>
+                        <div>${alconOs ? alconOs.modified.se.toFixed(2) : '-'}</div>
+                        <div class="final" style="background:#fef08a;color:#a16207;">${typeof finalAlconOsSph === 'number' ? finalAlconOsSph.toFixed(2) : '-'}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 연세솔안과 YONSEI SOL EYE CLINIC | ${printDate}
+        </div>
+    </div>
+</body>
+</html>
+    `;
+    
+    // 새 탭에서 열기
+    const newWindow = window.open('', '_blank');
+    newWindow.document.write(summaryHTML);
+    newWindow.document.close();
+}
+
+/**
+ * 폼 초기화 - 새 환자
+ */
+function resetForm() {
+    // 확인 대화상자
+    if (!confirm('현재 입력된 모든 데이터가 초기화됩니다. 계속하시겠습니까?')) {
+        return;
+    }
+    
+    // 폼 초기화
+    const form = document.getElementById('calculator-form');
+    if (form) {
+        form.reset();
+    }
+    
+    // 결과 영역 초기화
+    const resultsContainer = document.getElementById('results-container');
+    if (resultsContainer) {
+        resultsContainer.innerHTML = `
+            <div class="results-placeholder">
+                <div class="placeholder-icon">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
+                        <path d="M32 20v24M20 32h24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <p>환자 정보를 입력하고<br><strong>양안 계산하기</strong> 버튼을 클릭하세요</p>
+            </div>
+        `;
+    }
+    
+    // Nomogram 결과 초기화
+    const wellingtonResults = document.getElementById('wellington-results');
+    if (wellingtonResults) {
+        wellingtonResults.innerHTML = `
+            <div class="wellington-results-placeholder">
+                <div class="placeholder-icon">📊</div>
+                <p>굴절값을 입력하고 <strong>Nomogram 변환</strong> 버튼을 클릭하세요<br>
+                <small>Wellington Nomogram + Alcon Standard Nomogram 동시 적용</small></p>
+            </div>
+        `;
+    }
+    
+    // 전역 결과 변수 초기화
+    window.wellingtonResults = null;
+    window.alconResults = null;
+    window.ageAdjustment = null;
+    if (window.calculator) {
+        window.calculator.results = null;
+    }
+    
+    // 인쇄 버튼 비활성화
+    const printBtn = document.getElementById('btn-print-wellington');
+    if (printBtn) {
+        printBtn.disabled = true;
+    }
+    
+    // SE 표시 초기화
+    ['od', 'os'].forEach(eye => {
+        const seDisplay = document.getElementById(`${eye}-se-display`);
+        if (seDisplay) {
+            seDisplay.textContent = '0.00 D';
+        }
+    });
+    
+    showNotification('새 환자 입력을 위해 초기화되었습니다.', 'success');
+    
+    // 첫 번째 입력 필드로 포커스
+    const firstInput = document.getElementById('patient-name');
+    if (firstInput) {
+        firstInput.focus();
+    }
 }
 
 // Print patient report - NEW IMPROVED VERSION
