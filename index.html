@@ -6260,6 +6260,13 @@ async function extractDataWithOCR(eye) {
         return;
     }
     
+    // 로그인 확인
+    if (!currentUser) {
+        showNotification('AI 기능을 사용하려면 로그인이 필요합니다.', 'error');
+        showLoginScreen();
+        return;
+    }
+    
     // Claude API 키 확인
     if (!CLAUDE_API_KEY) {
         showNotification('Claude API 키가 설정되지 않았습니다. 관리자에게 문의하세요.', 'error');
@@ -7951,6 +7958,19 @@ function initAITopographyPanel() {
     const contentArea = document.getElementById('ai-content-area');
     if (!contentArea) return;
     
+    // 로그인 여부 확인
+    if (!currentUser) {
+        contentArea.innerHTML = `
+            <div class="ai-premium-required">
+                <div class="premium-icon">🔐</div>
+                <h5>로그인 필요</h5>
+                <p>AI 각막지형도 자동 판독 기능을 사용하려면 로그인이 필요합니다.<br>
+                <button onclick="showLoginScreen()" style="margin-top: 10px; padding: 8px 20px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">🔐 로그인하기</button></p>
+            </div>
+        `;
+        return;
+    }
+    
     // 프리미엄 사용자 확인
     const isPremium = isPremiumUser(currentUser?.email);
     
@@ -8112,6 +8132,13 @@ function updateAIAnalyzeButton() {
  * Claude API를 사용한 각막지형도 분석
  */
 async function analyzeTopographyWithAI() {
+    // 로그인 확인
+    if (!currentUser) {
+        showNotification('AI 기능을 사용하려면 로그인이 필요합니다.', 'error');
+        showLoginScreen();
+        return;
+    }
+    
     if (!CLAUDE_API_KEY) {
         showNotification('Claude API 키가 설정되지 않았습니다. 관리자에게 문의하세요.', 'error');
         return;
@@ -12825,14 +12852,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update AI mode badge based on user premium status
     updateAIModeBadge();
     
-    // Claude API 키 로드 (로그인 없이도 사용 가능하도록)
-    loadClaudeApiKey();
-    
-    // AI 패널 초기화
+    // AI 패널 초기화 (로그인 필요 메시지 표시)
     initAITopographyPanel();
     
     // Check for Firebase auth state (if Firebase is configured)
-    // 로그인한 사용자가 있으면 UI 업데이트, 없어도 프로그램 사용 가능
+    // 로그인한 사용자가 있으면 AI 기능 활성화
     if (!DEMO_MODE && typeof auth !== 'undefined') {
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -12841,9 +12865,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (approved || user.email === ADMIN_EMAIL) {
                         currentUser = user;
                         updateAuthUI();
-                        loadClaudeApiKey(); // API 키 로드
+                        loadClaudeApiKey(); // API 키 로드 (로그인 후에만)
                         updateAIModeBadge();
-                        initAITopographyPanel(); // AI 패널 초기화
+                        initAITopographyPanel(); // AI 패널 초기화 (로그인 후 활성화)
                         console.log('✅ Auto-login successful for:', user.email);
                     }
                 });
@@ -12851,6 +12875,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('🔄 Auth state changed: No user logged in (guest mode)');
                 currentUser = null;
                 updateAuthUI();
+                updateAIModeBadge();
+                initAITopographyPanel(); // AI 패널 - 로그인 필요 메시지
             }
         });
     }
