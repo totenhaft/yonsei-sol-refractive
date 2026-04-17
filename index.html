@@ -12812,8 +12812,8 @@ function renderComparisonSummary(wellOd, wellOs, alconOd, alconOs) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Show login screen initially
-    showLoginScreen();
+    // 로그인 없이 바로 프로그램 사용 가능
+    hideLoginScreen();
     
     // Initialize calculator
     window.calculator = new RefractiveCalculator();
@@ -12825,8 +12825,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update AI mode badge based on user premium status
     updateAIModeBadge();
     
+    // Claude API 키 로드 (로그인 없이도 사용 가능하도록)
+    loadClaudeApiKey();
+    
+    // AI 패널 초기화
+    initAITopographyPanel();
     
     // Check for Firebase auth state (if Firebase is configured)
+    // 로그인한 사용자가 있으면 UI 업데이트, 없어도 프로그램 사용 가능
     if (!DEMO_MODE && typeof auth !== 'undefined') {
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -12837,20 +12843,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateAuthUI();
                         loadClaudeApiKey(); // API 키 로드
                         updateAIModeBadge();
-                        hideLoginScreen();
                         initAITopographyPanel(); // AI 패널 초기화
                         console.log('✅ Auto-login successful for:', user.email);
-                    } else {
-                        // 승인되지 않은 사용자
-                        console.log('⚠️ User not approved:', user.email);
-                        showLoginScreen();
-                        showNotification('승인 대기 중입니다. 관리자 승인 후 이용 가능합니다.', 'warning');
                     }
                 });
             } else {
-                console.log('🔄 Auth state changed: No user logged in');
+                console.log('🔄 Auth state changed: No user logged in (guest mode)');
                 currentUser = null;
-                showLoginScreen();
+                updateAuthUI();
             }
         });
     }
