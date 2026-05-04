@@ -459,7 +459,7 @@ body {
                     <th rowspan="2" style="background:#64748b">SE</th>
                     <th class="input-header" colspan="3">각막검사</th>
                     <th class="result-header" colspan="3">수술 가능 여부</th>
-                    <th class="nomo-header" colspan="2">Nomogram</th>
+                    <th class="nomo-header" colspan="4">Nomogram (Wellington)</th>
                 </tr>
                 <tr>
                     <th class="input-header">SPH</th>
@@ -471,8 +471,10 @@ body {
                     <th class="result-header">LASIK</th>
                     <th class="result-header">LASEK</th>
                     <th class="result-header">SMILE</th>
-                    <th class="nomo-header">보정SPH</th>
-                    <th class="nomo-header">최종</th>
+                    <th class="nomo-header">SPH보정</th>
+                    <th class="nomo-header">CYL보정</th>
+                    <th class="nomo-header">최종SPH</th>
+                    <th class="nomo-header">최종CYL</th>
                 </tr>
             </thead>
             <tbody>
@@ -488,8 +490,10 @@ body {
                     <td class="result-cell good" id="od-lasik">가능</td>
                     <td class="result-cell good" id="od-lasek">가능</td>
                     <td class="result-cell good" id="od-smile">가능</td>
-                    <td class="nomo-cell" id="od-nomo-sph">-3.75</td>
-                    <td class="nomo-cell final" id="od-nomo-final">-3.75</td>
+                    <td class="nomo-cell" id="od-nomo-sph-adj">+0.25</td>
+                    <td class="nomo-cell" id="od-nomo-cyl-adj">0</td>
+                    <td class="nomo-cell final" id="od-nomo-sph-final">-3.75</td>
+                    <td class="nomo-cell final" id="od-nomo-cyl-final">-1.00</td>
                 </tr>
                 <tr>
                     <td class="eye-label os">OS</td>
@@ -503,8 +507,10 @@ body {
                     <td class="result-cell good" id="os-lasik">가능</td>
                     <td class="result-cell good" id="os-lasek">가능</td>
                     <td class="result-cell good" id="os-smile">가능</td>
-                    <td class="nomo-cell" id="os-nomo-sph">-3.50</td>
-                    <td class="nomo-cell final" id="os-nomo-final">-3.50</td>
+                    <td class="nomo-cell" id="os-nomo-sph-adj">+0.25</td>
+                    <td class="nomo-cell" id="os-nomo-cyl-adj">0</td>
+                    <td class="nomo-cell final" id="os-nomo-sph-final">-3.50</td>
+                    <td class="nomo-cell final" id="os-nomo-cyl-final">-0.75</td>
                 </tr>
             </tbody>
         </table>
@@ -745,19 +751,57 @@ function calculateEye(eye) {
     document.getElementById(`${eye}-smile-pta`).textContent = smilePta + '%';
     setVerdictCell(`${eye}-smile`, getVerdict(smileRsb, smilePta));
     
-    // Nomogram (Wellington 간소화)
-    let nomoSph = sph;
-    if (sph <= -6) nomoSph += 0.25;
-    else if (sph <= -4) nomoSph += 0.125;
+    // ============================================
+    // Wellington Nomogram (세부 계산)
+    // ============================================
     
+    // SPH 보정 (SE 기준)
+    let sphAdj = 0;
+    if (se >= -2.00) sphAdj = 0;
+    else if (se >= -3.00) sphAdj = 0;  // -2.00 ~ -2.99
+    else if (se >= -4.00) sphAdj = +0.125;  // -3.00 ~ -3.99
+    else if (se >= -5.00) sphAdj = +0.125;  // -4.00 ~ -4.99
+    else if (se >= -6.00) sphAdj = +0.25;   // -5.00 ~ -5.99
+    else if (se >= -7.00) sphAdj = +0.25;   // -6.00 ~ -6.99
+    else if (se >= -8.00) sphAdj = +0.375;  // -7.00 ~ -7.99
+    else if (se >= -9.00) sphAdj = +0.50;   // -8.00 ~ -8.99
+    else if (se >= -10.00) sphAdj = +0.625; // -9.00 ~ -9.99
+    else sphAdj = +0.75;  // -10.00 이하
+    
+    // CYL 보정 (CYL 값 기준)
+    let cylAdj = 0;
+    const absCyl = Math.abs(cyl);
+    if (absCyl <= 0.75) cylAdj = 0;
+    else if (absCyl <= 1.25) cylAdj = 0;
+    else if (absCyl <= 1.75) cylAdj = +0.125;  // 10% 감소
+    else if (absCyl <= 2.25) cylAdj = +0.25;   // 10-15% 감소
+    else if (absCyl <= 3.00) cylAdj = +0.375;  // 15% 감소
+    else if (absCyl <= 4.00) cylAdj = +0.50;   // 15-20% 감소
+    else cylAdj = +0.625;  // >4.00 D
+    
+    // 나이 보정 (SPH에 추가)
     let ageAdj = 0;
-    if (age >= 45) ageAdj = 0.50;
-    else if (age >= 40) ageAdj = 0.25;
-    else if (age < 25) ageAdj = -0.25;
+    if (age < 22) ageAdj = -0.25;
+    else if (age < 25) ageAdj = -0.125;
+    else if (age <= 35) ageAdj = 0;
+    else if (age <= 40) ageAdj = +0.125;
+    else if (age <= 45) ageAdj = +0.25;
+    else if (age <= 50) ageAdj = +0.375;
+    else ageAdj = +0.50;  // >50세
     
-    const finalSph = Math.round((nomoSph + ageAdj) * 4) / 4;
-    document.getElementById(`${eye}-nomo-sph`).textContent = nomoSph.toFixed(2);
-    document.getElementById(`${eye}-nomo-final`).textContent = finalSph.toFixed(2);
+    // 최종 계산
+    const totalSphAdj = sphAdj + ageAdj;
+    const finalSph = Math.round((sph + totalSphAdj) * 4) / 4;
+    const finalCyl = Math.round((cyl + cylAdj) * 4) / 4;
+    
+    // 보정값 표시 (부호 포함)
+    const sphAdjText = totalSphAdj >= 0 ? '+' + totalSphAdj.toFixed(2) : totalSphAdj.toFixed(2);
+    const cylAdjText = cylAdj >= 0 ? '+' + cylAdj.toFixed(2) : cylAdj.toFixed(2);
+    
+    document.getElementById(`${eye}-nomo-sph-adj`).textContent = sphAdjText;
+    document.getElementById(`${eye}-nomo-cyl-adj`).textContent = cylAdjText;
+    document.getElementById(`${eye}-nomo-sph-final`).textContent = finalSph.toFixed(2);
+    document.getElementById(`${eye}-nomo-cyl-final`).textContent = finalCyl.toFixed(2);
 }
 
 function getVerdict(rsb, pta) {
