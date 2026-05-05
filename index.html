@@ -310,6 +310,18 @@ body {
 .info-box.icl { background: #ecfeff; color: #0e7490; }
 .info-box.contoura { background: #fff7ed; color: #c2410c; }
 
+/* 연동된 입력 필드 (읽기전용) */
+.synced-input {
+    background: #e0f2fe !important;
+    color: #0369a1 !important;
+    cursor: not-allowed;
+    border-color: #7dd3fc !important;
+}
+
+.synced-input:focus {
+    box-shadow: none !important;
+}
+
 /* 로그인 모달 */
 .modal-overlay {
     display: none;
@@ -611,7 +623,12 @@ body {
 
         <!-- Contoura 패널 -->
         <div class="expand-panel contoura" id="panel-contoura">
-            <div class="expand-panel-header">🟠 Contoura Vision Nomogram</div>
+            <div class="expand-panel-header">
+                🟠 Contoura Vision Nomogram
+                <span style="font-size:0.75rem; font-weight:400; color:#64748b; margin-left:10px;">
+                    (Manifest = 상단 MR값 자동연동)
+                </span>
+            </div>
             <table class="calc-table">
                 <thead>
                     <tr>
@@ -635,9 +652,9 @@ body {
                 <tbody>
                     <tr>
                         <td class="eye-label od">OD</td>
-                        <td><input type="number" id="od-cont-ref-sph" step="0.25" value="-4.00" oninput="calculateContoura()"></td>
-                        <td><input type="number" id="od-cont-ref-cyl" step="0.25" value="-1.00" oninput="calculateContoura()"></td>
-                        <td><input type="number" id="od-cont-ref-axis" value="180" oninput="calculateContoura()"></td>
+                        <td><input type="number" id="od-cont-ref-sph" step="0.25" value="-4.00" readonly class="synced-input"></td>
+                        <td><input type="number" id="od-cont-ref-cyl" step="0.25" value="-1.00" readonly class="synced-input"></td>
+                        <td><input type="number" id="od-cont-ref-axis" value="180" readonly class="synced-input"></td>
                         <td><input type="number" id="od-cont-meas-sph" step="0.25" value="-3.50" oninput="calculateContoura()"></td>
                         <td><input type="number" id="od-cont-meas-cyl" step="0.25" value="-1.50" oninput="calculateContoura()"></td>
                         <td><input type="number" id="od-cont-meas-axis" value="178" oninput="calculateContoura()"></td>
@@ -647,9 +664,9 @@ body {
                     </tr>
                     <tr>
                         <td class="eye-label os">OS</td>
-                        <td><input type="number" id="os-cont-ref-sph" step="0.25" value="-3.75" oninput="calculateContoura()"></td>
-                        <td><input type="number" id="os-cont-ref-cyl" step="0.25" value="-0.75" oninput="calculateContoura()"></td>
-                        <td><input type="number" id="os-cont-ref-axis" value="175" oninput="calculateContoura()"></td>
+                        <td><input type="number" id="os-cont-ref-sph" step="0.25" value="-3.75" readonly class="synced-input"></td>
+                        <td><input type="number" id="os-cont-ref-cyl" step="0.25" value="-0.75" readonly class="synced-input"></td>
+                        <td><input type="number" id="os-cont-ref-axis" value="175" readonly class="synced-input"></td>
                         <td><input type="number" id="os-cont-meas-sph" step="0.25" value="-3.25" oninput="calculateContoura()"></td>
                         <td><input type="number" id="os-cont-meas-cyl" step="0.25" value="-1.25" oninput="calculateContoura()"></td>
                         <td><input type="number" id="os-cont-meas-axis" value="173" oninput="calculateContoura()"></td>
@@ -707,6 +724,27 @@ function calculateAll() {
     calculateEye('od');
     calculateEye('os');
     document.getElementById('disp-flap').textContent = document.getElementById('flap').value;
+    
+    // Contoura Manifest Refraction 자동 연동
+    syncToContoura();
+}
+
+// 메인 입력 → Contoura Manifest 연동
+function syncToContoura() {
+    ['od', 'os'].forEach(eye => {
+        const sph = document.getElementById(`${eye}-sph`).value;
+        const cyl = document.getElementById(`${eye}-cyl`).value;
+        const axis = document.getElementById(`${eye}-axis`).value;
+        
+        document.getElementById(`${eye}-cont-ref-sph`).value = sph;
+        document.getElementById(`${eye}-cont-ref-cyl`).value = cyl;
+        document.getElementById(`${eye}-cont-ref-axis`).value = axis;
+    });
+    
+    // Contoura 패널이 열려있으면 재계산
+    if (document.getElementById('panel-contoura').classList.contains('active')) {
+        calculateContoura();
+    }
 }
 
 function calculateEye(eye) {
