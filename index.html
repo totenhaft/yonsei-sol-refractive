@@ -416,6 +416,184 @@ body {
     .calc-table th, .calc-table td { padding: 6px 4px; }
     .calc-table input { padding: 6px 2px; font-size: 0.8rem; }
 }
+
+/* 모드 전환 버튼 */
+.btn-mode {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-mode:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.btn-mode.detailed {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+/* 상세버전 컨테이너 */
+.detailed-container {
+    display: none;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.detailed-container.active { display: block; }
+.main-container.hidden { display: none; }
+
+/* 상세버전 패널 */
+.detail-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.detail-panel-header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 상세 입력 그리드 */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.detail-section {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.detail-section-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.detail-form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.detail-form-row label {
+    min-width: 80px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.detail-form-row input,
+.detail-form-row select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.detail-form-row input:focus,
+.detail-form-row select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* 위험도 점수 표시 */
+.risk-score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.risk-score-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    border: 2px solid var(--border-color);
+}
+
+.risk-score-card.low { border-color: var(--success); background: var(--success-light); }
+.risk-score-card.medium { border-color: var(--warning); background: var(--warning-light); }
+.risk-score-card.high { border-color: var(--danger); background: var(--danger-light); }
+
+.risk-score-title {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+.risk-score-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.risk-score-card.low .risk-score-value { color: var(--success); }
+.risk-score-card.medium .risk-score-value { color: var(--warning); }
+.risk-score-card.high .risk-score-value { color: var(--danger); }
+
+.risk-score-label {
+    font-size: 0.75rem;
+    margin-top: 5px;
+}
+
+/* 양안 테이블 (상세버전) */
+.eye-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.eye-detail-table th,
+.eye-detail-table td {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.eye-detail-table thead th {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+.eye-detail-table tbody td.eye-label {
+    font-weight: 700;
+    background: #f1f5f9;
+}
+
+.eye-detail-table tbody td.eye-label.od { background: #dbeafe; color: #1d4ed8; }
+.eye-detail-table tbody td.eye-label.os { background: #dcfce7; color: #16a34a; }
     </style>
 </head>
 <body>
@@ -423,6 +601,10 @@ body {
     <header class="header">
         <h1>🔬 시력교정술 적합성 검사</h1>
         <div class="header-right">
+            <button class="btn-mode" id="btn-mode" onclick="toggleViewMode()">
+                <span id="mode-icon">📋</span>
+                <span id="mode-text">상세버전</span>
+            </button>
             <span class="user-info" id="user-info"></span>
             <button class="btn-login" id="btn-login" onclick="showLoginModal()">🔐 로그인</button>
         </div>
@@ -683,6 +865,321 @@ body {
             <div class="info-box contoura">
                 ⚠️ Ref CYL과 Meas CYL 차이 >1.25D 또는 Axis 차이 >5° (CYL≥2D) / >10° (CYL&lt;2D) 시 WFO 권장
             </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 상세버전 컨테이너 -->
+    <!-- ============================================ -->
+    <div class="detailed-container" id="detailed-container">
+        <!-- 환자 기본 정보 -->
+        <div class="detail-panel">
+            <div class="detail-panel-header">👤 환자 정보</div>
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <div class="detail-section-title">📋 기본 정보</div>
+                    <div class="detail-form-row">
+                        <label>환자명</label>
+                        <input type="text" id="d-patient-name" placeholder="홍길동">
+                    </div>
+                    <div class="detail-form-row">
+                        <label>나이</label>
+                        <input type="number" id="d-age" value="30" min="18" max="80" oninput="calculateDetailedAll()">
+                    </div>
+                    <div class="detail-form-row">
+                        <label>성별</label>
+                        <select id="d-gender">
+                            <option value="M">남</option>
+                            <option value="F">여</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">⚙️ 수술 설정</div>
+                    <div class="detail-form-row">
+                        <label>OZ (mm)</label>
+                        <select id="d-oz" onchange="calculateDetailedAll()">
+                            <option value="6.0">6.0</option>
+                            <option value="6.1">6.1</option>
+                            <option value="6.2">6.2</option>
+                            <option value="6.3">6.3</option>
+                            <option value="6.4">6.4</option>
+                            <option value="6.5" selected>6.5</option>
+                        </select>
+                    </div>
+                    <div class="detail-form-row">
+                        <label>Flap (μm)</label>
+                        <input type="number" id="d-flap" value="100" min="80" max="130" oninput="calculateDetailedAll()">
+                    </div>
+                    <div class="detail-form-row">
+                        <label>TZ (mm)</label>
+                        <input type="number" id="d-tz" value="8.0" step="0.1" min="7.0" max="9.5">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 굴절검사 (MR) -->
+        <div class="detail-panel">
+            <div class="detail-panel-header">👁️ 굴절검사 (Manifest Refraction)</div>
+            <table class="eye-detail-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Eye</th>
+                        <th>SPH (D)</th>
+                        <th>CYL (D)</th>
+                        <th>Axis (°)</th>
+                        <th>SE (D)</th>
+                        <th>BCVA</th>
+                        <th>UCVA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="eye-label od">OD</td>
+                        <td><input type="number" id="d-od-sph" step="0.25" value="-4.00" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-od-cyl" step="0.25" value="-1.00" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-od-axis" value="180" min="1" max="180" oninput="calculateDetailedAll()"></td>
+                        <td class="result-cell" id="d-od-se">-4.50</td>
+                        <td><input type="text" id="d-od-bcva" value="1.0" style="width:60px"></td>
+                        <td><input type="text" id="d-od-ucva" value="0.1" style="width:60px"></td>
+                    </tr>
+                    <tr>
+                        <td class="eye-label os">OS</td>
+                        <td><input type="number" id="d-os-sph" step="0.25" value="-3.75" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-os-cyl" step="0.25" value="-0.75" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-os-axis" value="175" min="1" max="180" oninput="calculateDetailedAll()"></td>
+                        <td class="result-cell" id="d-os-se">-4.13</td>
+                        <td><input type="text" id="d-os-bcva" value="1.0" style="width:60px"></td>
+                        <td><input type="text" id="d-os-ucva" value="0.1" style="width:60px"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 각막검사 -->
+        <div class="detail-panel">
+            <div class="detail-panel-header">🔬 각막검사 (Corneal Data)</div>
+            <table class="eye-detail-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Eye</th>
+                        <th>CCT (μm)</th>
+                        <th>K1 (D)</th>
+                        <th>K2 (D)</th>
+                        <th>Km (D)</th>
+                        <th>Kmax (D)</th>
+                        <th>Astig (D)</th>
+                        <th>Steep Axis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="eye-label od">OD</td>
+                        <td><input type="number" id="d-od-cct" value="540" min="400" max="700" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-od-k1" step="0.01" value="43.00" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-od-k2" step="0.01" value="44.00" oninput="calculateDetailedAll()"></td>
+                        <td class="result-cell" id="d-od-km">43.50</td>
+                        <td><input type="number" id="d-od-kmax" step="0.01" value="44.50" oninput="calculateDetailedAll()"></td>
+                        <td class="result-cell" id="d-od-astig">1.00</td>
+                        <td><input type="number" id="d-od-steep-axis" value="90" min="1" max="180"></td>
+                    </tr>
+                    <tr>
+                        <td class="eye-label os">OS</td>
+                        <td><input type="number" id="d-os-cct" value="535" min="400" max="700" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-os-k1" step="0.01" value="43.25" oninput="calculateDetailedAll()"></td>
+                        <td><input type="number" id="d-os-k2" step="0.01" value="44.25" oninput="calculateDetailedAll()"></td>
+                        <td class="result-cell" id="d-os-km">43.75</td>
+                        <td><input type="number" id="d-os-kmax" step="0.01" value="44.75" oninput="calculateDetailedAll()"></td>
+                        <td class="result-cell" id="d-os-astig">1.00</td>
+                        <td><input type="number" id="d-os-steep-axis" value="90" min="1" max="180"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 위험도 평가 -->
+        <div class="detail-panel">
+            <div class="detail-panel-header">⚠️ 위험도 평가 (Risk Assessment)</div>
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <div class="detail-section-title">📝 Randleman Score 요소</div>
+                    <div class="detail-form-row">
+                        <label>토포 이상</label>
+                        <select id="d-topo-abnormal" onchange="calculateDetailedAll()">
+                            <option value="0">정상 (0점)</option>
+                            <option value="1">경미한 이상 (1점)</option>
+                            <option value="2">중등도 이상 (2점)</option>
+                            <option value="4">현저한 이상 (4점)</option>
+                        </select>
+                    </div>
+                    <div class="detail-form-row">
+                        <label>가족력</label>
+                        <select id="d-family-history" onchange="calculateDetailedAll()">
+                            <option value="0">없음 (0점)</option>
+                            <option value="1">있음 (1점)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">📊 추가 검사</div>
+                    <div class="detail-form-row">
+                        <label>ACD (mm)</label>
+                        <input type="number" id="d-acd" step="0.01" value="3.20">
+                    </div>
+                    <div class="detail-form-row">
+                        <label>WTW (mm)</label>
+                        <input type="number" id="d-wtw" step="0.1" value="11.8">
+                    </div>
+                    <div class="detail-form-row">
+                        <label>ECD (/mm²)</label>
+                        <input type="number" id="d-ecd" value="2800">
+                    </div>
+                    <div class="detail-form-row">
+                        <label>Pupil (mm)</label>
+                        <input type="number" id="d-pupil" step="0.1" value="6.0">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 위험도 점수 카드 -->
+            <div class="risk-score-grid">
+                <div class="risk-score-card low" id="d-erss-card">
+                    <div class="risk-score-title">ERSS (OD)</div>
+                    <div class="risk-score-value" id="d-od-erss">2</div>
+                    <div class="risk-score-label">Low Risk</div>
+                </div>
+                <div class="risk-score-card low" id="d-erss-os-card">
+                    <div class="risk-score-title">ERSS (OS)</div>
+                    <div class="risk-score-value" id="d-os-erss">2</div>
+                    <div class="risk-score-label">Low Risk</div>
+                </div>
+                <div class="risk-score-card low" id="d-randleman-card">
+                    <div class="risk-score-title">Randleman (OD)</div>
+                    <div class="risk-score-value" id="d-od-randleman">1</div>
+                    <div class="risk-score-label">Low Risk</div>
+                </div>
+                <div class="risk-score-card low" id="d-randleman-os-card">
+                    <div class="risk-score-title">Randleman (OS)</div>
+                    <div class="risk-score-value" id="d-os-randleman">1</div>
+                    <div class="risk-score-label">Low Risk</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 수술 결과 예측 -->
+        <div class="detail-panel">
+            <div class="detail-panel-header">📊 수술 결과 예측</div>
+            <table class="eye-detail-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width:60px">Eye</th>
+                        <th colspan="4" style="background:var(--lasik-color)">LASIK</th>
+                        <th colspan="4" style="background:var(--lasek-color)">LASEK</th>
+                        <th colspan="4" style="background:var(--smile-color)">SMILE</th>
+                    </tr>
+                    <tr>
+                        <th style="background:#86efac">절삭</th>
+                        <th style="background:#86efac">RSB</th>
+                        <th style="background:#86efac">PTA</th>
+                        <th style="background:#86efac">판정</th>
+                        <th style="background:#f9a8d4">절삭</th>
+                        <th style="background:#f9a8d4">RSB</th>
+                        <th style="background:#f9a8d4">PTA</th>
+                        <th style="background:#f9a8d4">판정</th>
+                        <th style="background:#c4b5fd">Lent</th>
+                        <th style="background:#c4b5fd">RSB</th>
+                        <th style="background:#c4b5fd">mPTA</th>
+                        <th style="background:#c4b5fd">판정</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="eye-label od">OD</td>
+                        <td id="d-od-lasik-abl">58</td>
+                        <td id="d-od-lasik-rsb">382</td>
+                        <td id="d-od-lasik-pta">29%</td>
+                        <td class="result-cell good" id="d-od-lasik-verdict">가능</td>
+                        <td id="d-od-lasek-abl">58</td>
+                        <td id="d-od-lasek-rsb">427</td>
+                        <td id="d-od-lasek-pta">11%</td>
+                        <td class="result-cell good" id="d-od-lasek-verdict">가능</td>
+                        <td id="d-od-smile-abl">67</td>
+                        <td id="d-od-smile-rsb">353</td>
+                        <td id="d-od-smile-pta">35%</td>
+                        <td class="result-cell good" id="d-od-smile-verdict">가능</td>
+                    </tr>
+                    <tr>
+                        <td class="eye-label os">OS</td>
+                        <td id="d-os-lasik-abl">53</td>
+                        <td id="d-os-lasik-rsb">382</td>
+                        <td id="d-os-lasik-pta">29%</td>
+                        <td class="result-cell good" id="d-os-lasik-verdict">가능</td>
+                        <td id="d-os-lasek-abl">53</td>
+                        <td id="d-os-lasek-rsb">427</td>
+                        <td id="d-os-lasek-pta">10%</td>
+                        <td class="result-cell good" id="d-os-lasek-verdict">가능</td>
+                        <td id="d-os-smile-abl">61</td>
+                        <td id="d-os-smile-rsb">354</td>
+                        <td id="d-os-smile-pta">34%</td>
+                        <td class="result-cell good" id="d-os-smile-verdict">가능</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Nomogram -->
+        <div class="detail-panel">
+            <div class="detail-panel-header">📐 Wellington Nomogram</div>
+            <table class="eye-detail-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Eye</th>
+                        <th>원본 SPH</th>
+                        <th>원본 CYL</th>
+                        <th>SPH 보정</th>
+                        <th>CYL 보정</th>
+                        <th>나이 보정</th>
+                        <th style="background:#fde68a;color:#92400e">최종 SPH</th>
+                        <th style="background:#fde68a;color:#92400e">최종 CYL</th>
+                        <th>예상 Post-K</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="eye-label od">OD</td>
+                        <td id="d-od-orig-sph">-4.00</td>
+                        <td id="d-od-orig-cyl">-1.00</td>
+                        <td id="d-od-sph-adj">+0.13</td>
+                        <td id="d-od-cyl-adj">0</td>
+                        <td id="d-od-age-adj">0</td>
+                        <td class="nomo-cell final" id="d-od-final-sph">-3.87</td>
+                        <td class="nomo-cell final" id="d-od-final-cyl">-1.00</td>
+                        <td id="d-od-post-k">39.00</td>
+                    </tr>
+                    <tr>
+                        <td class="eye-label os">OS</td>
+                        <td id="d-os-orig-sph">-3.75</td>
+                        <td id="d-os-orig-cyl">-0.75</td>
+                        <td id="d-os-sph-adj">+0.13</td>
+                        <td id="d-os-cyl-adj">0</td>
+                        <td id="d-os-age-adj">0</td>
+                        <td class="nomo-cell final" id="d-os-final-sph">-3.62</td>
+                        <td class="nomo-cell final" id="d-os-final-cyl">-0.75</td>
+                        <td id="d-os-post-k">39.62</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 버튼 영역 -->
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+            <button onclick="printDetailedReport()" style="padding:12px 24px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;">
+                🖨️ 결과 출력
+            </button>
+            <button onclick="savePatientData()" style="padding:12px 24px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;">
+                💾 환자 저장
+            </button>
         </div>
     </div>
 
@@ -971,6 +1468,264 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user) { currentUser = user; updateAuthUI(); }
     });
 });
+
+// ============================================
+// 모드 전환 기능
+// ============================================
+let isDetailedMode = false;
+
+function toggleViewMode() {
+    isDetailedMode = !isDetailedMode;
+    
+    const mainContainer = document.querySelector('.main-container');
+    const detailedContainer = document.getElementById('detailed-container');
+    const btnMode = document.getElementById('btn-mode');
+    const modeIcon = document.getElementById('mode-icon');
+    const modeText = document.getElementById('mode-text');
+    
+    if (isDetailedMode) {
+        mainContainer.classList.add('hidden');
+        detailedContainer.classList.add('active');
+        btnMode.classList.add('detailed');
+        modeIcon.textContent = '⚡';
+        modeText.textContent = '간단버전';
+        
+        // 간단버전 → 상세버전 데이터 동기화
+        syncSimpleToDetailed();
+        calculateDetailedAll();
+    } else {
+        mainContainer.classList.remove('hidden');
+        detailedContainer.classList.remove('active');
+        btnMode.classList.remove('detailed');
+        modeIcon.textContent = '📋';
+        modeText.textContent = '상세버전';
+        
+        // 상세버전 → 간단버전 데이터 동기화
+        syncDetailedToSimple();
+        calculateAll();
+    }
+}
+
+// 간단버전 → 상세버전 동기화
+function syncSimpleToDetailed() {
+    document.getElementById('d-patient-name').value = document.getElementById('patient-name').value;
+    document.getElementById('d-age').value = document.getElementById('age').value;
+    document.getElementById('d-gender').value = document.getElementById('gender').value;
+    document.getElementById('d-oz').value = document.getElementById('oz').value;
+    document.getElementById('d-flap').value = document.getElementById('flap').value;
+    
+    ['od', 'os'].forEach(eye => {
+        document.getElementById(`d-${eye}-sph`).value = document.getElementById(`${eye}-sph`).value;
+        document.getElementById(`d-${eye}-cyl`).value = document.getElementById(`${eye}-cyl`).value;
+        document.getElementById(`d-${eye}-axis`).value = document.getElementById(`${eye}-axis`).value;
+        document.getElementById(`d-${eye}-cct`).value = document.getElementById(`${eye}-cct`).value;
+        document.getElementById(`d-${eye}-k1`).value = document.getElementById(`${eye}-k1`).value;
+        document.getElementById(`d-${eye}-k2`).value = document.getElementById(`${eye}-k2`).value;
+    });
+}
+
+// 상세버전 → 간단버전 동기화
+function syncDetailedToSimple() {
+    document.getElementById('patient-name').value = document.getElementById('d-patient-name').value;
+    document.getElementById('age').value = document.getElementById('d-age').value;
+    document.getElementById('gender').value = document.getElementById('d-gender').value;
+    document.getElementById('oz').value = document.getElementById('d-oz').value;
+    document.getElementById('flap').value = document.getElementById('d-flap').value;
+    
+    ['od', 'os'].forEach(eye => {
+        document.getElementById(`${eye}-sph`).value = document.getElementById(`d-${eye}-sph`).value;
+        document.getElementById(`${eye}-cyl`).value = document.getElementById(`d-${eye}-cyl`).value;
+        document.getElementById(`${eye}-axis`).value = document.getElementById(`d-${eye}-axis`).value;
+        document.getElementById(`${eye}-cct`).value = document.getElementById(`d-${eye}-cct`).value;
+        document.getElementById(`${eye}-k1`).value = document.getElementById(`d-${eye}-k1`).value;
+        document.getElementById(`${eye}-k2`).value = document.getElementById(`d-${eye}-k2`).value;
+    });
+}
+
+// ============================================
+// 상세버전 계산
+// ============================================
+function calculateDetailedAll() {
+    calculateDetailedEye('od');
+    calculateDetailedEye('os');
+}
+
+function calculateDetailedEye(eye) {
+    const sph = parseFloat(document.getElementById(`d-${eye}-sph`).value) || 0;
+    const cyl = parseFloat(document.getElementById(`d-${eye}-cyl`).value) || 0;
+    const cct = parseInt(document.getElementById(`d-${eye}-cct`).value) || 540;
+    const k1 = parseFloat(document.getElementById(`d-${eye}-k1`).value) || 43;
+    const k2 = parseFloat(document.getElementById(`d-${eye}-k2`).value) || 44;
+    const kmax = parseFloat(document.getElementById(`d-${eye}-kmax`).value) || 45;
+    const age = parseInt(document.getElementById('d-age').value) || 30;
+    const oz = parseFloat(document.getElementById('d-oz').value) || 6.5;
+    const flap = parseInt(document.getElementById('d-flap').value) || 100;
+    const topoAbnormal = parseInt(document.getElementById('d-topo-abnormal').value) || 0;
+    const familyHistory = parseInt(document.getElementById('d-family-history').value) || 0;
+    
+    // SE
+    const se = sph + (cyl / 2);
+    document.getElementById(`d-${eye}-se`).textContent = se.toFixed(2);
+    
+    // Km, Astig
+    const km = (k1 + k2) / 2;
+    const astig = Math.abs(k2 - k1);
+    document.getElementById(`d-${eye}-km`).textContent = km.toFixed(2);
+    document.getElementById(`d-${eye}-astig`).textContent = astig.toFixed(2);
+    
+    // 절삭량 (Munnerlyn)
+    const ablation = Math.round(Math.abs(se) * (oz * oz) / 3 + Math.abs(cyl) * (oz * oz) / 6);
+    
+    // LASIK
+    const lasikRsb = cct - flap - ablation;
+    const lasikPta = Math.round((flap + ablation) / cct * 100);
+    document.getElementById(`d-${eye}-lasik-abl`).textContent = ablation;
+    document.getElementById(`d-${eye}-lasik-rsb`).textContent = lasikRsb;
+    document.getElementById(`d-${eye}-lasik-pta`).textContent = lasikPta + '%';
+    setDetailedVerdictCell(`d-${eye}-lasik-verdict`, getVerdict(lasikRsb, lasikPta));
+    
+    // LASEK
+    const epi = 55;
+    const lasekRsb = cct - epi - ablation;
+    const lasekPta = Math.round(ablation / cct * 100);
+    document.getElementById(`d-${eye}-lasek-abl`).textContent = ablation;
+    document.getElementById(`d-${eye}-lasek-rsb`).textContent = lasekRsb;
+    document.getElementById(`d-${eye}-lasek-pta`).textContent = lasekPta + '%';
+    setDetailedVerdictCell(`d-${eye}-lasek-verdict`, getVerdict(lasekRsb, lasekPta));
+    
+    // SMILE
+    const cap = 120;
+    const smileAbl = Math.round(ablation * 1.15);
+    const smileRsb = cct - cap - smileAbl;
+    const smilePta = Math.round((cap + smileAbl) / cct * 100);
+    document.getElementById(`d-${eye}-smile-abl`).textContent = smileAbl;
+    document.getElementById(`d-${eye}-smile-rsb`).textContent = smileRsb;
+    document.getElementById(`d-${eye}-smile-pta`).textContent = smilePta + '%';
+    setDetailedVerdictCell(`d-${eye}-smile-verdict`, getVerdict(smileRsb, smilePta));
+    
+    // ERSS 계산
+    let erss = 0;
+    if (age < 21) erss += 3;
+    else if (age <= 25) erss += 2;
+    else if (age <= 29) erss += 1;
+    
+    if (cct < 450) erss += 4;
+    else if (cct <= 480) erss += 3;
+    else if (cct <= 510) erss += 2;
+    else if (cct <= 540) erss += 1;
+    
+    if (lasikRsb < 240) erss += 4;
+    else if (lasikRsb < 260) erss += 3;
+    else if (lasikRsb < 280) erss += 2;
+    else if (lasikRsb < 300) erss += 1;
+    
+    if (se < -10) erss += 3;
+    else if (se <= -8) erss += 2;
+    else if (se <= -6) erss += 1;
+    
+    document.getElementById(`d-${eye}-erss`).textContent = erss;
+    updateRiskCard(`d-erss${eye === 'os' ? '-os' : ''}-card`, erss, [0, 3, 6]);
+    
+    // Randleman Score 계산
+    let randleman = 0;
+    if (topoAbnormal > 0) randleman += topoAbnormal;
+    if (lasikRsb < 240) randleman += 2;
+    else if (lasikRsb < 280) randleman += 1;
+    if (age < 22) randleman += 1;
+    if (familyHistory > 0) randleman += 1;
+    if (cct < 480) randleman += 1;
+    
+    document.getElementById(`d-${eye}-randleman`).textContent = randleman;
+    updateRiskCard(`d-randleman${eye === 'os' ? '-os' : ''}-card`, randleman, [0, 2, 4]);
+    
+    // Nomogram
+    document.getElementById(`d-${eye}-orig-sph`).textContent = sph.toFixed(2);
+    document.getElementById(`d-${eye}-orig-cyl`).textContent = cyl.toFixed(2);
+    
+    // SPH 보정
+    let sphAdj = 0;
+    if (se >= -2.00) sphAdj = 0;
+    else if (se >= -3.00) sphAdj = 0;
+    else if (se >= -4.00) sphAdj = +0.125;
+    else if (se >= -5.00) sphAdj = +0.125;
+    else if (se >= -6.00) sphAdj = +0.25;
+    else if (se >= -7.00) sphAdj = +0.25;
+    else if (se >= -8.00) sphAdj = +0.375;
+    else if (se >= -9.00) sphAdj = +0.50;
+    else if (se >= -10.00) sphAdj = +0.625;
+    else sphAdj = +0.75;
+    
+    // CYL 보정
+    let cylAdj = 0;
+    const absCyl = Math.abs(cyl);
+    if (absCyl <= 1.25) cylAdj = 0;
+    else if (absCyl <= 1.75) cylAdj = +0.125;
+    else if (absCyl <= 2.25) cylAdj = +0.25;
+    else if (absCyl <= 3.00) cylAdj = +0.375;
+    else if (absCyl <= 4.00) cylAdj = +0.50;
+    else cylAdj = +0.625;
+    
+    // 나이 보정
+    let ageAdj = 0;
+    if (age < 22) ageAdj = -0.25;
+    else if (age < 25) ageAdj = -0.125;
+    else if (age <= 35) ageAdj = 0;
+    else if (age <= 40) ageAdj = +0.125;
+    else if (age <= 45) ageAdj = +0.25;
+    else if (age <= 50) ageAdj = +0.375;
+    else ageAdj = +0.50;
+    
+    const finalSph = Math.round((sph + sphAdj + ageAdj) * 4) / 4;
+    const finalCyl = Math.round((cyl + cylAdj) * 4) / 4;
+    
+    document.getElementById(`d-${eye}-sph-adj`).textContent = (sphAdj >= 0 ? '+' : '') + sphAdj.toFixed(2);
+    document.getElementById(`d-${eye}-cyl-adj`).textContent = (cylAdj >= 0 ? '+' : '') + cylAdj.toFixed(2);
+    document.getElementById(`d-${eye}-age-adj`).textContent = (ageAdj >= 0 ? '+' : '') + ageAdj.toFixed(2);
+    document.getElementById(`d-${eye}-final-sph`).textContent = finalSph.toFixed(2);
+    document.getElementById(`d-${eye}-final-cyl`).textContent = finalCyl.toFixed(2);
+    
+    // Post-K 예측
+    const postK = km + (se * 0.8);
+    document.getElementById(`d-${eye}-post-k`).textContent = postK.toFixed(2);
+}
+
+function setDetailedVerdictCell(id, verdict) {
+    const cell = document.getElementById(id);
+    cell.textContent = verdict.text;
+    cell.className = 'result-cell ' + verdict.class;
+}
+
+function updateRiskCard(cardId, score, thresholds) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    
+    card.classList.remove('low', 'medium', 'high');
+    const label = card.querySelector('.risk-score-label');
+    
+    if (score <= thresholds[1]) {
+        card.classList.add('low');
+        if (label) label.textContent = 'Low Risk';
+    } else if (score <= thresholds[2]) {
+        card.classList.add('medium');
+        if (label) label.textContent = 'Medium Risk';
+    } else {
+        card.classList.add('high');
+        if (label) label.textContent = 'High Risk';
+    }
+}
+
+function printDetailedReport() {
+    window.print();
+}
+
+function savePatientData() {
+    if (!currentUser) {
+        showToast('환자 저장은 로그인이 필요합니다.');
+        showLoginModal();
+        return;
+    }
+    showToast('환자 저장 기능은 준비 중입니다.');
+}
     </script>
 </body>
 </html>
